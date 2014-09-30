@@ -1,0 +1,9 @@
+name: EnderDragonFridays
+main: com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin
+version: 0.1
+softdepend: 
+commands:
+    makestuff:
+        description: who knows!
+        usage: /EDF 
+        permission: bukkit.command.ban.player
