@@ -30,6 +30,13 @@ public class ChestContentGenerator {
 		
 		Inventory chest;
 		for (Player player : inputMap.keySet()) {
+			
+			//Before anything, make sure they contributed!
+			if (inputMap.get(player) <= 1) {
+				//they have only contributed 1% or less of total health!
+				continue; //nothing for them!
+			}
+			
 			//Create a chest
 			chest = Bukkit.getServer().createInventory(null, 27);
 			//we are going to populate it with two items
