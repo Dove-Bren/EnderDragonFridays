@@ -17,6 +17,7 @@ public class EnderDragon implements Listener {
 	private EnderDragonFridaysPlugin plugin;
 	private Map<Player, Integer> damageMap;
 	private Map<Player, Inventory> chestMap;
+	private FireballCannon cannon;
 	
 	/**
 	 * Creates a default enderdragon
