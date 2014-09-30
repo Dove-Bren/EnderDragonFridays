@@ -25,6 +25,9 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 		
+		/**
+		 * Temp command that creates the dragon
+		 */
 		if (cmd.getName().equalsIgnoreCase("makestuff"))
 		if (dragon.isLiving()){
 			LivingEntity drags;
