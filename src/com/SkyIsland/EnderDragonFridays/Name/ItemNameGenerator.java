@@ -1,4 +1,4 @@
-package com.SkyIsland.EnderDragonFridays.Items.Name;
+package com.SkyIsland.EnderDragonFridays.Name;
 
 import java.util.List;
 import java.util.Random;

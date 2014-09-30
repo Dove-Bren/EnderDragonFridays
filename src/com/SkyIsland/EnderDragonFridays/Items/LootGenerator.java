@@ -4,8 +4,8 @@ import java.util.Collection;
 
 import org.bukkit.inventory.ItemStack;
 
-import com.SkyIsland.EnderDragonFridays.Items.Name.DefaultNames;
-import com.SkyIsland.EnderDragonFridays.Items.Name.NameGenerator;
+import com.SkyIsland.EnderDragonFridays.Name.DefaultNames;
+import com.SkyIsland.EnderDragonFridays.Name.NameGenerator;
 
 
 public class LootGenerator {
@@ -24,7 +24,7 @@ public class LootGenerator {
 	
 	/**
 	 * Creates a loot generator with the passed rarity.<br />
-	 * The loot generator will use a list of names defined in {@link com.SkyIsland.EnderDragonFridays.Items.Name.DefaultNames DefaultNames}
+	 * The loot generator will use a list of names defined in {@link com.SkyIsland.EnderDragonFridays.Name.DefaultNames DefaultNames}
 	 * @param rarity The relative rarity of items produced through this generator. A good range of values are from 1 to 10, but any number is theoritically supported.
 	 */
 	public LootGenerator(double rarity) {

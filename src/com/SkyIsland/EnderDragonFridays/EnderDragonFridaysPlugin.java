@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.SkyIsland.EnderDragonFridays.Items.Name.BossNameGenerator;
+import com.SkyIsland.EnderDragonFridays.Name.BossNameGenerator;
 
 public class EnderDragonFridaysPlugin extends JavaPlugin {
 	

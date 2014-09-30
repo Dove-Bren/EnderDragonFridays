@@ -1,4 +1,4 @@
-package com.SkyIsland.EnderDragonFridays.Items.Name;
+package com.SkyIsland.EnderDragonFridays.Name;
 
 import java.util.ArrayList;
 import java.util.List;
