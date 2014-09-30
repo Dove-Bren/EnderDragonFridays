@@ -1,7 +1,9 @@
 package com.SkyIsland.EnderDragonFridays.Items;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -16,13 +18,28 @@ import org.bukkit.inventory.Inventory;
  */
 public class ChestContentGenerator {
 	
-	public static Map<Player, Inventory> generate(Map<Player, Double> inputMap) {
-		Chest chest;
+	private static LootGenerator gen;
+	
+	public static Map<Player, Inventory> generate(double rarity, Map<Player, Double> inputMap) {
+		
+		//First, create our generator
+		gen = new LootGenerator(rarity);
+		
+		//Next, we set up our new map that will connect players to their chests
+		Map<Player, Inventory> output = new HashMap<Player, Inventory>();
+		
+		Inventory chest;
 		for (Player player : inputMap.keySet()) {
 			//Create a chest
+			chest = Bukkit.getServer().createInventory(null, 27);
+			//we are going to populate it with two items
+			chest.addItem(gen.generateItem(  inputMap.get(player)  )); //generate item. Use the double passed with player as weight
+			chest.addItem(gen.generateItem(  inputMap.get(player)  ));
 			
+			//add this inventory to the map
+			output.put(player, chest);
 		}
 		
-		return null;
+		return output;
 	}
 }
