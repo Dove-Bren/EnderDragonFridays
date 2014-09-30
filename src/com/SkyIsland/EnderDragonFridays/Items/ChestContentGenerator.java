@@ -1,8 +1,9 @@
 package com.SkyIsland.EnderDragonFridays.Items;
 
 import java.util.Map;
+
 import org.bukkit.entity.Player;
-import org.bukkit.block.Chest;
+import org.bukkit.inventory.Inventory;
 
 /**
  * Generates a chest-ful of equipment for players!<br />
@@ -15,10 +16,11 @@ import org.bukkit.block.Chest;
  */
 public class ChestContentGenerator {
 	
-	public static Map<Player, Chest> generate(Map<Player, Double> inputMap) {
-		
+	public static Map<Player, Inventory> generate(Map<Player, Double> inputMap) {
+		Chest chest;
 		for (Player player : inputMap.keySet()) {
 			//Create a chest
+			
 		}
 		
 		return null;

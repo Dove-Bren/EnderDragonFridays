@@ -5,12 +5,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.SkyIsland.EnderDragonFridays.Items.Name.BossNameGenerator;
+
 public class EnderDragonFridaysPlugin extends JavaPlugin {
 	
 	private EnderDragonFight fight;
+	private BossNameGenerator bossName;
 	
 	public void onEnable() {
-		
+		fight = null;
+		bossName = new BossNameGenerator();
 	}
 	
 	public void onDisable() {
