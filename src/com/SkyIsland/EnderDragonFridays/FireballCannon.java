@@ -1,7 +1,9 @@
 package com.SkyIsland.EnderDragonFridays;
 
+import java.util.List;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -60,9 +62,15 @@ public class FireballCannon extends Thread {
 	public void run() {
 		LivingEntity dDragon = dragon.getDragon();
 		while (true) {
+			//very first, make sure dragon is still alive. If not, kill self
+			if (dragon == null || !dragon.isLiving()) {
+				break;
+			}
 			//sleep first so it doesn't fire balls right away
 			try {
-				sleep((long) (d_min + (d_incr * (rand.nextInt(d_incr_range)))));
+				Long time = (long) (d_min + (d_incr * (rand.nextInt(d_incr_range))));
+				Bukkit.getServer().getLogger().info("wont fire for: " + time + " milliseconds!");
+				sleep(time);
 			} catch (InterruptedException e) {
 				//do nothing. WE DONT GIVE A MAGNETIC FLUX
 			}
@@ -75,14 +83,25 @@ public class FireballCannon extends Thread {
 			//there are players in the world
 			//get player doing the most damage
 			Player target = dragon.getMostDamage();
+			if (target == null) {
+				//nobody has hit it yet
+				List<Player> players = dDragon.getWorld().getPlayers();
+				if (!players.isEmpty())
+					target = players.get(rand.nextInt(players.size()));
+				else {
+					continue; //no players in world. keep sleeping.
+				}
+			}
 			
 			Vector launchV;
 			Location pPos, dPos;
 			dPos = dDragon.getLocation();
 			pPos = target.getLocation();
-			launchV = new Vector(dPos.getX(), dPos.getY(), dPos.getZ()).subtract(  new Vector(pPos.getX(), pPos.getY(), pPos.getZ())    );
+			//launchV = new Vector(dPos.getX(), dPos.getY(), dPos.getZ()).subtract(  new Vector(pPos.getX(), pPos.getY(), pPos.getZ())    );
+			launchV = pPos.toVector().subtract(dPos.toVector());
 			
 			dDragon.launchProjectile(LargeFireball.class, launchV.normalize().multiply(2));
+			target.sendMessage("Fired at!");
 		}
 	}
 }

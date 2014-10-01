@@ -86,6 +86,10 @@ public class EnderDragon implements Listener {
 		return player;
 	}
 	
+	public void kill() {
+		dragon.damage(dragon.getMaxHealth());
+	}
+	
 	@EventHandler
 	public void dragonDamage(EntityDamageByEntityEvent event) {
 		if (event.getEntity().equals(dragon)) {

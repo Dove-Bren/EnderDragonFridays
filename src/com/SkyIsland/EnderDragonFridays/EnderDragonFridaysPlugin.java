@@ -18,7 +18,9 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	}
 	
 	public void onDisable() {
-		
+		if (fight != null) {
+			fight.endFight();
+		}
 	}
 	
 	public void onLoad() {
@@ -33,11 +35,24 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		if (cmd.getName().equalsIgnoreCase("makestuff")) {
 			if (fight == null) {
 				fight = new EnderDragonFight(this);
-				fight.CreateDragon( ((Player) sender).getLocation(), "Young Ender Dragon");
+				fight.CreateDragon(((Player) sender).getWorld().getPlayers().size(), ((Player) sender).getLocation(), "Young Ender Dragon");
 			}
+			else {
+				sender.sendMessage("Fight already in progress!");
+			}
+			
+			return true;
 		}
 		
-		
+		if (cmd.getName().equalsIgnoreCase("killdragon")) {
+			if (fight==null) {
+				sender.sendMessage("No fight currently engaged");
+				return true;
+			}
+			fight.killDragon();
+			fight = null;
+			return true;
+		}
 		
 		return false;
 	}

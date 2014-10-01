@@ -5,5 +5,9 @@ softdepend:
 commands:
     makestuff:
         description: who knows!
-        usage: /EDF 
+        usage: /makestuff
+        permission: bukkit.command.ban.player
+    killdragon:
+        description: kills a dragon!
+        usage: /killdragon
         permission: bukkit.command.ban.player
