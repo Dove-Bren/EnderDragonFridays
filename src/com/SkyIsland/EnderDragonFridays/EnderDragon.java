@@ -39,7 +39,7 @@ public class EnderDragon implements Listener {
 		
 		damageMap = new HashMap<Player, Double>();
 		
-		cannon = new FireballCannon(this, 3000, 10000);
+		cannon = new FireballCannon(this, 500, 2000);
 		cannon.start();
 		plugin.getLogger().info("Ender Dragon Created!");
 	}
@@ -52,7 +52,7 @@ public class EnderDragon implements Listener {
 		
 		
 		damageMap = new HashMap<Player, Double>();
-		cannon = new FireballCannon(this, 3000, 10000);
+		cannon = new FireballCannon(this, 500, 2000);
 		cannon.start();
 	}
 	

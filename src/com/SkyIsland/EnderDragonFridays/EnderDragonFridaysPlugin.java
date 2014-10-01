@@ -2,6 +2,9 @@ package com.SkyIsland.EnderDragonFridays;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,6 +28,11 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	
 	public void onLoad() {
 		
+	}
+	
+	public void onReload() {
+		onDisable();
+		onEnable();
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
@@ -52,6 +60,27 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 			fight.killDragon();
 			fight = null;
 			return true;
+		}
+		
+		if (cmd.getName().equalsIgnoreCase("killalldragons")) {
+			for (Entity e : ((Player) sender).getWorld().getEntities()) {
+				if (e.getType() == EntityType.ENDER_DRAGON) {
+					LivingEntity dragon = (LivingEntity) e;
+					dragon.damage(dragon.getMaxHealth());
+				}
+			}
+			return true;
+		}
+		
+		if (cmd.getName().equalsIgnoreCase("enderdragonfridays") || cmd.getName().equalsIgnoreCase("edf")) {
+			if (args.length == 1) {
+				if (args[0].equalsIgnoreCase("reload")) {
+					getLogger().info("Reloading...");
+					this.onReload();
+					getLogger().info("Reload complete!");
+					return true;
+				}
+			}
 		}
 		
 		return false;
