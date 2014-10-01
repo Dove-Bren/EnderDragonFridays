@@ -22,6 +22,8 @@ public class EnderDragonFight {
 		this.plugin = plugin;
 	}
 	
+	
+	
 	public void CreateDragon(Location loc, String name) {
 		if (dragon == null || !dragon.isLiving()){
 			LivingEntity drags;

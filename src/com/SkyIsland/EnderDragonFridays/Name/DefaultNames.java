@@ -1,7 +1,12 @@
-package com.SkyIsland.EnderDragonFridays.Items;
+package com.SkyIsland.EnderDragonFridays.Name;
 
 import java.util.ArrayList;
 
+/**
+ * Defines default names, in the case that none are passed and we need at least a list of a few.
+ * @author Skyler
+ *
+ */
 public final class DefaultNames {
 	
 	public static ArrayList<String> generate() {

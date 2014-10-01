@@ -4,19 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Location;
-import org.bukkit.block.Chest;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.Inventory;
 
 public class EnderDragon implements Listener {
 	private LivingEntity dragon;
 	private EnderDragonFridaysPlugin plugin;
 	private Map<Player, Integer> damageMap;
-	private Map<Player, Chest> chestMap;
+	private Map<Player, Inventory> chestMap;
 	
 	/**
 	 * Creates a default enderdragon
@@ -36,7 +36,7 @@ public class EnderDragon implements Listener {
 		}
 		
 		damageMap = new HashMap<Player, Integer>();
-		chestMap = new HashMap<Player, Chest>();
+		chestMap = new HashMap<Player, Inventory>();
 	}
 	
 	public EnderDragon(EnderDragonFridaysPlugin plugin, LivingEntity dragon) {
