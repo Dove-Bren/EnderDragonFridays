@@ -53,6 +53,14 @@ public class EnderDragon implements Listener {
 		return !dragon.isDead();
 	}
 	
+	public LivingEntity getDragon() {
+		return this.dragon;
+	}
+	
+	public Player getMostDamage() {
+		return null;
+	}
+	
 	@EventHandler
 	public void dragonDeath(EntityDeathEvent event) {
 		if (event.getEntity().equals(dragon)) {
