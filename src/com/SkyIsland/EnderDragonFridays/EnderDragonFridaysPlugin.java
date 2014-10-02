@@ -95,7 +95,7 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 			if (args.length == 1) {
 				if (args[0].equalsIgnoreCase("reload")) {
 					getLogger().info("Reloading...");
-					this.onReload();
+					this.reload();
 					getLogger().info("Reload complete!");
 					return true;
 				}
