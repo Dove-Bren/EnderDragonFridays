@@ -142,20 +142,21 @@ public class LootGenerator {
 		double quality = itemQuality(rarity, weight * 30); //added * 30 because of the ago. It takes a weight from
 														   //0 to 30 instead of 0 to 1s?
 		
-//		switch (rand.nextInt(4)) {
-		switch(1) {
+		switch (rand.nextInt(4)) {
 		case 0: 
 			item = generateBow(); 
 		break;
 		case 1: 
 			item = generateSword(quality); 
-			enchantSword(item, quality);
+			enchant(swordEnchantments, item, quality);
 		break;
 		case 2: 
 			item = generateArmor(quality); 
+			enchant(armorEnchantments, item, quality);
 		break;
 		case 3: 
 			item = generateTool(quality); 
+			enchant(toolEnchantments, item, quality);
 		break;
 		}
 		
@@ -289,14 +290,14 @@ public class LootGenerator {
 		return bow;
 	}
 	
-	private void enchantSword(ItemStack item, double quality) {
-		Collections.shuffle(swordEnchantments); //assign random priorities. lulz
+	private void enchant(List<LootEnchantment> list, ItemStack item, double quality) {
+		Collections.shuffle(list); //assign random priorities. lulz
 		double enchantingPoints, cost;
 		int level;
 		
 		//Enchanting points, as defined in Skylo's Algo are
 		enchantingPoints = 8 * quality; //these are used to 'purchase' enchantments
-		for (LootEnchantment enchantment : swordEnchantments) {
+		for (LootEnchantment enchantment : list) {
 			if (enchantingPoints < enchantment.getWeight()) {
 				//we can't afford a single level of this enchantment
 				continue;
