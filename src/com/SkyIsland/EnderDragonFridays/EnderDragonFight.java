@@ -149,7 +149,6 @@ public class EnderDragonFight {
 		String worldName = chestAreaBL.getWorld().getName();
 		/*protection = */physDb.registerProtection(chest.getTypeId(), Protection.Type.PRIVATE, worldName, player.getName(), "", chest.getX(), chest.getY(), chest.getZ());
 		
-		plugin.getLogger().info("success?");
 		
 		//Now create a sign above it
 //		chest.getLocation().add(0, 1, 0).getBlock().setType(Material.SIGN);

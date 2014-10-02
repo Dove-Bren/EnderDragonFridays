@@ -8,6 +8,7 @@ import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.SkyIsland.EnderDragonFridays.Name.DefaultNames;
 import com.SkyIsland.EnderDragonFridays.Name.NameGenerator;
@@ -138,7 +139,8 @@ public class LootGenerator {
 	 */
 	public ItemStack generateItem(double weight) {
 		ItemStack item = null;
-		double quality = itemQuality(rarity, weight);
+		double quality = itemQuality(rarity, weight * 30); //added * 30 because of the ago. It takes a weight from
+														   //0 to 30 instead of 0 to 1s?
 		
 //		switch (rand.nextInt(4)) {
 		switch(1) {
@@ -160,12 +162,17 @@ public class LootGenerator {
 		if (this.generator == null) {
 			String name;
 			name = names.get(rand.nextInt(names.size()));
-			item.getItemMeta().setDisplayName(name);
+			ItemMeta meta = item.getItemMeta();
+			meta.setDisplayName(name);
+			item.setItemMeta(meta);
 		}
 		else {
 			String name;
 			name = generator.getName();
-			item.getItemMeta().setDisplayName(name);
+
+			ItemMeta meta = item.getItemMeta();
+			meta.setDisplayName(name);
+			item.setItemMeta(meta);
 		}
 		
 		return item;
@@ -289,7 +296,6 @@ public class LootGenerator {
 		
 		//Enchanting points, as defined in Skylo's Algo are
 		enchantingPoints = 8 * quality; //these are used to 'purchase' enchantments
-		
 		for (LootEnchantment enchantment : swordEnchantments) {
 			if (enchantingPoints < enchantment.getWeight()) {
 				//we can't afford a single level of this enchantment

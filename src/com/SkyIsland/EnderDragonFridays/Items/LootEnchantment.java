@@ -50,7 +50,7 @@ public class LootEnchantment {
 		cap = (int) Math.floor((2 * quality) - weight);
 		
 		//make sure this number doesn't exceed the hard cap
-		if (cap > hardLevelCap) {
+		if (cap > hardLevelCap || cap < 0) {
 			cap = hardLevelCap;
 		}
 		
@@ -72,6 +72,10 @@ public class LootEnchantment {
 		if (level > cap) {
 			//we can get out more enchantment levels than we have points for
 			level = cap; //just take out max
+		}
+		
+		if (level < 0) {
+			level = 0;
 		}
 		
 		return level;		

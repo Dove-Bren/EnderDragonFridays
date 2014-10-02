@@ -125,7 +125,8 @@ public class EnderDragon implements Listener {
 				else {
 					double old = damageMap.get((Player) event.getDamager());
 					old = old + (event.getDamage() / dragon.getMaxHealth());
-					damageMap.put((Player) event.getDamager(), old); 
+					//damageMap.put((Player) event.getDamager(), old); 
+					damageMap.put((Player) event.getDamager(), 1.0);
 					}
 			}
 			else if (event.getDamager() instanceof Projectile) {
