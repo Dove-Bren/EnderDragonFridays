@@ -82,7 +82,7 @@ public class EnderDragonFight {
 	 */
 	public void win() {
 		
-		Map<Player, Inventory> rewardMap = ChestContentGenerator.generate(dragon.getLevel(), dragon.getDamageMap());
+		Map<Player, Inventory> rewardMap = ChestContentGenerator.generate(5 + (dragon.getLevel() / 5), dragon.getDamageMap());
 		spawnRewards(rewardMap);
 		hailPlayers(dragon.getDamageMap());
 		endFight();
