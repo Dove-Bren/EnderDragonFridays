@@ -2,24 +2,40 @@ name: EnderDragonFridays
 main: com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin
 version: 0.1
 softdepend: [LWCPlugin] 
+permissions:
+    enderdragonfridays.*:
+        children:
+            enderdragonfridays.makestuff: true
+            enderdragonfridays.killdragon: true
+            enderdragonfridays.killalldragons: true
+            enderdragonfridays.windragonwars: true
+        default: op
+    enderdragonfridays.makestuff:
+        default: op
+    enderdragonfridays.killdragon:
+        default: op
+    enderdragonfridays.killalldragons:
+        default: op
+    enderdragonfridays.windragonwars:
+        default: op
 commands:
     makestuff:
         description: who knows!
         usage: /makestuff
-        permission: bukkit.command.ban.player
+        permission: enderdragonfridays.makestuff
     killdragon:
         description: kills a dragon!
         usage: /killdragon
-        permission: bukkit.command.ban.player
+        permission: enderdragonfridays.killdragon
     killalldragons:
         description: Kills all ender dragons in the world
         usage: /killalldragons
-        permission: bukkit.command.ban.player
+        permission: enderdragonfridays.killalldragons
     enderdragonfridays:
-        permission: bukkit.command.ban.player
+        permission: enderdragonfridays.*
         usage: /edf [reload]
         description: Executes a command for ender dragon fridays plugin
         aliases: edf
     windragonwars:
-        permission: bukkit.command.ban.player
+        permission: enderdragonfridays.windragonwars
         usage: /windragonwars
