@@ -51,7 +51,7 @@ public class EnderDragonFight {
 			drags = (LivingEntity) (loc.getWorld().spawnEntity(loc.add(0, 20, 0), EntityType.ENDER_DRAGON));
 			drags.setMaxHealth((level + 1) * drags.getMaxHealth()); //scale up with players
 			drags.setHealth(drags.getMaxHealth());
-			drags.setCustomName("Young Ender Dragon");
+			drags.setCustomName(name);
 			
 			dragon = new EnderDragon(plugin, level, drags);
 			
