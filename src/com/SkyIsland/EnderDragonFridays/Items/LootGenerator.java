@@ -1,6 +1,7 @@
 package com.SkyIsland.EnderDragonFridays.Items;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Material;
@@ -19,7 +20,7 @@ public class LootGenerator {
 	 */
 	private double rarity;
 	
-	private Collection<String> names;
+	private List<String> names;
 	
 	private NameGenerator generator;
 	
@@ -36,7 +37,7 @@ public class LootGenerator {
 		this.rand = new Random();
 	}
 	
-	public LootGenerator(double rarity, Collection<String> names) {
+	public LootGenerator(double rarity, List<String> names) {
 		this.rarity = rarity;
 		this.names = names;
 		this.rand = new Random();
@@ -83,6 +84,17 @@ public class LootGenerator {
 		case 1: item = generateSword(quality); break;
 		case 2: item = generateArmor(quality); break;
 		case 3: item = generateTool(quality); break;
+		}
+		
+		if (this.generator == null) {
+			String name;
+			name = names.get(rand.nextInt(names.size()));
+			item.getItemMeta().setDisplayName(name);
+		}
+		else {
+			String name;
+			name = generator.getName();
+			item.getItemMeta().setDisplayName(name);
 		}
 		
 		return item;
