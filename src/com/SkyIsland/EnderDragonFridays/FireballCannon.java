@@ -95,7 +95,6 @@ public class FireballCannon extends Thread {
 			Location pPos, dPos;
 			dPos = dDragon.getEyeLocation();
 			pPos = target.getEyeLocation();
-			//launchV = new Vector(dPos.getX(), dPos.getY(), dPos.getZ()).subtract(  new Vector(pPos.getX(), pPos.getY(), pPos.getZ())    );
 			launchV = pPos.toVector().subtract(dPos.toVector());
 			
 			LargeFireball f = dDragon.launchProjectile(LargeFireball.class);
