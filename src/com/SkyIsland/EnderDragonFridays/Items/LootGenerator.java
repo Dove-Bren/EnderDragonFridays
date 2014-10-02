@@ -145,6 +145,7 @@ public class LootGenerator {
 		switch (rand.nextInt(4)) {
 		case 0: 
 			item = generateBow(); 
+			enchant(bowEnchantments, item, quality);
 		break;
 		case 1: 
 			item = generateSword(quality); 
