@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,24 +22,22 @@ import com.SkyIsland.EnderDragonFridays.Items.ChestContentGenerator;
 import com.griefcraft.model.Protection;
 import com.griefcraft.sql.PhysDB;
 
+/**
+ * An EnderDragonFight represents a single fight between an EnderDragon and the players.
+ *
+ */
 public class EnderDragonFight {
-	
-	/**
-	 * list of players who have participated
-	 */
-	
-	private EnderDragonFridaysPlugin plugin;
 	
 	private EnderDragon dragon;
 	
 	private Location chestAreaBL;
 	
-	public EnderDragonFight(EnderDragonFridaysPlugin plugin, Location chestArea) {
-		this.plugin = plugin;
+	private boolean isFighting;
+	
+	public EnderDragonFight(Location chestArea) {
 		this.chestAreaBL = chestArea;
+		this.isFighting = false;
 	}
-	
-	
 	
 	public void CreateDragon(int level, Location loc, String name) {
 		if (dragon == null || !dragon.isLiving()){
@@ -48,9 +47,9 @@ public class EnderDragonFight {
 			drags.setHealth(drags.getMaxHealth());
 			drags.setCustomName("Young Ender Dragon");
 			
-			dragon = new EnderDragon(plugin, level, drags);
+			dragon = new EnderDragon(level, drags);
 			
-			Bukkit.getPluginManager().registerEvents(dragon, plugin);
+			Bukkit.getPluginManager().registerEvents(dragon, EnderDragonFridaysPlugin.plugin);
 		}
 	}
 	
@@ -60,6 +59,7 @@ public class EnderDragonFight {
 		}
 		
 		dragon.kill();
+		isFighting = false;
 	}
 	
 	/**
@@ -68,7 +68,6 @@ public class EnderDragonFight {
 	public void endFight() {
 		killDragon();
 		this.dragon = null;
-		plugin.closeFight();
 	}
 	
 	/**
@@ -77,20 +76,20 @@ public class EnderDragonFight {
 	 */
 	public void win() {
 		
-		Map<Player, Inventory> rewardMap = ChestContentGenerator.generate(dragon.getLevel(), dragon.getDamageMap());
+		Map<UUID, Inventory> rewardMap = ChestContentGenerator.generate(dragon.getLevel(), dragon.getDamageMap());
 		spawnRewards(rewardMap);
 		hailPlayers(dragon.getDamageMap());
 		endFight();
 		
 	}
 	
-	public void spawnRewards(Map<Player, Inventory> map) {
+	public void spawnRewards(Map<UUID, Inventory> map) {
 		//spawn chests at random in 10x10 area with bottom left block at location chestAreaBL
 		
 		//first make sure map isn't empty. If it is... something went wrong, but we're just 
 		//giong to ignore it for now
 		if (map.isEmpty()) {
-			plugin.getLogger().info("Map of contributions was empty!\nSpawning no rewards...");
+			EnderDragonFridaysPlugin.plugin.getLogger().info("Map of contributions was empty!\nSpawning no rewards...");
 			return;
 		}
 		
@@ -101,7 +100,8 @@ public class EnderDragonFight {
 		ArrayList<Integer> chestCoords = new ArrayList<Integer>();
 		Random rand = new Random();
 		int x, y, tries;
-		for (Entry<Player, Inventory> entry : map.entrySet()) {
+		for (Entry<UUID, Inventory> entry : map.entrySet()) {
+			Player player = Bukkit.getPlayer(entry.getKey());
 			x = rand.nextInt(10);
 			y = rand.nextInt(10);
 			tries = 0;
@@ -112,13 +112,14 @@ public class EnderDragonFight {
 					System.out.println("Trying to generate unique chest location... Got x: " + x + "  and y: " + y);
 				}
 				if (tries == 30) {
-					plugin.getLogger().info("Unable to generate a chest for player: " + entry.getKey().getName());
+					EnderDragonFridaysPlugin.plugin.getLogger().info("Unable to generate a chest for player: " + player.getName());
 					break;
 				}
 			}
 			
 			if (chestCoords.contains((x * 10) + y)) {
-				entry.getKey().sendMessage("An error occurred. Please let an Admin know, and refer them to com.SkyIsland.EnderDragonFridays.EnderDragonFight line 125.\nTake a screenshot so you don't forget!");
+				
+				player.sendMessage("An error occurred. Please let an Admin know, and refer them to com.SkyIsland.EnderDragonFridays.EnderDragonFight line 125.\nTake a screenshot so you don't forget!");
 				continue;
 			}
 			
@@ -131,7 +132,7 @@ public class EnderDragonFight {
 			
 			chest.getInventory().setContents(entry.getValue().getContents()); //bummer I thought we would be able to just hand it the inv
 			
-			doExtras(chest, entry.getKey());
+			doExtras(chest, player);
 		}
 	}
 	
@@ -139,12 +140,12 @@ public class EnderDragonFight {
 	public void doExtras(Chest chest, Player player) {
 		//for EDF's, we want to lock the chest and put a sign above it telling who's it is
 		//Protection protection;
-		PhysDB physDb = plugin.getLWC().getLWC().getPhysicalDatabase();
+		PhysDB physDb = EnderDragonFridaysPlugin.lwcPlugin.getLWC().getPhysicalDatabase();
 		
 		String worldName = chestAreaBL.getWorld().getName();
 		/*protection = */physDb.registerProtection(chest.getTypeId(), Protection.Type.PRIVATE, worldName, player.getName(), "", chest.getX(), chest.getY(), chest.getZ());
 		
-		plugin.getLogger().info("success?");
+		EnderDragonFridaysPlugin.plugin.getLogger().info("success?");
 		
 		//Now create a sign above it
 //		chest.getLocation().add(0, 1, 0).getBlock().setType(Material.SIGN);
@@ -164,11 +165,17 @@ public class EnderDragonFight {
 	 * Print out custom message to player letting htem know how they did
 	 * @param map
 	 */
-	public void hailPlayers(Map<Player, Double> map) {
-		for (Entry<Player, Double> entry : map.entrySet()) {
-			entry.getKey().sendMessage("Nice Fight!\n  "
+	public void hailPlayers(Map<UUID, Double> map) {
+		for (Entry<UUID, Double> entry : map.entrySet()) {
+			
+			Player player = Bukkit.getPlayer(entry.getKey());
+			player.sendMessage("Nice Fight!\n  "
 					+ "You did " + (entry.getValue().intValue() * dragon.getDragon().getMaxHealth()) + " points of damage!\n"
 							+ "Your contribution was " + entry.getValue()*100 + "%!");
 		}
+	}
+	
+	public boolean isFighting(){
+		return isFighting;
 	}
 }

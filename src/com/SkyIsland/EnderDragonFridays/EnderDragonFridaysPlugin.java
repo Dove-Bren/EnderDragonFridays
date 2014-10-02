@@ -7,18 +7,28 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.SkyIsland.EnderDragonFridays.Name.BossNameGenerator;
 import com.griefcraft.lwc.LWCPlugin;
 
+/**
+ * The EnderDragonFridaysPlugin makes an Ender Dragon appear once a week in the end.
+ * Upon killing it, awesome custom loot is dropped.
+ *
+ */
 public class EnderDragonFridaysPlugin extends JavaPlugin {
 	
 	private EnderDragonFight fight;
 	private BossNameGenerator bossName;
 	
-	private LWCPlugin lwcPlugin;
-		
+	public static LWCPlugin lwcPlugin;
+	public static Plugin plugin;
+	
+	public void onLoad() {
+		EnderDragonFridaysPlugin.plugin = this;
+	}
 	
 	public void onEnable() {
 		fight = null;
@@ -37,21 +47,10 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		fight = null;
 	}
 	
-	public void onLoad() {
-		
-	}
 	
 	public void reload() {
 		onDisable();
 		onEnable();
-	}
-	
-	public LWCPlugin getLWC() {
-		return this.lwcPlugin;
-	}
-	
-	public void closeFight() {
-		this.fight = null;
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
@@ -60,19 +59,18 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		 * Temp command that creates the dragon
 		 */
 		if (cmd.getName().equalsIgnoreCase("makestuff")) {
-			if (fight == null) {
-				fight = new EnderDragonFight(this, ((Player) sender).getLocation());
-				fight.CreateDragon(((Player) sender).getWorld().getPlayers().size(), ((Player) sender).getLocation(), "Young Ender Dragon");
-			}
-			else {
+			if (fight != null && fight.isFighting()){
 				sender.sendMessage("Fight already in progress!");
+				return false;
 			}
 			
+			fight = new EnderDragonFight(((Player) sender).getLocation());
+			fight.CreateDragon(((Player) sender).getWorld().getPlayers().size(), ((Player) sender).getLocation(), "Young Ender Dragon");
 			return true;
 		}
 		
 		if (cmd.getName().equalsIgnoreCase("killdragon")) {
-			if (fight==null) {
+			if (fight == null) {
 				sender.sendMessage("No fight currently engaged");
 				return true;
 			}
