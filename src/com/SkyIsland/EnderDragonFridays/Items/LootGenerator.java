@@ -32,13 +32,13 @@ public class LootGenerator {
 	
 	private Random rand;
 	
-	private Map<Enchantment, Double> swordEnchantments;
+	private List<LootEnchantment> swordEnchantments;
 	
-	private Map<Enchantment, Double> bowEnchantments;
+	private List<LootEnchantment> bowEnchantments;
 	
-	private Map<Enchantment, Double> armorEnchantments;
+	private List<LootEnchantment> armorEnchantments;
 	
-	private Map<Enchantment, Double> toolEnchantments;
+	private List<LootEnchantment> toolEnchantments;
 	
 	/**
 	 * Creates a loot generator with the passed rarity.<br />
@@ -75,13 +75,26 @@ public class LootGenerator {
 	}
 	
 	private void loadSwordEnchantments() {
-		swordEnchantments = new HashMap<Enchantment, Double>();
-		swordEnchantments.put(Enchantment.DAMAGE_ALL, 2.5); //sharpness at 2.5
-		swordEnchantments.put(Enchantment.DAMAGE_UNDEAD, 1.5); //who cares about smite? nobody!
-		swordEnchantments.put(Enchantment.FIRE_ASPECT, 3.0); //large weight
-		swordEnchantments.put(Enchantment.DURABILITY, 3.0); //kind of large, too
-		swordEnchantments.put(Enchantment.KNOCKBACK, 3.0); //also kind of large
-		swordEnchantments.put(Enchantment.LOOT_BONUS_MOBS, 4.0); //Looting is very weighty!
+		swordEnchantments = new ArrayList<LootEnchantment>();
+		swordEnchantments.add(new LootEnchantment(Enchantment.DAMAGE_ALL, 2.5, 10)); //sharpness at 2.5
+		swordEnchantments.add(new LootEnchantment(Enchantment.DAMAGE_UNDEAD, 1.5, 10)); //who cares about smite? nobody!
+		swordEnchantments.add(new LootEnchantment(Enchantment.FIRE_ASPECT, 3.0, 4)); //large weight
+		swordEnchantments.add(new LootEnchantment(Enchantment.DURABILITY, 3.0, 5)); //kind of large, too
+		swordEnchantments.add(new LootEnchantment(Enchantment.KNOCKBACK, 3.0, 3)); //also kind of large
+		swordEnchantments.add(new LootEnchantment(Enchantment.LOOT_BONUS_MOBS, 4.0, 4)); //Looting is very weighty!
+	}
+	
+	private void loadBowEnchantments() {
+		bowEnchantments = new ArrayList<LootEnchantment>();
+		bowEnchantments.add(new LootEnchantment(Enchantment.ARROW_DAMAGE, 2.5, 10));
+		bowEnchantments.add(new LootEnchantment(Enchantment.ARROW_FIRE, 3.5, 3));
+		bowEnchantments.add(new LootEnchantment(Enchantment.ARROW_INFINITE, 10.0, 1));
+		bowEnchantments.add(new LootEnchantment(Enchantment.ARROW_KNOCKBACK, 3.0, 3));
+		bowEnchantments.add(new LootEnchantment(Enchantment.DURABILITY, 3.5, 4));
+	}
+	
+	private void loadToolEnchantments() {
+		toolEnchantments = new ArrayList<LootEnchantment>();
 	}
 	
 	/**
