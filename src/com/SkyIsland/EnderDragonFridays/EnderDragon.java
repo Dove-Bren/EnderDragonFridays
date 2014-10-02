@@ -31,15 +31,16 @@ public class EnderDragon implements Listener {
 	public EnderDragon(EnderDragonFridaysPlugin plugin, int level, Location loc, String name) {
 		this.setPlugin(plugin);
 		dragon = (LivingEntity) loc.getWorld().spawnEntity(loc, EntityType.ENDER_DRAGON);
-		if (name != null && name.length() > 0) {
-			dragon.setCustomName(name);
-			dragon.setCustomNameVisible(true);
-		}
 		
 		this.level = level;
 		
 		if (this.level <= 0) {
 			this.level = 1; //reset to lvl 1 with invalid input
+		}
+		
+		if (name != null && name.length() > 0) {
+			dragon.setCustomName(name + " (Lvl " + level + ")");
+			dragon.setCustomNameVisible(true);
 		}
 		
 		dragon.setMaxHealth(dragon.getMaxHealth() * level);
