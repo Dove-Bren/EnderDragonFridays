@@ -18,20 +18,31 @@ public class EnderDragon implements Listener {
 	private EnderDragonFridaysPlugin plugin;
 	private Map<Player, Double> damageMap;
 	private FireballCannon cannon;
+	private int level;
 	
 	/**
 	 * Creates a default enderdragon
+	 * @param plugin The EnderDragonFridays plugin this dragon is associated with
+	 * @param level The level of the dragon
 	 * @param loc
 	 * @param name it's name
 	 */
-	public EnderDragon(EnderDragonFridaysPlugin plugin, Location loc, String name) {
+	public EnderDragon(EnderDragonFridaysPlugin plugin, int level, Location loc, String name) {
 		this.setPlugin(plugin);
 		dragon = (LivingEntity) loc.getWorld().spawnEntity(loc, EntityType.ENDER_DRAGON);
 		if (name != null && name.length() > 0) {
 			dragon.setCustomName(name);
 			dragon.setCustomNameVisible(true);
 		}
-
+		
+		this.level = level;
+		
+		if (this.level <= 0) {
+			this.level = 1; //reset to lvl 1 with invalid input
+		}
+		
+		dragon.setMaxHealth(dragon.getMaxHealth() * level);
+		dragon.setHealth(dragon.getMaxHealth());
 
 		//register this as an event listener
 		plugin.getServer().getPluginManager().registerEvents(this,plugin);
@@ -44,8 +55,13 @@ public class EnderDragon implements Listener {
 		plugin.getLogger().info("Ender Dragon Created!");
 	}
 	
-	public EnderDragon(EnderDragonFridaysPlugin plugin, LivingEntity dragon) {
+	public EnderDragon(EnderDragonFridaysPlugin plugin, int level, LivingEntity dragon) {
 		this.dragon = dragon;
+		this.level = level;
+		
+		if (level <= 0) {
+			this.level = 1;
+		}
 
 		//register this as an event listener
 		plugin.getServer().getPluginManager().registerEvents(this,plugin);
@@ -121,5 +137,13 @@ public class EnderDragon implements Listener {
 
 	public void setPlugin(EnderDragonFridaysPlugin plugin) {
 		this.plugin = plugin;
+	}
+	
+	public Map<Player, Double> getDamageMap() {
+		return this.damageMap;
+	}
+	
+	public int getLevel() {
+		return level;
 	}
 }
