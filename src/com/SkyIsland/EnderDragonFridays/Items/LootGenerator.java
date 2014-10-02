@@ -192,6 +192,10 @@ public class LootGenerator {
 		return sword;
 	}
 	
+	/**
+	 * Generates a bow. Needs no parameters as there is only one type of bow.
+	 * @return A generated bow.
+	 */
 	private ItemStack generateBow() {
 		ItemStack bow = new ItemStack(Material.BOW);
 		return bow;
