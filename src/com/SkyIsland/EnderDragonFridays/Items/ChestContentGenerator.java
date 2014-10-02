@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Generates a chest-ful of equipment for players!<br />
@@ -32,7 +34,7 @@ public class ChestContentGenerator {
 		for (Player player : inputMap.keySet()) {
 			
 			//Before anything, make sure they contributed!
-			if (inputMap.get(player) <= 1) {
+			if (inputMap.get(player) <= .01) {
 				//they have only contributed 1% or less of total health!
 				continue; //nothing for them!
 			}
@@ -40,8 +42,9 @@ public class ChestContentGenerator {
 			//Create a chest
 			chest = Bukkit.getServer().createInventory(null, 27);
 			//we are going to populate it with two items
-			chest.addItem(gen.generateItem(  inputMap.get(player)  )); //generate item. Use the double passed with player as weight
-			chest.addItem(gen.generateItem(  inputMap.get(player)  ));
+			//chest.addItem(gen.generateItem(  inputMap.get(player)  )); //generate item. Use the double passed with player as weight
+			//chest.addItem(gen.generateItem(  inputMap.get(player)  ));
+			chest.addItem(new ItemStack(Material.DIAMOND_AXE));
 			
 			//add this inventory to the map
 			output.put(player, chest);

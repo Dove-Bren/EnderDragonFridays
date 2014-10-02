@@ -69,7 +69,6 @@ public class FireballCannon extends Thread {
 			//sleep first so it doesn't fire balls right away
 			try {
 				Long time = (long) (d_min + (d_incr * (rand.nextInt(d_incr_range))));
-				Bukkit.getServer().getLogger().info("wont fire for: " + time + " milliseconds!");
 				sleep(time);
 			} catch (InterruptedException e) {
 				//do nothing. WE DONT GIVE A MAGNETIC FLUX

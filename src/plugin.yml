@@ -1,7 +1,7 @@
 name: EnderDragonFridays
 main: com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin
 version: 0.1
-softdepend: 
+softdepend: [LWCPlugin] 
 commands:
     makestuff:
         description: who knows!
@@ -20,3 +20,6 @@ commands:
         usage: /edf [reload]
         description: Executes a command for ender dragon fridays plugin
         aliases: edf
+    windragonwars:
+        permission: bukkit.command.ban.player
+        usage: /windragonwars

@@ -1,5 +1,6 @@
 package com.SkyIsland.EnderDragonFridays;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -9,21 +10,31 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.SkyIsland.EnderDragonFridays.Name.BossNameGenerator;
+import com.griefcraft.lwc.LWCPlugin;
 
 public class EnderDragonFridaysPlugin extends JavaPlugin {
 	
 	private EnderDragonFight fight;
 	private BossNameGenerator bossName;
 	
+	private LWCPlugin lwcPlugin;
+		
+	
 	public void onEnable() {
 		fight = null;
 		bossName = new BossNameGenerator();
+		lwcPlugin = (LWCPlugin) Bukkit.getPluginManager().getPlugin("LWC");
+		if (lwcPlugin == null) {
+			getLogger().info("lwc is null");
+		}
 	}
 	
 	public void onDisable() {
 		if (fight != null) {
 			fight.endFight();
 		}
+		lwcPlugin = null;
+		fight = null;
 	}
 	
 	public void onLoad() {
@@ -35,6 +46,14 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		onEnable();
 	}
 	
+	public LWCPlugin getLWC() {
+		return this.lwcPlugin;
+	}
+	
+	public void closeFight() {
+		this.fight = null;
+	}
+	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 		
 		/**
@@ -42,7 +61,7 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		 */
 		if (cmd.getName().equalsIgnoreCase("makestuff")) {
 			if (fight == null) {
-				fight = new EnderDragonFight(this);
+				fight = new EnderDragonFight(this, ((Player) sender).getLocation());
 				fight.CreateDragon(((Player) sender).getWorld().getPlayers().size(), ((Player) sender).getLocation(), "Young Ender Dragon");
 			}
 			else {
@@ -81,6 +100,13 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 					return true;
 				}
 			}
+		}
+		
+		if (cmd.getName().equalsIgnoreCase("windragonwars")) {
+			this.getLogger().info("winning...");
+			this.fight.win();
+			
+			return true;
 		}
 		
 		return false;
