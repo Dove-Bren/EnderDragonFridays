@@ -41,7 +41,7 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		
 	}
 	
-	public void onReload() {
+	public void reload() {
 		onDisable();
 		onEnable();
 	}
