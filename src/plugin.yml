@@ -3,9 +3,9 @@ main: com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin
 version: 0.1
 softdepend: [LWCPlugin] 
 commands:
-    makestuff:
-        description: who knows!
-        usage: /makestuff
+    startdragonfight:
+        description: Creates a dragon fight
+        usage: /startdragonfight
         permission: bukkit.command.ban.player
     killdragon:
         description: kills a dragon!
@@ -23,3 +23,6 @@ commands:
     windragonwars:
         permission: bukkit.command.ban.player
         usage: /windragonwars
+    setcontribution:
+        permission: bukkit.command.ban.player
+        usage: /setcontribution contribution

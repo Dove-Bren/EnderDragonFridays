@@ -59,10 +59,10 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		/**
 		 * Temp command that creates the dragon
 		 */
-		if (cmd.getName().equalsIgnoreCase("makestuff")) {
+		if (cmd.getName().equalsIgnoreCase("startdragonfight")) {
 			if (fight == null) {
 				fight = new EnderDragonFight(this, ((Player) sender).getLocation());
-				fight.CreateDragon(((Player) sender).getWorld().getPlayers().size(), ((Player) sender).getLocation(), "Young Ender Dragon");
+				fight.CreateDragon(((Player) sender).getWorld().getPlayers().size(), ((Player) sender).getLocation(), bossName.getName());
 			}
 			else {
 				sender.sendMessage("Fight already in progress!");
@@ -99,7 +99,19 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 					getLogger().info("Reload complete!");
 					return true;
 				}
+				else if (args[0].equalsIgnoreCase("start")) {
+					if (fight == null) {
+						fight = new EnderDragonFight(this, ((Player) sender).getLocation());
+						fight.CreateDragon(((Player) sender).getWorld().getPlayers().size(), ((Player) sender).getLocation(), bossName.getName());
+					}
+					else {
+						sender.sendMessage("Fight already in progress!");
+					}
+					
+					return true;
+				}
 			}
+			
 		}
 		
 		if (cmd.getName().equalsIgnoreCase("windragonwars")) {
@@ -109,6 +121,7 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 			return true;
 		}
 		
+
 		return false;
 	}
 }

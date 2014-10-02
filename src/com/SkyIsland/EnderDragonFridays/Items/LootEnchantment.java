@@ -4,11 +4,7 @@ import org.bukkit.enchantments.Enchantment;
 
 /**
  * Defines a loot enchantment that can be applied to loot.
- * <p>This class is made to tie together the weight of an enchantment, any hard limit on the enchantment
- * level that may exist, and the enchantment itself.</p>
- * <p>This class is abstract, meaning there's no such thing as a general loot enchantment. Instead, there are
- * specific implementations of a LootEnchantment (see {@link com.SkyIsland.EnderDragonFridays.Items.Enchantments.BowEnchantment BowEnchantment}).<br />
- * This class is not an interface because you cannot specify class fields in an interface without them being static final.
+ * <p>Each LootEnchantment will have an enchantment with it's attached weight and cap.</p>
  * @author Skyler
  *
  */

@@ -1,12 +1,8 @@
 package com.SkyIsland.EnderDragonFridays.Items;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Material;
@@ -95,6 +91,23 @@ public class LootGenerator {
 	
 	private void loadToolEnchantments() {
 		toolEnchantments = new ArrayList<LootEnchantment>();
+		toolEnchantments.add(new LootEnchantment(Enchantment.DIG_SPEED, 2.5, 8));
+		toolEnchantments.add(new LootEnchantment(Enchantment.DURABILITY, 3.0, 4));
+		toolEnchantments.add(new LootEnchantment(Enchantment.LOOT_BONUS_BLOCKS, 7.0, 4));
+		toolEnchantments.add(new LootEnchantment(Enchantment.SILK_TOUCH, 10.0, 1));
+	}
+	
+	private void loadArmorEnchantments() {
+		armorEnchantments = new ArrayList<LootEnchantment>();
+		armorEnchantments.add(new LootEnchantment(Enchantment.DURABILITY, 4.0, 3));
+		armorEnchantments.add(new LootEnchantment(Enchantment.OXYGEN, 3.0, 1));
+		armorEnchantments.add(new LootEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3.5, 7));
+		armorEnchantments.add(new LootEnchantment(Enchantment.PROTECTION_EXPLOSIONS, 3.0, 8));
+		armorEnchantments.add(new LootEnchantment(Enchantment.PROTECTION_FIRE, 3.0, 8));
+		armorEnchantments.add(new LootEnchantment(Enchantment.PROTECTION_PROJECTILE, 3.0, 8));
+		armorEnchantments.add(new LootEnchantment(Enchantment.PROTECTION_FALL, 3.5, 5));
+		armorEnchantments.add(new LootEnchantment(Enchantment.THORNS, 2.5, 5));
+		armorEnchantments.add(new LootEnchantment(Enchantment.WATER_WORKER, 2.0, 3));
 	}
 	
 	/**
@@ -127,11 +140,21 @@ public class LootGenerator {
 		ItemStack item = null;
 		double quality = itemQuality(rarity, weight);
 		
-		switch (rand.nextInt(4)) {
-		case 0: item = generateBow(); break;
-		case 1: item = generateSword(quality); break;
-		case 2: item = generateArmor(quality); break;
-		case 3: item = generateTool(quality); break;
+//		switch (rand.nextInt(4)) {
+		switch(1) {
+		case 0: 
+			item = generateBow(); 
+		break;
+		case 1: 
+			item = generateSword(quality); 
+			enchantSword(item, quality);
+		break;
+		case 2: 
+			item = generateArmor(quality); 
+		break;
+		case 3: 
+			item = generateTool(quality); 
+		break;
 		}
 		
 		if (this.generator == null) {
@@ -159,27 +182,27 @@ public class LootGenerator {
 		ItemStack tool = null;
 		switch (rand.nextInt() % 3) {
 		case 0:
-			if (quality >= 1 && quality < 2)
+			if (quality < 2)
 				tool = new ItemStack(Material.STONE_AXE);
-			else if (quality >= 2 && quality < 3)
+			else if (quality < 3)
 				tool = new ItemStack(Material.IRON_AXE);
-			else if (quality >= 3)
+			else
 				tool = new ItemStack(Material.DIAMOND_AXE);
 			break;
 		case 1:
-			if (quality >= 1 && quality < 2)
+			if (quality < 2)
 				tool = new ItemStack(Material.STONE_SPADE);
-			else if (quality >= 2 && quality < 3)
+			else if (quality < 3)
 				tool = new ItemStack(Material.IRON_SPADE);
-			else if (quality >= 3)
+			else
 				tool = new ItemStack(Material.DIAMOND_SPADE);
 			break;
 		case 2:
-			if (quality >= 1 && quality < 2)
+			if (quality < 2)
 				tool = new ItemStack(Material.STONE_PICKAXE);
-			else if (quality >= 2 && quality < 3)
+			else if (quality < 3)
 				tool = new ItemStack(Material.IRON_PICKAXE);
-			else if (quality >= 3)
+			else
 				tool = new ItemStack(Material.DIAMOND_PICKAXE);
 			break;
 		}
@@ -197,35 +220,35 @@ public class LootGenerator {
 		ItemStack armor = null;
 		switch(rand.nextInt() % 4) {
 		case 0:
-			if (quality >= 1 && quality < 2)
+			if (quality < 2)
 				armor = new ItemStack(Material.LEATHER_HELMET);
-			else if (quality >= 2 && quality < 3)
+			else if (quality < 3)
 				armor = new ItemStack(Material.IRON_HELMET);
-			else if (quality >= 3)
+			else
 				armor = new ItemStack(Material.DIAMOND_HELMET);
 			break;
 		case 1:
-			if (quality >= 1 && quality < 2)
+			if (quality < 2)
 				armor = new ItemStack(Material.LEATHER_CHESTPLATE);
-			else if (quality >= 2 && quality < 3)
+			else if (quality < 3)
 				armor = new ItemStack(Material.IRON_CHESTPLATE);
-			else if (quality >= 3)
+			else
 				armor = new ItemStack(Material.DIAMOND_CHESTPLATE);
 			break;
 		case 2:
-			if (quality >= 1 && quality < 2)
+			if (quality < 2)
 				armor = new ItemStack(Material.LEATHER_LEGGINGS);
-			else if (quality >= 2 && quality < 3)
+			else if (quality < 3)
 				armor = new ItemStack(Material.IRON_LEGGINGS);
-			else if (quality >= 3)
+			else
 				armor = new ItemStack(Material.DIAMOND_LEGGINGS);
 			break;
 		case 3:
-			if (quality >= 1 && quality < 2)
+			if (quality < 2)
 				armor = new ItemStack(Material.LEATHER_BOOTS);
-			else if (quality >= 2 && quality < 3)
+			else if (quality < 3)
 				armor = new ItemStack(Material.IRON_BOOTS);
-			else if (quality >= 3)
+			else
 				armor = new ItemStack(Material.DIAMOND_BOOTS);
 			break;
 		}
@@ -241,11 +264,11 @@ public class LootGenerator {
 	 */
 	private ItemStack generateSword(double quality) {
 		ItemStack sword  = null;
-		if (quality >= 1 && quality < 2)
+		if (quality < 2)
 			sword = new ItemStack(Material.STONE_SWORD);
-		else if (quality >= 2 && quality < 3)
+		else if (quality < 3)
 			sword = new ItemStack(Material.IRON_SWORD);
-		else if (quality >= 3)
+		else
 			sword = new ItemStack(Material.DIAMOND_SWORD);
 		return sword;
 	}
@@ -259,6 +282,38 @@ public class LootGenerator {
 		return bow;
 	}
 	
-	private void enchantSword(ItemStack item) {
+	private void enchantSword(ItemStack item, double quality) {
+		Collections.shuffle(swordEnchantments); //assign random priorities. lulz
+		double enchantingPoints, cost;
+		int level;
+		
+		//Enchanting points, as defined in Skylo's Algo are
+		enchantingPoints = 8 * quality; //these are used to 'purchase' enchantments
+		
+		for (LootEnchantment enchantment : swordEnchantments) {
+			if (enchantingPoints < enchantment.getWeight()) {
+				//we can't afford a single level of this enchantment
+				continue;
+			}
+			
+			level = enchantment.getEnchantmentLevel(quality, enchantingPoints);
+			cost = level * enchantment.getWeight();
+			
+			try {
+				item.addEnchantment(enchantment.getEnchantment(), level);
+				enchantingPoints -= cost;
+			}
+			catch (IllegalArgumentException e) {
+				//couldn't add the enchantment because
+				//     it wasn't applicable for the item
+				//     it conflicts with a previous enchantment
+			}
+			
+			if (enchantingPoints < .0001) { // == 0
+				break; // no more enchantments, we're spent
+			}
+			
+		}
+		
 	}
 }
