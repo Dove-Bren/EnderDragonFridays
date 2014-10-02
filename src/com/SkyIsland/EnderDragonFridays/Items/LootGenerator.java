@@ -1,10 +1,16 @@
 package com.SkyIsland.EnderDragonFridays.Items;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import com.SkyIsland.EnderDragonFridays.Name.DefaultNames;
@@ -26,6 +32,14 @@ public class LootGenerator {
 	
 	private Random rand;
 	
+	private Map<Enchantment, Double> swordEnchantments;
+	
+	private Map<Enchantment, Double> bowEnchantments;
+	
+	private Map<Enchantment, Double> armorEnchantments;
+	
+	private Map<Enchantment, Double> toolEnchantments;
+	
 	/**
 	 * Creates a loot generator with the passed rarity.<br />
 	 * The loot generator will use a list of names defined in {@link com.SkyIsland.EnderDragonFridays.Name.DefaultNames DefaultNames}
@@ -35,6 +49,7 @@ public class LootGenerator {
 		this.rarity = rarity;
 		this.names = DefaultNames.generate();
 		this.rand = new Random();
+		loadEnchantments();
 	}
 	
 	public LootGenerator(double rarity, List<String> names) {
@@ -47,6 +62,26 @@ public class LootGenerator {
 		this.rarity = rarity;
 		this.generator = generator;
 		this.rand = new Random();
+	}
+	
+	/**
+	 * Goes through and loads up the enchantments in their respective lists.
+	 */
+	private void loadEnchantments() {
+		loadSwordEnchantments();
+		loadBowEnchantments();
+		loadArmorEnchantments();
+		loadToolEnchantments();
+	}
+	
+	private void loadSwordEnchantments() {
+		swordEnchantments = new HashMap<Enchantment, Double>();
+		swordEnchantments.put(Enchantment.DAMAGE_ALL, 2.5); //sharpness at 2.5
+		swordEnchantments.put(Enchantment.DAMAGE_UNDEAD, 1.5); //who cares about smite? nobody!
+		swordEnchantments.put(Enchantment.FIRE_ASPECT, 3.0); //large weight
+		swordEnchantments.put(Enchantment.DURABILITY, 3.0); //kind of large, too
+		swordEnchantments.put(Enchantment.KNOCKBACK, 3.0); //also kind of large
+		swordEnchantments.put(Enchantment.LOOT_BONUS_MOBS, 4.0); //Looting is very weighty!
 	}
 	
 	/**
@@ -209,5 +244,8 @@ public class LootGenerator {
 	private ItemStack generateBow() {
 		ItemStack bow = new ItemStack(Material.BOW);
 		return bow;
+	}
+	
+	private void enchantSword(ItemStack item) {
 	}
 }
