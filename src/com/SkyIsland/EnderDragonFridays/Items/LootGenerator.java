@@ -76,12 +76,13 @@ public class LootGenerator {
 	 */
 	public ItemStack generateItem(double weight) {
 		ItemStack item = null;
+		double quality = itemQuality(rarity, weight);
 		
 		switch (rand.nextInt(4)) {
 		case 0: item = generateBow(); break;
-		case 1: item = generateSword(rarity, weight); break;
-		case 2: item = generateArmor(rarity, weight); break;
-		case 3: item = generateTool(rarity, weight); break;
+		case 1: item = generateSword(quality); break;
+		case 2: item = generateArmor(quality); break;
+		case 3: item = generateTool(quality); break;
 		}
 		
 		return item;
@@ -94,9 +95,8 @@ public class LootGenerator {
 	 * @param weight How much the player contributed to the boss fight (for ideal properties use 0 as no contribution and 30 as 100% contribution)
 	 * @return Returns a generated tool
 	 */
-	private ItemStack generateTool(double rarity, double weight) {
+	private ItemStack generateTool(double quality) {
 		ItemStack tool = null;
-		double quality = itemQuality(rarity, weight);
 		switch (rand.nextInt() % 3) {
 		case 0:
 			if (quality >= 1 && quality < 2)
@@ -133,9 +133,8 @@ public class LootGenerator {
 	 * @param weight How much the player contributed to the boss fight (for ideal properties use 0 as no contribution and 30 as 100% contribution)
 	 * @return Returns a generated armor item
 	 */
-	private ItemStack generateArmor(double rarity, double weight) {
+	private ItemStack generateArmor(double quality) {
 		ItemStack armor = null;
-		double quality = itemQuality(rarity, weight);
 		switch(rand.nextInt() % 4) {
 		case 0:
 			if (quality >= 1 && quality < 2)
@@ -180,9 +179,8 @@ public class LootGenerator {
 	 * @param weight How much the player contributed to the boss fight (for ideal properties use 0 as no contribution and 30 as 100% contribution)
 	 * @return Returns a generated sword
 	 */
-	private ItemStack generateSword(double rarity, double weight) {
+	private ItemStack generateSword(double quality) {
 		ItemStack sword  = null;
-		double quality = itemQuality(rarity, weight);
 		if (quality >= 1 && quality < 2)
 			sword = new ItemStack(Material.STONE_SWORD);
 		else if (quality >= 2 && quality < 3)
