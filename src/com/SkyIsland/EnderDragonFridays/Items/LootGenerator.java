@@ -33,16 +33,19 @@ public class LootGenerator {
 	public LootGenerator(double rarity) {
 		this.rarity = rarity;
 		this.names = DefaultNames.generate();
+		this.rand = new Random();
 	}
 	
 	public LootGenerator(double rarity, Collection<String> names) {
 		this.rarity = rarity;
 		this.names = names;
+		this.rand = new Random();
 	}
 	
 	public LootGenerator(double rarity, NameGenerator generator) {
 		this.rarity = rarity;
 		this.generator = generator;
+		this.rand = new Random();
 	}
 	
 	/**
@@ -74,7 +77,12 @@ public class LootGenerator {
 	public ItemStack generateItem(double weight) {
 		ItemStack item = null;
 		
-		
+		switch (rand.nextInt(4)) {
+		case 0: item = generateBow(); break;
+		case 1: item = generateSword(rarity, weight); break;
+		case 2: item = generateArmor(rarity, weight); break;
+		case 3: item = generateTool(rarity, weight); break;
+		}
 		
 		return item;
 	}
