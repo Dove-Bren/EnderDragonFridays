@@ -23,6 +23,8 @@ public class LootGenerator {
 	
 	private NameGenerator generator;
 	
+	private Random rand;
+	
 	/**
 	 * Creates a loot generator with the passed rarity.<br />
 	 * The loot generator will use a list of names defined in {@link com.SkyIsland.EnderDragonFridays.Name.DefaultNames DefaultNames}
@@ -86,7 +88,6 @@ public class LootGenerator {
 	 */
 	private ItemStack generateTool(double rarity, double weight) {
 		ItemStack tool = null;
-		Random rand = new Random();
 		double quality = itemQuality(rarity, weight);
 		switch (rand.nextInt() % 3) {
 		case 0:
@@ -126,7 +127,6 @@ public class LootGenerator {
 	 */
 	private ItemStack generateArmor(double rarity, double weight) {
 		ItemStack armor = null;
-		Random rand = new Random();
 		double quality = itemQuality(rarity, weight);
 		switch(rand.nextInt() % 4) {
 		case 0:
@@ -182,5 +182,10 @@ public class LootGenerator {
 		else if (quality >= 3)
 			sword = new ItemStack(Material.DIAMOND_SWORD);
 		return sword;
+	}
+	
+	private ItemStack generateBow() {
+		ItemStack bow = new ItemStack(Material.BOW);
+		return bow;
 	}
 }
