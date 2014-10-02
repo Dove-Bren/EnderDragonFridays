@@ -33,11 +33,6 @@ public class EnderDragonFight {
 	
 	private Location chestAreaBL;
 	
-	
-//	public EnderDragonFight(EnderDragonFridaysPlugin plugin) {
-//		this.plugin = plugin;
-//	}
-	
 	public EnderDragonFight(EnderDragonFridaysPlugin plugin, Location chestArea) {
 		this.plugin = plugin;
 		this.chestAreaBL = chestArea;
