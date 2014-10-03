@@ -140,7 +140,7 @@ public class EnderDragonFridaysPlugin extends JavaPlugin implements Listener {
 	public void captureEggUse(PlayerInteractEvent e) {
 		if (!e.isCancelled())
 		if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)
-		if (e.getItem().getType() == Material.MONSTER_EGG) {
+		if (e.getItem() != null && e.getItem().getType() == Material.MONSTER_EGG) {
 			//got an egg
 			ItemStack egg = e.getItem();
 			ItemMeta meta = egg.getItemMeta();
