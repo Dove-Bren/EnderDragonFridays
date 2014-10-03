@@ -1,18 +1,27 @@
 package com.SkyIsland.EnderDragonFridays;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.SkyIsland.EnderDragonFridays.Name.BossNameGenerator;
 import com.griefcraft.lwc.LWCPlugin;
 
-public class EnderDragonFridaysPlugin extends JavaPlugin {
+public class EnderDragonFridaysPlugin extends JavaPlugin implements Listener {
 	
 	private EnderDragonFight fight;
 	private BossNameGenerator bossName;
@@ -27,6 +36,7 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		if (lwcPlugin == null) {
 			getLogger().info("lwc is null");
 		}
+		Bukkit.getPluginManager().registerEvents(this, this);
 	}
 	
 	public void onDisable() {
@@ -123,5 +133,30 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		
 
 		return false;
+	}
+	
+	
+	@EventHandler
+	public void captureEggUse(PlayerInteractEvent e) {
+		if (!e.isCancelled())
+		if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)
+		if (e.getItem().getType() == Material.MONSTER_EGG) {
+			//got an egg
+			ItemStack egg = e.getItem();
+			ItemMeta meta = egg.getItemMeta();
+			
+			if (meta == null || !meta.hasLore()) {
+				return;
+			}
+			
+			List<String> lore = meta.getLore();
+			if (lore.isEmpty()) {
+				return;
+			}
+			
+			if (lore.get(0).equalsIgnoreCase("Dragon Egg")) {
+				e.setCancelled(true);
+			}
+		}
 	}
 }
