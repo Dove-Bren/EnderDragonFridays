@@ -65,13 +65,18 @@ public class ChestContentGenerator {
 				ItemMeta meta = egg.getItemMeta();
 				List<String> lore = meta.getLore();
 				
-				if (lore != null) {
-					lore.set(0, "Dragon Egg");
-					meta.setLore(lore);
-					meta.setDisplayName("Dragon Egg");
-					egg.setItemMeta(meta);
-					chest.addItem(egg);
+				if (lore == null) {
+					lore = new LinkedList<String>();
+					lore.add("Dragon Egg");
 				}
+				else {
+					lore.set(0, "Dragon Egg");
+				}
+				meta.setLore(lore);
+				meta.setDisplayName("Dragon Egg");
+				egg.setItemMeta(meta);
+				chest.addItem(egg);
+
 			}
 			
 			//add this inventory to the map

@@ -171,7 +171,7 @@ public class EnderDragonFight {
 	public void hailPlayers(Map<Player, Double> map) {
 		for (Entry<Player, Double> entry : map.entrySet()) {
 			entry.getKey().sendMessage("Nice Fight!\n  "
-					+ "You did " + (entry.getValue().intValue() * dragon.getDragon().getMaxHealth()) + " points of damage!\n"
+					+ "You did " + ((int) Math.floor(entry.getValue() * dragon.getDragon().getMaxHealth())) + " points of damage!\n"
 							+ "Your contribution was " + entry.getValue()*100 + "%!");
 		}
 	}
