@@ -1,11 +1,18 @@
 package com.SkyIsland.EnderDragonFridays.Items;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.SpawnEgg;
 
 /**
  * Generates a chest-ful of equipment for players!<br />
@@ -44,8 +51,24 @@ public class ChestContentGenerator {
 			chest.addItem(gen.generateItem(  inputMap.get(player)  ));
 			//chest.addItem(new ItemStack(Material.DIAMOND_AXE));
 			
+			//Add easter eggs
+			
+			ItemStack egg = new SpawnEgg(EntityType.ENDER_DRAGON).toItemStack(1);
+			ItemMeta meta = egg.getItemMeta();
+			
+			meta.setDisplayName("Easter Egg: " + "Dragon Egg");
+			
+			List<String> lore = new LinkedList<String>();
+			lore.add(ChatColor.BLACK + "The Egg of an Ender Dragon");
+			meta.setLore(lore);
+			
+			egg.setItemMeta(meta);
+			
+			chest.addItem(egg);
+			
 			//add this inventory to the map
 			output.put(player, chest);
+			
 		}
 		
 		return output;
