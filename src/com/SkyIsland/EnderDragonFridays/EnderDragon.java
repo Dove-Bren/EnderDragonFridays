@@ -235,9 +235,14 @@ public class EnderDragon implements Listener {
 		for (Entry<Player, Double> entry : map.entrySet()) {
 			
 			Player player = entry.getKey();
-			player.sendMessage("Nice Fight!\n  "
+			try{
+				player.sendMessage("Nice Fight!\n  "
 					+ "You did " + (entry.getValue().intValue()) + " points of damage!\n"
 							+ "Your contribution was " + ((entry.getValue() / damageTaken) * 100) + "%!");
+			}
+			catch (Exception e){
+				//Player wasn't online anymore
+			}
 		}
 	}
 
