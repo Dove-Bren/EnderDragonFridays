@@ -1,5 +1,6 @@
 package com.SkyIsland.EnderDragonFridays;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -83,7 +84,7 @@ public class FireballCannon extends Thread {
 			Player target = dragon.getMostDamage();
 			if (target == null) {
 				//nobody has hit it yet
-				List<Player> players = dDragon.getWorld().getPlayers();
+				List<Player> players = new ArrayList<Player>(dDragon.getWorld().getPlayers()); //attempt to get rid of concurrent modification
 				if (!players.isEmpty())
 					target = players.get(rand.nextInt(players.size()));
 				else {
