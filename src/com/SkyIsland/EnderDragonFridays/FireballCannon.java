@@ -13,7 +13,7 @@ import org.bukkit.util.Vector;
 /**
  * 
  * @author Skyler
- * @note This could be extracted out to 'body part' class. There oculd be two. One that's independent and one that just
+ * @note This could be extracted out to 'body part' class. There could be two. One that's independent and one that just
  * 			exists. I.e. one that extends thread and one that doens't get it's own.
  */
 public class FireballCannon extends Thread {
@@ -63,7 +63,7 @@ public class FireballCannon extends Thread {
 		LivingEntity dDragon = dragon.getDragon();
 		while (true) {
 			//very first, make sure dragon is still alive. If not, kill self
-			if (dragon == null || !dragon.isLiving()) {
+			if (dragon == null || !dragon.isAlive()) {
 				break;
 			}
 			//sleep first so it doesn't fire balls right away
@@ -96,7 +96,6 @@ public class FireballCannon extends Thread {
 			Location pPos, dPos;
 			dPos = dDragon.getEyeLocation();
 			pPos = target.getEyeLocation();
-			//launchV = new Vector(dPos.getX(), dPos.getY(), dPos.getZ()).subtract(  new Vector(pPos.getX(), pPos.getY(), pPos.getZ())    );
 			launchV = pPos.toVector().subtract(dPos.toVector());
 			
 			LargeFireball f = dDragon.launchProjectile(LargeFireball.class);

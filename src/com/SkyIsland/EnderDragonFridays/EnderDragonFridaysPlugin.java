@@ -1,67 +1,66 @@
 package com.SkyIsland.EnderDragonFridays;
 
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.SkyIsland.EnderDragonFridays.Name.BossNameGenerator;
 import com.griefcraft.lwc.LWCPlugin;
 
-public class EnderDragonFridaysPlugin extends JavaPlugin implements Listener {
+/**
+ * The EnderDragonFridaysPlugin makes an Ender Dragon appear once a week in the end.
+ * Upon killing it, awesome custom loot is dropped.
+ *
+ */
+public class EnderDragonFridaysPlugin extends JavaPlugin {
 	
-	private EnderDragonFight fight;
+	private EnderDragon dragon;
 	private BossNameGenerator bossName;
 	
-	private LWCPlugin lwcPlugin;
-		
+	public static LWCPlugin lwcPlugin;
+	public static EnderDragonFridaysPlugin plugin;
+	
+	private static final String configFilename = "config.yml";
+	private File configFile;
+	private YamlConfiguration config;
+	
+	private String worldName;
+	
+	public void onLoad() {
+		EnderDragonFridaysPlugin.plugin = this;
+	}
 	
 	public void onEnable() {
-		fight = null;
+		dragon = null;
 		bossName = new BossNameGenerator();
 		lwcPlugin = (LWCPlugin) Bukkit.getPluginManager().getPlugin("LWC");
 		if (lwcPlugin == null) {
 			getLogger().info("lwc is null");
 		}
-		Bukkit.getPluginManager().registerEvents(this, this);
+		load();
 	}
 	
 	public void onDisable() {
-		if (fight != null) {
-			fight.endFight();
-		}
 		lwcPlugin = null;
-		fight = null;
+		if (dragon != null && dragon.isAlive()){
+			dragon.killDragon();
+		}
+		dragon = null;
+		save();
 	}
 	
-	public void onLoad() {
-		
-	}
-	
-	public void onReload() {
+	public void reload() {
 		onDisable();
 		onEnable();
-	}
-	
-	public LWCPlugin getLWC() {
-		return this.lwcPlugin;
-	}
-	
-	public void closeFight() {
-		this.fight = null;
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
@@ -70,24 +69,27 @@ public class EnderDragonFridaysPlugin extends JavaPlugin implements Listener {
 		 * Temp command that creates the dragon
 		 */
 		if (cmd.getName().equalsIgnoreCase("startdragonfight")) {
-			if (fight == null) {
-				fight = new EnderDragonFight(this, ((Player) sender).getLocation());
-				fight.CreateDragon(((Player) sender).getWorld().getPlayers().size(), ((Player) sender).getLocation(), bossName.getName());
-			}
-			else {
-				sender.sendMessage("Fight already in progress!");
+			if (Bukkit.getWorld(worldName) == null){
+				sender.sendMessage("World does not exist!");
+				return false;
 			}
 			
+			if (dragon != null && dragon.isAlive()) {
+				sender.sendMessage("Fight already in progress!");
+			}
+			else {
+				dragon = new EnderDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), bossName.getName());
+			}
 			return true;
 		}
 		
 		if (cmd.getName().equalsIgnoreCase("killdragon")) {
-			if (fight==null) {
+			if (dragon == null || !dragon.isAlive()) {
 				sender.sendMessage("No fight currently engaged");
 				return true;
 			}
-			fight.killDragon();
-			fight = null;
+			dragon.killDragon();
+			dragon = null;
 			return true;
 		}
 		
@@ -102,64 +104,44 @@ public class EnderDragonFridaysPlugin extends JavaPlugin implements Listener {
 		}
 		
 		if (cmd.getName().equalsIgnoreCase("enderdragonfridays") || cmd.getName().equalsIgnoreCase("edf")) {
-			if (args.length == 1) {
-				if (args[0].equalsIgnoreCase("reload")) {
-					getLogger().info("Reloading...");
-					this.onReload();
-					getLogger().info("Reload complete!");
-					return true;
-				}
-				else if (args[0].equalsIgnoreCase("start")) {
-					if (fight == null) {
-						fight = new EnderDragonFight(this, ((Player) sender).getLocation());
-						fight.CreateDragon(((Player) sender).getWorld().getPlayers().size(), ((Player) sender).getLocation(), bossName.getName());
-					}
-					else {
-						sender.sendMessage("Fight already in progress!");
-					}
-					
-					return true;
-				}
-			}
-			
+			return true;
 		}
 		
 		if (cmd.getName().equalsIgnoreCase("windragonwars")) {
 			this.getLogger().info("winning...");
-			this.fight.win();
+			this.dragon.win();
 			
 			return true;
 		}
 		
-
 		return false;
 	}
-	
-	public EnderDragonFight getFight() {
-		return this.fight;
+			
+	public void load(){
+		if (!this.getDataFolder().exists()){
+			this.getDataFolder().mkdir();
+		}
+		configFile = new File(this.getDataFolder(), configFilename);
+		if (!configFile.exists()){
+			try {
+				configFile.createNewFile();
+				config = YamlConfiguration.loadConfiguration(configFile);
+				config.set("world", "world_the_end");
+				config.save(configFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		config = YamlConfiguration.loadConfiguration(configFile);
+		worldName = config.contains("world") ? config.getString("world") : "world_the_end";
 	}
 	
-	@EventHandler
-	public void captureEggUse(PlayerInteractEvent e) {
-		if (!e.isCancelled())
-		if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)
-		if (e.getItem() != null && e.getItem().getType() == Material.MONSTER_EGG) {
-			//got an egg
-			ItemStack egg = e.getItem();
-			ItemMeta meta = egg.getItemMeta();
-			
-			if (meta == null || !meta.hasLore()) {
-				return;
-			}
-			
-			List<String> lore = meta.getLore();
-			if (lore.isEmpty()) {
-				return;
-			}
-			
-			if (lore.get(0).equalsIgnoreCase("Dragon Egg")) {
-				e.setCancelled(true);
-			}
+	public void save(){
+		try {
+			config.set("world", worldName);
+			config.save(configFile);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

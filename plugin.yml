@@ -1,0 +1,47 @@
+name: EnderDragonFridays
+main: com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin
+version: 0.1
+softdepend: [LWCPlugin] 
+permissions:
+    enderdragonfridays.*:
+        children:
+            enderdragonfridays.startdragonfight: true
+            enderdragonfridays.killdragon: true
+            enderdragonfridays.killalldragons: true
+            enderdragonfridays.windragonwars: true
+            enderdragonfridays.setcontribution: true
+        default: op
+    enderdragonfridays.startdragonfight:
+        default: op
+    enderdragonfridays.killdragon:
+        default: op
+    enderdragonfridays.killalldragons:
+        default: op
+    enderdragonfridays.windragonwars:
+        default: op
+    enderdragonfridays.setcontribution:
+        default: op
+commands:
+    startdragonfight:
+        description: Creates a dragon fight
+        usage: /startdragonfight
+        permission: enderdragonfridays.startdragonfight
+    killdragon:
+        description: kills a dragon!
+        usage: /killdragon
+        permission: enderdragonfridays.killdragon
+    killalldragons:
+        description: Kills all ender dragons in the world
+        usage: /killalldragons
+        permission: enderdragonfridays.killalldragons
+    enderdragonfridays:
+        permission: enderdragonfridays.*
+        usage: /edf [reload]
+        description: Executes a command for ender dragon fridays plugin
+        aliases: edf
+    windragonwars:
+        permission: enderdragonfridays.windragonwars
+        usage: /windragonwars
+    setcontribution:
+        permission: enderdragonfridays.setcontribution
+        usage: /setcontribution contribution
