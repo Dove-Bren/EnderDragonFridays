@@ -1,8 +1,12 @@
 package com.SkyIsland.EnderDragonFridays;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.EntityType;
@@ -19,33 +23,40 @@ import com.griefcraft.lwc.LWCPlugin;
  */
 public class EnderDragonFridaysPlugin extends JavaPlugin {
 	
-	private EnderDragonFight fight;
+	private EnderDragon dragon;
 	private BossNameGenerator bossName;
 	
 	public static LWCPlugin lwcPlugin;
 	public static EnderDragonFridaysPlugin plugin;
+	
+	private static final String configFilename = "config.yml";
+	private File configFile;
+	private YamlConfiguration config;
+	
+	private String worldName;
 	
 	public void onLoad() {
 		EnderDragonFridaysPlugin.plugin = this;
 	}
 	
 	public void onEnable() {
-		fight = null;
+		dragon = null;
 		bossName = new BossNameGenerator();
 		lwcPlugin = (LWCPlugin) Bukkit.getPluginManager().getPlugin("LWC");
 		if (lwcPlugin == null) {
 			getLogger().info("lwc is null");
 		}
+		load();
 	}
 	
 	public void onDisable() {
-		if (fight != null) {
-			fight.endFight();
-		}
 		lwcPlugin = null;
-		fight = null;
+		if (dragon != null && dragon.isAlive()){
+			dragon.killDragon();
+		}
+		dragon = null;
+		save();
 	}
-	
 	
 	public void reload() {
 		onDisable();
@@ -58,27 +69,22 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		 * Temp command that creates the dragon
 		 */
 		if (cmd.getName().equalsIgnoreCase("startdragonfight")) {
-			if (fight == null) {
-				fight = new EnderDragonFight(((Player) sender).getLocation());
-				fight.CreateDragon(((Player) sender).getWorld().getPlayers().size(), ((Player) sender).getLocation(), bossName.getName());
+			if (dragon != null && dragon.isAlive()) {
+				sender.sendMessage("Fight already in progress!");
 			}
 			else {
-				sender.sendMessage("Fight already in progress!");
-				return false;
+				dragon = new EnderDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), bossName.getName());
 			}
-			
-			fight = new EnderDragonFight(((Player) sender).getLocation());
-			fight.CreateDragon(((Player) sender).getWorld().getPlayers().size(), ((Player) sender).getLocation(), "Young Ender Dragon");
 			return true;
 		}
 		
 		if (cmd.getName().equalsIgnoreCase("killdragon")) {
-			if (fight == null) {
+			if (dragon == null || !dragon.isAlive()) {
 				sender.sendMessage("No fight currently engaged");
 				return true;
 			}
-			fight.killDragon();
-			fight = null;
+			dragon.killDragon();
+			dragon = null;
 			return true;
 		}
 		
@@ -93,36 +99,41 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		}
 		
 		if (cmd.getName().equalsIgnoreCase("enderdragonfridays") || cmd.getName().equalsIgnoreCase("edf")) {
-			if (args.length == 1) {
-				if (args[0].equalsIgnoreCase("reload")) {
-					getLogger().info("Reloading...");
-					this.reload();
-					getLogger().info("Reload complete!");
-					return true;
-				}
-				else if (args[0].equalsIgnoreCase("start")) {
-					if (fight == null) {
-						fight = new EnderDragonFight(((Player) sender).getLocation());
-						fight.CreateDragon(((Player) sender).getWorld().getPlayers().size(), ((Player) sender).getLocation(), bossName.getName());
-					}
-					else {
-						sender.sendMessage("Fight already in progress!");
-					}
-					
-					return true;
-				}
-			}
-			
+			return true;
 		}
 		
 		if (cmd.getName().equalsIgnoreCase("windragonwars")) {
 			this.getLogger().info("winning...");
-			this.fight.win();
+			this.dragon.win();
 			
 			return true;
 		}
 		
-
 		return false;
+	}
+	
+	public void load(){
+		configFile = new File(this.getDataFolder(), configFilename);
+		if (!configFile.exists()){
+			try {
+				configFile.createNewFile();
+				config = YamlConfiguration.loadConfiguration(configFile);
+				config.set("world", "world_the_end");
+				config.save(configFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		config = YamlConfiguration.loadConfiguration(configFile);
+		worldName = config.contains("world") ? config.getString("world") : "world_the_end";
+	}
+	
+	public void save(){
+		try {
+			config.set("world", worldName);
+			config.save(configFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

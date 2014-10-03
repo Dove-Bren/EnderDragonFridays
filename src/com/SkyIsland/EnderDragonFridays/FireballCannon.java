@@ -63,7 +63,7 @@ public class FireballCannon extends Thread {
 		LivingEntity dDragon = dragon.getDragon();
 		while (true) {
 			//very first, make sure dragon is still alive. If not, kill self
-			if (dragon == null || !dragon.isLiving()) {
+			if (dragon == null || !dragon.isAlive()) {
 				break;
 			}
 			//sleep first so it doesn't fire balls right away
