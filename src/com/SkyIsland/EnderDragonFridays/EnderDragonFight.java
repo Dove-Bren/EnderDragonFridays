@@ -33,6 +33,8 @@ public class EnderDragonFight {
 	
 	private Location chestAreaBL;
 	
+	private boolean inFight;
+	
 	
 //	public EnderDragonFight(EnderDragonFridaysPlugin plugin) {
 //		this.plugin = plugin;
@@ -41,6 +43,7 @@ public class EnderDragonFight {
 	public EnderDragonFight(EnderDragonFridaysPlugin plugin, Location chestArea) {
 		this.plugin = plugin;
 		this.chestAreaBL = chestArea;
+		this.inFight = true;
 	}
 	
 	
@@ -51,7 +54,7 @@ public class EnderDragonFight {
 			drags = (LivingEntity) (loc.getWorld().spawnEntity(loc.add(0, 20, 0), EntityType.ENDER_DRAGON));
 			drags.setMaxHealth((level + 1) * drags.getMaxHealth()); //scale up with players
 			drags.setHealth(drags.getMaxHealth());
-			drags.setCustomName(name);
+			drags.setCustomName(name + " (Lvl " + level + ") ");
 			
 			dragon = new EnderDragon(plugin, level, drags);
 			
@@ -67,10 +70,15 @@ public class EnderDragonFight {
 		dragon.kill();
 	}
 	
+	public boolean inFight() {
+		return this.inFight;
+	}
+	
 	/**
 	 * Kills the dragon. Does clean up of plugin and spawned classes. Does not spawn rewards.
 	 */
 	public void endFight() {
+		this.inFight = false;
 		killDragon();
 		this.dragon = null;
 		plugin.closeFight();

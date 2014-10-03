@@ -135,6 +135,9 @@ public class EnderDragonFridaysPlugin extends JavaPlugin implements Listener {
 		return false;
 	}
 	
+	public EnderDragonFight getFight() {
+		return this.fight;
+	}
 	
 	@EventHandler
 	public void captureEggUse(PlayerInteractEvent e) {

@@ -188,34 +188,30 @@ public class LootGenerator {
 	 * @return Returns a generated tool
 	 */
 	private ItemStack generateTool(double quality) {
-		ItemStack tool = null;
-		switch (rand.nextInt() % 3) {
+		switch (rand.nextInt(3)) {
 		case 0:
 			if (quality < 2)
-				tool = new ItemStack(Material.STONE_AXE);
+				return new ItemStack(Material.STONE_AXE);
 			else if (quality < 3)
-				tool = new ItemStack(Material.IRON_AXE);
+				return new ItemStack(Material.IRON_AXE);
 			else
-				tool = new ItemStack(Material.DIAMOND_AXE);
-			break;
+				return new ItemStack(Material.DIAMOND_AXE);
 		case 1:
 			if (quality < 2)
-				tool = new ItemStack(Material.STONE_SPADE);
+				return new ItemStack(Material.STONE_SPADE);
 			else if (quality < 3)
-				tool = new ItemStack(Material.IRON_SPADE);
+				return new ItemStack(Material.IRON_SPADE);
 			else
-				tool = new ItemStack(Material.DIAMOND_SPADE);
-			break;
+				return new ItemStack(Material.DIAMOND_SPADE);
 		case 2:
 			if (quality < 2)
-				tool = new ItemStack(Material.STONE_PICKAXE);
+				return new ItemStack(Material.STONE_PICKAXE);
 			else if (quality < 3)
-				tool = new ItemStack(Material.IRON_PICKAXE);
+				return new ItemStack(Material.IRON_PICKAXE);
 			else
-				tool = new ItemStack(Material.DIAMOND_PICKAXE);
-			break;
+				return new ItemStack(Material.DIAMOND_PICKAXE);
 		}
-		return tool;
+		return new ItemStack(Material.APPLE);
 	}
 	
 	/**
@@ -226,42 +222,37 @@ public class LootGenerator {
 	 * @return Returns a generated armor item
 	 */
 	private ItemStack generateArmor(double quality) {
-		ItemStack armor = null;
-		switch(rand.nextInt() % 4) {
+		switch(rand.nextInt(4)) {
 		case 0:
 			if (quality < 2)
-				armor = new ItemStack(Material.LEATHER_HELMET);
+				return new ItemStack(Material.LEATHER_HELMET);
 			else if (quality < 3)
-				armor = new ItemStack(Material.IRON_HELMET);
+				return new ItemStack(Material.IRON_HELMET);
 			else
-				armor = new ItemStack(Material.DIAMOND_HELMET);
-			break;
+				return new ItemStack(Material.DIAMOND_HELMET);
 		case 1:
 			if (quality < 2)
-				armor = new ItemStack(Material.LEATHER_CHESTPLATE);
+				return new ItemStack(Material.LEATHER_CHESTPLATE);
 			else if (quality < 3)
-				armor = new ItemStack(Material.IRON_CHESTPLATE);
+				return new ItemStack(Material.IRON_CHESTPLATE);
 			else
-				armor = new ItemStack(Material.DIAMOND_CHESTPLATE);
-			break;
+				return new ItemStack(Material.DIAMOND_CHESTPLATE);
 		case 2:
 			if (quality < 2)
-				armor = new ItemStack(Material.LEATHER_LEGGINGS);
+				return new ItemStack(Material.LEATHER_LEGGINGS);
 			else if (quality < 3)
-				armor = new ItemStack(Material.IRON_LEGGINGS);
+				return new ItemStack(Material.IRON_LEGGINGS);
 			else
-				armor = new ItemStack(Material.DIAMOND_LEGGINGS);
-			break;
+				return new ItemStack(Material.DIAMOND_LEGGINGS);
 		case 3:
 			if (quality < 2)
-				armor = new ItemStack(Material.LEATHER_BOOTS);
+				return new ItemStack(Material.LEATHER_BOOTS);
 			else if (quality < 3)
-				armor = new ItemStack(Material.IRON_BOOTS);
+				return new ItemStack(Material.IRON_BOOTS);
 			else
-				armor = new ItemStack(Material.DIAMOND_BOOTS);
-			break;
+				return new ItemStack(Material.DIAMOND_BOOTS);
 		}
-		return armor;
+		return new ItemStack(Material.BAKED_POTATO); //debugging
 	}
 	
 	/**
@@ -272,14 +263,14 @@ public class LootGenerator {
 	 * @return Returns a generated sword
 	 */
 	private ItemStack generateSword(double quality) {
-		ItemStack sword  = null;
 		if (quality < 2)
-			sword = new ItemStack(Material.STONE_SWORD);
+			return new ItemStack(Material.STONE_SWORD);
 		else if (quality < 3)
-			sword = new ItemStack(Material.IRON_SWORD);
+			return new ItemStack(Material.IRON_SWORD);
 		else
-			sword = new ItemStack(Material.DIAMOND_SWORD);
-		return sword;
+			return new ItemStack(Material.DIAMOND_SWORD);
+		
+		//return new ItemStack(Material.ANVIL);
 	}
 	
 	/**

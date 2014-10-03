@@ -20,6 +20,7 @@ public class EnderDragon implements Listener {
 	private Map<Player, Double> damageMap;
 	private FireballCannon cannon;
 	private int level;
+	private EnderDragonFight fight;
 	
 	/**
 	 * Creates a default enderdragon
@@ -30,6 +31,7 @@ public class EnderDragon implements Listener {
 	 */
 	public EnderDragon(EnderDragonFridaysPlugin plugin, int level, Location loc, String name) {
 		this.setPlugin(plugin);
+		fight = plugin.getFight();
 		dragon = (LivingEntity) loc.getWorld().spawnEntity(loc, EntityType.ENDER_DRAGON);
 		
 		this.level = level;
@@ -65,6 +67,7 @@ public class EnderDragon implements Listener {
 		this.dragon = dragon;
 		this.level = level;
 		this.plugin = plugin;
+		fight = plugin.getFight();
 		
 		if (level <= 0) {
 			this.level = 1;
@@ -146,8 +149,9 @@ public class EnderDragon implements Listener {
 	
 	@EventHandler
 	public void dragonDeath(EntityDeathEvent event) {
-		if (event.getEntity().equals(dragon)) {
-			//if the dragon has died
+		if (event.getEntity().equals(dragon))
+		if (fight.inFight()){
+			fight.win();
 		}
 	}
 
