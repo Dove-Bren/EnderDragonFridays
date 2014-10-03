@@ -17,7 +17,7 @@ commands:
         permission: bukkit.command.ban.player
     enderdragonfridays:
         permission: bukkit.command.ban.player
-        usage: /edf [reload]
+        usage: /edf [reload/start]
         description: Executes a command for ender dragon fridays plugin
         aliases: edf
     windragonwars:
