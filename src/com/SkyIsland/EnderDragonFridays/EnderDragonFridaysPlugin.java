@@ -7,7 +7,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.SkyIsland.EnderDragonFridays.Name.BossNameGenerator;
@@ -24,7 +23,7 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	private BossNameGenerator bossName;
 	
 	public static LWCPlugin lwcPlugin;
-	public static Plugin plugin;
+	public static EnderDragonFridaysPlugin plugin;
 	
 	public void onLoad() {
 		EnderDragonFridaysPlugin.plugin = this;
@@ -58,8 +57,12 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		/**
 		 * Temp command that creates the dragon
 		 */
-		if (cmd.getName().equalsIgnoreCase("makestuff")) {
-			if (fight != null && fight.isFighting()){
+		if (cmd.getName().equalsIgnoreCase("startdragonfight")) {
+			if (fight == null) {
+				fight = new EnderDragonFight(((Player) sender).getLocation());
+				fight.CreateDragon(((Player) sender).getWorld().getPlayers().size(), ((Player) sender).getLocation(), bossName.getName());
+			}
+			else {
 				sender.sendMessage("Fight already in progress!");
 				return false;
 			}
@@ -97,7 +100,19 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 					getLogger().info("Reload complete!");
 					return true;
 				}
+				else if (args[0].equalsIgnoreCase("start")) {
+					if (fight == null) {
+						fight = new EnderDragonFight(((Player) sender).getLocation());
+						fight.CreateDragon(((Player) sender).getWorld().getPlayers().size(), ((Player) sender).getLocation(), bossName.getName());
+					}
+					else {
+						sender.sendMessage("Fight already in progress!");
+					}
+					
+					return true;
+				}
 			}
+			
 		}
 		
 		if (cmd.getName().equalsIgnoreCase("windragonwars")) {
@@ -107,6 +122,7 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 			return true;
 		}
 		
+
 		return false;
 	}
 }

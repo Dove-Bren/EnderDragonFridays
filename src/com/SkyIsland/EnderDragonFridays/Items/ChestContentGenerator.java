@@ -2,12 +2,10 @@ package com.SkyIsland.EnderDragonFridays.Items;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * Generates a chest-ful of equipment for players!<br />
@@ -22,16 +20,16 @@ public class ChestContentGenerator {
 	
 	private static LootGenerator gen;
 	
-	public static Map<UUID, Inventory> generate(double rarity, Map<UUID, Double> inputMap) {
+	public static Map<Player, Inventory> generate(double rarity, Map<Player, Double> inputMap) {
 		
 		//First, create our generator
 		gen = new LootGenerator(rarity);
 		
 		//Next, we set up our new map that will connect players to their chests
-		Map<UUID, Inventory> output = new HashMap<UUID, Inventory>();
+		Map<Player, Inventory> output = new HashMap<Player, Inventory>();
 		
 		Inventory chest;
-		for (UUID player : inputMap.keySet()) {
+		for (Player player : inputMap.keySet()) {
 			
 			//Before anything, make sure they contributed!
 			if (inputMap.get(player) <= .01) {
@@ -42,9 +40,9 @@ public class ChestContentGenerator {
 			//Create a chest
 			chest = Bukkit.getServer().createInventory(null, 27);
 			//we are going to populate it with two items
-			//chest.addItem(gen.generateItem(  inputMap.get(player)  )); //generate item. Use the double passed with player as weight
-			//chest.addItem(gen.generateItem(  inputMap.get(player)  ));
-			chest.addItem(new ItemStack(Material.DIAMOND_AXE));
+			chest.addItem(gen.generateItem(  inputMap.get(player)  )); //generate item. Use the double passed with player as weight
+			chest.addItem(gen.generateItem(  inputMap.get(player)  ));
+			//chest.addItem(new ItemStack(Material.DIAMOND_AXE));
 			
 			//add this inventory to the map
 			output.put(player, chest);

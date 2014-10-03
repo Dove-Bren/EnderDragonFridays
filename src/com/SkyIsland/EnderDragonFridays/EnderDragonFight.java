@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -45,7 +44,7 @@ public class EnderDragonFight {
 			drags = (LivingEntity) (loc.getWorld().spawnEntity(loc.add(0, 20, 0), EntityType.ENDER_DRAGON));
 			drags.setMaxHealth((level + 1) * drags.getMaxHealth()); //scale up with players
 			drags.setHealth(drags.getMaxHealth());
-			drags.setCustomName("Young Ender Dragon");
+			drags.setCustomName(name);
 			
 			dragon = new EnderDragon(level, drags);
 			
@@ -76,14 +75,14 @@ public class EnderDragonFight {
 	 */
 	public void win() {
 		
-		Map<UUID, Inventory> rewardMap = ChestContentGenerator.generate(dragon.getLevel(), dragon.getDamageMap());
+		Map<Player, Inventory> rewardMap = ChestContentGenerator.generate(5 + (dragon.getLevel() / 5), dragon.getDamageMap());
 		spawnRewards(rewardMap);
 		hailPlayers(dragon.getDamageMap());
 		endFight();
 		
 	}
 	
-	public void spawnRewards(Map<UUID, Inventory> map) {
+	public void spawnRewards(Map<Player, Inventory> map) {
 		//spawn chests at random in 10x10 area with bottom left block at location chestAreaBL
 		
 		//first make sure map isn't empty. If it is... something went wrong, but we're just 
@@ -100,8 +99,8 @@ public class EnderDragonFight {
 		ArrayList<Integer> chestCoords = new ArrayList<Integer>();
 		Random rand = new Random();
 		int x, y, tries;
-		for (Entry<UUID, Inventory> entry : map.entrySet()) {
-			Player player = Bukkit.getPlayer(entry.getKey());
+		for (Entry<Player, Inventory> entry : map.entrySet()) {
+			Player player = entry.getKey();
 			x = rand.nextInt(10);
 			y = rand.nextInt(10);
 			tries = 0;
@@ -146,7 +145,7 @@ public class EnderDragonFight {
 		/*protection = */physDb.registerProtection(chest.getTypeId(), Protection.Type.PRIVATE, worldName, player.getName(), "", chest.getX(), chest.getY(), chest.getZ());
 		
 		EnderDragonFridaysPlugin.plugin.getLogger().info("success?");
-		
+
 		//Now create a sign above it
 //		chest.getLocation().add(0, 1, 0).getBlock().setType(Material.SIGN);
 //		Sign sign = (Sign) chest.getLocation().add(0,1,0).getBlock().getState();
@@ -165,10 +164,10 @@ public class EnderDragonFight {
 	 * Print out custom message to player letting htem know how they did
 	 * @param map
 	 */
-	public void hailPlayers(Map<UUID, Double> map) {
-		for (Entry<UUID, Double> entry : map.entrySet()) {
+	public void hailPlayers(Map<Player, Double> map) {
+		for (Entry<Player, Double> entry : map.entrySet()) {
 			
-			Player player = Bukkit.getPlayer(entry.getKey());
+			Player player = entry.getKey();
 			player.sendMessage("Nice Fight!\n  "
 					+ "You did " + (entry.getValue().intValue() * dragon.getDragon().getMaxHealth()) + " points of damage!\n"
 							+ "Your contribution was " + entry.getValue()*100 + "%!");

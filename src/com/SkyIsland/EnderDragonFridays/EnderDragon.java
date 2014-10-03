@@ -3,9 +3,7 @@ package com.SkyIsland.EnderDragonFridays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -20,7 +18,7 @@ public class EnderDragon implements Listener {
 	
 	private int level;							//The level of the dragon
 	private LivingEntity dragon;				//The actual Entity for the Ender Dragon
-	private Map<UUID, Double> damageMap;		//The damange each player has done to the ender dragon
+	private Map<Player, Double> damageMap;		//The damange each player has done to the ender dragon
 	private FireballCannon cannon;				//The cannon which fires fireballs at the players
 	
 	/**
@@ -32,15 +30,16 @@ public class EnderDragon implements Listener {
 	 */
 	public EnderDragon(int level, Location loc, String name) {
 		dragon = (LivingEntity) loc.getWorld().spawnEntity(loc, EntityType.ENDER_DRAGON);
-		if (name != null && name.length() > 0) {
-			dragon.setCustomName(name);
-			dragon.setCustomNameVisible(true);
-		}
 		
 		this.level = level;
 		
 		if (this.level <= 0) {
 			this.level = 1; //reset to lvl 1 with invalid input
+		}
+		
+		if (name != null && name.length() > 0) {
+			dragon.setCustomName(name + " (Lvl " + level + ")");
+			dragon.setCustomNameVisible(true);
 		}
 		
 		dragon.setMaxHealth(dragon.getMaxHealth() * level);
@@ -50,7 +49,7 @@ public class EnderDragon implements Listener {
 		EnderDragonFridaysPlugin.plugin.getServer().getPluginManager().registerEvents(this, EnderDragonFridaysPlugin.plugin);
 		
 		
-		damageMap = new HashMap<UUID, Double>();
+		damageMap = new HashMap<Player, Double>();
 		
 		cannon = new FireballCannon(this, 500, 2000);
 		cannon.start();
@@ -73,7 +72,7 @@ public class EnderDragon implements Listener {
 		EnderDragonFridaysPlugin.plugin.getServer().getPluginManager().registerEvents(this, EnderDragonFridaysPlugin.plugin);
 		
 		
-		damageMap = new HashMap<UUID, Double>();
+		damageMap = new HashMap<Player, Double>();
 		cannon = new FireballCannon(this, 500, 2000);
 		cannon.start();
 	}
@@ -98,9 +97,9 @@ public class EnderDragon implements Listener {
 		
 		Player player = null;
 		double max = -999999.0;
-		for (Entry<UUID, Double> entry : damageMap.entrySet()) {
+		for (Entry<Player, Double> entry : damageMap.entrySet()) {
 			if (entry.getValue() > max) {
-				player = Bukkit.getPlayer(entry.getKey());
+				player = entry.getKey();
 			}
 		}
 		
@@ -119,17 +118,17 @@ public class EnderDragon implements Listener {
 			if (event.getDamager() instanceof Player) {
 				if (!damageMap.containsKey((Player) event.getDamager())) {
 					//new player that's damaged it
-					damageMap.put(((Player) event.getDamager()).getUniqueId(), event.getDamage() / dragon.getMaxHealth());
+					damageMap.put(((Player) event.getDamager()), event.getDamage() / dragon.getMaxHealth());
 					}
 				else {
 					double old = damageMap.get((Player) event.getDamager());
 					old = old + (event.getDamage() / dragon.getMaxHealth());
-					damageMap.put(((Player) event.getDamager()).getUniqueId(), old); 
+					damageMap.put(((Player) event.getDamager()), old); 
 					}
 			}
 			else if (event.getDamager() instanceof Projectile) {
 				Projectile proj = (Projectile) event.getDamager();
-				UUID cause = ((Player) proj.getShooter()).getUniqueId();
+				Player cause = ((Player) proj.getShooter());
 				if (!damageMap.containsKey(cause)) {
 					//new player that's damaged it
 					damageMap.put(cause, event.getDamage() / dragon.getMaxHealth());
@@ -150,7 +149,7 @@ public class EnderDragon implements Listener {
 		}
 	}
 
-	public Map<UUID, Double> getDamageMap() {
+	public Map<Player, Double> getDamageMap() {
 		return this.damageMap;
 	}
 	

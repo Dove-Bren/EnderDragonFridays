@@ -5,12 +5,13 @@ softdepend: [LWCPlugin]
 permissions:
     enderdragonfridays.*:
         children:
-            enderdragonfridays.makestuff: true
+            enderdragonfridays.startdragonfight: true
             enderdragonfridays.killdragon: true
             enderdragonfridays.killalldragons: true
             enderdragonfridays.windragonwars: true
+            enderdragonfridays.setcontribution: true
         default: op
-    enderdragonfridays.makestuff:
+    enderdragonfridays.startdragonfight:
         default: op
     enderdragonfridays.killdragon:
         default: op
@@ -18,11 +19,13 @@ permissions:
         default: op
     enderdragonfridays.windragonwars:
         default: op
+    enderdragonfridays.setcontribution:
+        default: op
 commands:
-    makestuff:
-        description: who knows!
-        usage: /makestuff
-        permission: enderdragonfridays.makestuff
+    startdragonfight:
+        description: Creates a dragon fight
+        usage: /startdragonfight
+        permission: enderdragonfridays.startdragonfight
     killdragon:
         description: kills a dragon!
         usage: /killdragon
@@ -39,3 +42,6 @@ commands:
     windragonwars:
         permission: enderdragonfridays.windragonwars
         usage: /windragonwars
+    setcontribution:
+        permission: enderdragonfridays.setcontribution
+        usage: /setcontribution contribution
