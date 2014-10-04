@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -64,21 +63,17 @@ public class ChestContentGenerator {
 
 			//check if they got a dragon egg
 			if (rec.contains(number)) {
-				//add an egg to their chest
-				ItemStack egg = new ItemStack(Material.MONSTER_EGG);
+				ItemStack egg = new SpawnEgg(EntityType.ENDER_DRAGON).toItemStack(1);
 				ItemMeta meta = egg.getItemMeta();
-				List<String> lore = meta.getLore();
 				
-				if (lore == null) {
-					lore = new LinkedList<String>();
-					lore.add("Dragon Egg");
-				}
-				else {
-					lore.set(0, "Dragon Egg");
-				}
+				meta.setDisplayName("Easter Egg: " + "Dragon Egg");
+				
+				List<String> lore = new LinkedList<String>();
+				lore.add(ChatColor.BLACK + "The Egg of an Ender Dragon");
 				meta.setLore(lore);
-				meta.setDisplayName("Dragon Egg");
+				
 				egg.setItemMeta(meta);
+				
 				chest.addItem(egg);
 
 			}
@@ -88,18 +83,7 @@ public class ChestContentGenerator {
 			number++;
 			//Add easter eggs
 			
-			ItemStack egg = new SpawnEgg(EntityType.ENDER_DRAGON).toItemStack(1);
-			ItemMeta meta = egg.getItemMeta();
 			
-			meta.setDisplayName("Easter Egg: " + "Dragon Egg");
-			
-			List<String> lore = new LinkedList<String>();
-			lore.add(ChatColor.BLACK + "The Egg of an Ender Dragon");
-			meta.setLore(lore);
-			
-			egg.setItemMeta(meta);
-			
-			chest.addItem(egg);
 			
 			//add this inventory to the map
 			output.put(player, chest);

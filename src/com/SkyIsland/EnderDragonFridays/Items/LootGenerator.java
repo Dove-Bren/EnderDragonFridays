@@ -25,7 +25,9 @@ public class LootGenerator {
 	
 	private List<String> names;
 	
-	private NameGenerator generator;
+	private NameGenerator itemNameGen;
+	
+	private NameGenerator armorNameGen;
 	
 	private Random rand;
 	
@@ -55,11 +57,11 @@ public class LootGenerator {
 		this.rand = new Random();
 	}
 	
-	public LootGenerator(double rarity, NameGenerator generator) {
-		this.rarity = rarity;
-		this.generator = generator;
-		this.rand = new Random();
-	}
+//	public LootGenerator(double rarity, NameGenerator generator) {
+//		this.rarity = rarity;
+//		this.generator = generator;
+//		this.rand = new Random();
+//	}
 	
 	/**
 	 * Goes through and loads up the enchantments in their respective lists.
@@ -161,21 +163,6 @@ public class LootGenerator {
 		break;
 		}
 		
-		if (this.generator == null) {
-			String name;
-			name = names.get(rand.nextInt(names.size()));
-			ItemMeta meta = item.getItemMeta();
-			meta.setDisplayName(name);
-			item.setItemMeta(meta);
-		}
-		else {
-			String name;
-			name = generator.getName();
-
-			ItemMeta meta = item.getItemMeta();
-			meta.setDisplayName(name);
-			item.setItemMeta(meta);
-		}
 		
 		return item;
 	}
@@ -188,30 +175,41 @@ public class LootGenerator {
 	 * @return Returns a generated tool
 	 */
 	private ItemStack generateTool(double quality) {
+		ItemStack tool;
+		String name;
+		
 		switch (rand.nextInt(3)) {
 		case 0:
 			if (quality < 2)
-				return new ItemStack(Material.STONE_AXE);
+				tool = new ItemStack(Material.STONE_AXE);
 			else if (quality < 3)
-				return new ItemStack(Material.IRON_AXE);
+				tool = new ItemStack(Material.IRON_AXE);
 			else
-				return new ItemStack(Material.DIAMOND_AXE);
+				tool = new ItemStack(Material.DIAMOND_AXE);
 		case 1:
 			if (quality < 2)
-				return new ItemStack(Material.STONE_SPADE);
+				tool = new ItemStack(Material.STONE_SPADE);
 			else if (quality < 3)
-				return new ItemStack(Material.IRON_SPADE);
+				tool = new ItemStack(Material.IRON_SPADE);
 			else
-				return new ItemStack(Material.DIAMOND_SPADE);
+				tool = new ItemStack(Material.DIAMOND_SPADE);
 		case 2:
+		default:
 			if (quality < 2)
-				return new ItemStack(Material.STONE_PICKAXE);
+				tool = new ItemStack(Material.STONE_PICKAXE);
 			else if (quality < 3)
-				return new ItemStack(Material.IRON_PICKAXE);
+				tool = new ItemStack(Material.IRON_PICKAXE);
 			else
-				return new ItemStack(Material.DIAMOND_PICKAXE);
+				tool = new ItemStack(Material.DIAMOND_PICKAXE);
 		}
-		return new ItemStack(Material.APPLE);
+		
+		name = getItemName();
+		
+		ItemMeta meta = tool.getItemMeta();
+		meta.setDisplayName(name);
+		tool.setItemMeta(meta);
+		
+		return tool;
 	}
 	
 	/**
@@ -222,37 +220,49 @@ public class LootGenerator {
 	 * @return Returns a generated armor item
 	 */
 	private ItemStack generateArmor(double quality) {
+		String name;
+		ItemStack armor;
+		
 		switch(rand.nextInt(4)) {
 		case 0:
 			if (quality < 2)
-				return new ItemStack(Material.LEATHER_HELMET);
+				armor =  new ItemStack(Material.LEATHER_HELMET);
 			else if (quality < 3)
-				return new ItemStack(Material.IRON_HELMET);
+				armor =  new ItemStack(Material.IRON_HELMET);
 			else
-				return new ItemStack(Material.DIAMOND_HELMET);
+				armor =  new ItemStack(Material.DIAMOND_HELMET);
 		case 1:
 			if (quality < 2)
-				return new ItemStack(Material.LEATHER_CHESTPLATE);
+				armor =  new ItemStack(Material.LEATHER_CHESTPLATE);
 			else if (quality < 3)
-				return new ItemStack(Material.IRON_CHESTPLATE);
+				armor =  new ItemStack(Material.IRON_CHESTPLATE);
 			else
-				return new ItemStack(Material.DIAMOND_CHESTPLATE);
+				armor =  new ItemStack(Material.DIAMOND_CHESTPLATE);
 		case 2:
 			if (quality < 2)
-				return new ItemStack(Material.LEATHER_LEGGINGS);
+				armor =  new ItemStack(Material.LEATHER_LEGGINGS);
 			else if (quality < 3)
-				return new ItemStack(Material.IRON_LEGGINGS);
+				armor =  new ItemStack(Material.IRON_LEGGINGS);
 			else
-				return new ItemStack(Material.DIAMOND_LEGGINGS);
+				armor =  new ItemStack(Material.DIAMOND_LEGGINGS);
 		case 3:
+		default:
 			if (quality < 2)
-				return new ItemStack(Material.LEATHER_BOOTS);
+				armor =  new ItemStack(Material.LEATHER_BOOTS);
 			else if (quality < 3)
-				return new ItemStack(Material.IRON_BOOTS);
+				armor =  new ItemStack(Material.IRON_BOOTS);
 			else
-				return new ItemStack(Material.DIAMOND_BOOTS);
+				armor =  new ItemStack(Material.DIAMOND_BOOTS);
 		}
-		return new ItemStack(Material.BAKED_POTATO); //debugging
+		
+		name = getArmorName();
+		
+		ItemMeta meta = armor.getItemMeta();
+		meta.setDisplayName(name);
+		armor.setItemMeta(meta);
+		
+		
+		return armor;
 	}
 	
 	/**
@@ -263,14 +273,22 @@ public class LootGenerator {
 	 * @return Returns a generated sword
 	 */
 	private ItemStack generateSword(double quality) {
+		String name;
+		ItemStack sword;
+		name = getItemName();
 		if (quality < 2)
-			return new ItemStack(Material.STONE_SWORD);
+			sword =  new ItemStack(Material.STONE_SWORD);
 		else if (quality < 3)
-			return new ItemStack(Material.IRON_SWORD);
+			sword =  new ItemStack(Material.IRON_SWORD);
 		else
-			return new ItemStack(Material.DIAMOND_SWORD);
+			sword = new ItemStack(Material.DIAMOND_SWORD);
 		
-		//return new ItemStack(Material.ANVIL);
+		//set sword name
+		ItemMeta meta = sword.getItemMeta();
+		meta.setDisplayName(name);
+		sword.setItemMeta(meta);
+		
+		return new ItemStack(Material.ANVIL);
 	}
 	
 	/**
@@ -279,7 +297,37 @@ public class LootGenerator {
 	 */
 	private ItemStack generateBow() {
 		ItemStack bow = new ItemStack(Material.BOW);
+		String name;
+		name = getItemName();
+
+		ItemMeta meta = bow.getItemMeta();
+		meta.setDisplayName(name);
+		bow.setItemMeta(meta);
 		return bow;
+	}
+	
+	private String getItemName() {
+		String name;
+		if (this.itemNameGen == null) {
+			name = names.get(rand.nextInt(names.size()));
+		}
+		else {
+			name = itemNameGen.getName();
+		}
+		
+		return name;
+	}
+	
+	private String getArmorName() {
+		String name;
+		if (this.armorNameGen == null) {
+			name = names.get(rand.nextInt(names.size()));
+		}
+		else {
+			name = armorNameGen.getName();
+		}
+		
+		return name;
 	}
 	
 	private void enchant(List<LootEnchantment> list, ItemStack item, double quality) {
