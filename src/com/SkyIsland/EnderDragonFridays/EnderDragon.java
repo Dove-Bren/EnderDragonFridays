@@ -2,6 +2,7 @@ package com.SkyIsland.EnderDragonFridays;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Map.Entry;
@@ -14,6 +15,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -22,6 +24,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.util.Vector;
 
 import com.SkyIsland.EnderDragonFridays.Items.ChestContentGenerator;
 import com.griefcraft.model.Protection;
@@ -253,6 +256,21 @@ public class EnderDragon implements Listener {
 				//Player wasn't online anymore
 			}
 		}
+	}
+	
+	@EventHandler
+	public void cannonFired(FireCannonEvent event){
+		LivingEntity target = event.getTarget();
+		LivingEntity shooter = event.getShooter();
+		
+		Vector launchV;
+		Location pPos, dPos;
+		dPos = shooter.getEyeLocation();
+		pPos = target.getEyeLocation();
+		launchV = pPos.toVector().subtract(dPos.toVector());
+		
+		LargeFireball f = shooter.launchProjectile(LargeFireball.class);
+		f.setDirection(launchV.normalize());
 	}
 
 	public void killDragon() {
