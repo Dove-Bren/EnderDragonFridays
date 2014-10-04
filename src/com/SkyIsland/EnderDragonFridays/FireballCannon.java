@@ -87,14 +87,8 @@ public class FireballCannon extends BukkitRunnable {
 				return; //no players in world. keep sleeping.
 			}
 		}
-				
-		Vector launchV;
-		Location pPos, dPos;
-		dPos = dDragon.getEyeLocation();
-		pPos = target.getEyeLocation();
-		launchV = pPos.toVector().subtract(dPos.toVector());
+
 		
-		LargeFireball f = dDragon.launchProjectile(LargeFireball.class);
-		f.setDirection(launchV.normalize());
+		Bukkit.getPluginManager().callEvent(new FireCannonEvent(dragon.getDragon(), target));
 	}
 }
