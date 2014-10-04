@@ -32,7 +32,6 @@ public class EnderDragon implements Listener {
 	private int level;							//The level of the dragon
 	private LivingEntity dragon;				//The actual Entity for the Ender Dragon
 	private Map<Player, Double> damageMap;		//The damage each player has done to the ender dragon
-	private FireballCannon cannon;				//The cannon which fires fireballs at the players
 	private double damageTaken;
 	private Location chestAreaBL;
 	
