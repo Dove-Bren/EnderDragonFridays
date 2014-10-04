@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -71,8 +72,7 @@ public class EnderDragon implements Listener {
 		damageMap = new HashMap<Player, Double>();
 		
 		//Start firing the dragon's fireballs
-		cannon = new FireballCannon(this, 500, 2000);
-		cannon.start();
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(EnderDragonFridaysPlugin.plugin, new FireballCannon(this, 500, 2000), 20, (long) (20 / (1 + (Math.log(level)/Math.log(2)))));
 		
 		EnderDragonFridaysPlugin.plugin.getServer().getPluginManager().registerEvents(this, EnderDragonFridaysPlugin.plugin);
 
