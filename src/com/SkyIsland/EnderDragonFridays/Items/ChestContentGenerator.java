@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,13 +29,13 @@ public class ChestContentGenerator {
 	
 	private static LootGenerator gen;
 	
-	public static Map<Player, Inventory> generate(double rarity, Map<Player, Double> inputMap) {
+	public static Map<UUID, Inventory> generate(double rarity, Map<UUID, Double> inputMap) {
 		
 		//First, create our generator
 		gen = new LootGenerator(rarity);
 		
 		//Next, we set up our new map that will connect players to their chests
-		Map<Player, Inventory> output = new HashMap<Player, Inventory>();
+		Map<UUID, Inventory> output = new HashMap<UUID, Inventory>();
 		
 		Inventory chest;
 		List<Integer> rec = new LinkedList<Integer>();
@@ -45,7 +46,9 @@ public class ChestContentGenerator {
 		rec.add(rand.nextInt(inputMap.keySet().size())); //means we wont get 3 eggs
 		int number = 0;
 		
-		for (Player player : inputMap.keySet()) {
+		for (UUID uuid : inputMap.keySet()) {
+			
+			Player player = Bukkit.getPlayer(uuid);
 			
 			//Before anything, make sure they contributed!
 			if (inputMap.get(player) <= .01) {
@@ -79,15 +82,9 @@ public class ChestContentGenerator {
 			}
 			
 			//add this inventory to the map
-			output.put(player, chest);
+			output.put(uuid, chest);
 			number++;
-			//Add easter eggs
-			
-			
-			
-			//add this inventory to the map
-			output.put(player, chest);
-			
+
 		}
 		
 		return output;

@@ -2,10 +2,10 @@ package com.SkyIsland.EnderDragonFridays;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -34,7 +34,7 @@ public class EnderDragon implements Listener {
 
 	private int level;							//The level of the dragon
 	private LivingEntity dragon;				//The actual Entity for the Ender Dragon
-	private Map<Player, Double> damageMap;		//The damage each player has done to the ender dragon
+	private Map<UUID, Double> damageMap;		//The damage each player has done to the ender dragon
 	private double damageTaken;
 	private Location chestAreaBL;
 	
@@ -71,7 +71,7 @@ public class EnderDragon implements Listener {
 		dragon.setHealth(dragon.getMaxHealth());
 
 		//Initialize the map of damage each player does to the dragon
-		damageMap = new HashMap<Player, Double>();
+		damageMap = new HashMap<UUID, Double>();
 		
 		//Start firing the dragon's fireballs
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(EnderDragonFridaysPlugin.plugin, new FireballCannon(this, 500, 2000), 20, (long) (20 / (1 + (Math.log(level)/Math.log(2)))));
@@ -101,9 +101,9 @@ public class EnderDragon implements Listener {
 		
 		Player player = null;
 		double max = -999999.0;
-		for (Entry<Player, Double> entry : damageMap.entrySet()) {
+		for (Entry<UUID, Double> entry : damageMap.entrySet()) {
 			if (entry.getValue() > max) {
-				player = entry.getKey();
+				player = Bukkit.getPlayer(entry.getKey());
 			}
 		}
 		
@@ -142,13 +142,13 @@ public class EnderDragon implements Listener {
 		
 		
 		//Add the player to the hashmap if needed
-		if (!damageMap.containsKey(player)) {
-			damageMap.put(player, 0.0);
+		if (!damageMap.containsKey(player.getUniqueId())) {
+			damageMap.put(player.getUniqueId(), 0.0);
 		}
 		
 		//Update the damage for the player
 		double oldDamage = damageMap.get(player);
-		damageMap.put(player, oldDamage + event.getDamage()); 
+		damageMap.put(player.getUniqueId(), oldDamage + event.getDamage()); 
 	}
 	
 	@EventHandler
@@ -166,12 +166,12 @@ public class EnderDragon implements Listener {
 	 */
 	public void win() {
 		killDragon();
-		Map<Player, Inventory> rewardMap = ChestContentGenerator.generate(5 + (this.level / 5), this.damageMap);
+		Map<UUID, Inventory> rewardMap = ChestContentGenerator.generate(5 + (this.level / 5), this.damageMap);
 		spawnRewards(rewardMap);
 		congradulatePlayers(this.damageMap);
 	}
 	
-	public void spawnRewards(Map<Player, Inventory> map) {
+	public void spawnRewards(Map<UUID, Inventory> map) {
 		//spawn chests at random in 10x10 area with bottom left block at location chestAreaBL
 		
 		//first make sure map isn't empty. If it is... something went wrong, but we're just 
@@ -188,8 +188,8 @@ public class EnderDragon implements Listener {
 		ArrayList<Integer> chestCoords = new ArrayList<Integer>();
 		Random rand = new Random();
 		int x, y, tries;
-		for (Entry<Player, Inventory> entry : map.entrySet()) {
-			Player player = entry.getKey();
+		for (Entry<UUID, Inventory> entry : map.entrySet()) {
+			Player player = Bukkit.getPlayer(entry.getKey());
 			x = rand.nextInt(10);
 			y = rand.nextInt(10);
 			tries = 0;
@@ -243,10 +243,10 @@ public class EnderDragon implements Listener {
 	 * Print out custom message to player letting them know how they did
 	 * @param map
 	 */
-	public void congradulatePlayers(Map<Player, Double> map) {
-		for (Entry<Player, Double> entry : map.entrySet()) {
+	public void congradulatePlayers(Map<UUID, Double> map) {
+		for (Entry<UUID, Double> entry : map.entrySet()) {
 			
-			Player player = entry.getKey();
+			Player player = Bukkit.getPlayer(entry.getKey());
 			try{
 				player.sendMessage("Nice Fight!\n  "
 					+ "You did " + (entry.getValue().intValue()) + " points of damage!\n"
