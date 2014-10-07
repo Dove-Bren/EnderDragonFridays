@@ -109,9 +109,12 @@ public class EnderDragon implements Listener, Dragon {
 		
 		Player player = null;
 		double max = -999999.0;
+		Player play;
 		for (Entry<UUID, Double> entry : damageMap.entrySet()) {
-			if (entry.getValue() > max) {
-				player = Bukkit.getPlayer(entry.getKey());
+			play = Bukkit.getPlayer(entry.getKey());
+			if (play != null && entry.getValue() > max && play.getWorld().getName().equals(dragon.getWorld().getName()))
+			{
+				player = play;
 			}
 		}
 		

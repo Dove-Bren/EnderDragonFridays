@@ -143,7 +143,7 @@ public class LootGenerator {
 		ItemStack item = null;
 		double quality = itemQuality(rarity, weight * 30); //added * 30 because of the ago. It takes a weight from
 														   //0 to 30 instead of 0 to 1s?
-		
+		System.out.println("Quality: " + quality);
 		switch (rand.nextInt(4)) {
 		case 0: 
 			item = generateBow(); 
@@ -347,7 +347,8 @@ public class LootGenerator {
 			cost = level * enchantment.getWeight();
 			
 			try {
-				item.addEnchantment(enchantment.getEnchantment(), level);
+				//item.addEnchantment(enchantment.getEnchantment(), level);
+				item.addUnsafeEnchantment(enchantment.getEnchantment(), level);
 				enchantingPoints -= cost;
 			}
 			catch (IllegalArgumentException e) {

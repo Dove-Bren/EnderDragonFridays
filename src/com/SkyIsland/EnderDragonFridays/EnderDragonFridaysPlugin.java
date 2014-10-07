@@ -113,7 +113,7 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		
 		if (cmd.getName().equalsIgnoreCase("windragonwars")) {
 			this.getLogger().info("winning...");
-			this.dragon.win();
+			dragon.killDragon();
 			
 			return true;
 		}

@@ -110,9 +110,12 @@ public class MegaDragon implements Listener, Dragon {
 		
 		Player player = null;
 		double max = -999999.0;
+		Player play;
 		for (Entry<UUID, Double> entry : damageMap.entrySet()) {
-			if (entry.getValue() > max) {
-				player = Bukkit.getPlayer(entry.getKey());
+			play = Bukkit.getPlayer(entry.getKey());
+			if (play != null && entry.getValue() > max && play.getWorld().getName().equals(dragon.getWorld().getName()))
+			{
+				player = play;
 			}
 		}
 		
@@ -156,7 +159,7 @@ public class MegaDragon implements Listener, Dragon {
 		}
 		
 		//Update the damage for the player
-		double oldDamage = damageMap.get(player);
+		double oldDamage = damageMap.get(player.getUniqueId());
 		damageMap.put(player.getUniqueId(), oldDamage + event.getDamage()); 
 	}
 	
@@ -175,7 +178,7 @@ public class MegaDragon implements Listener, Dragon {
 	 */
 	public void win() {
 		killDragon();
-		Map<UUID, Inventory> rewardMap = ChestContentGenerator.generate(5 + (this.level / 5), this.damageMap);
+		Map<UUID, Inventory> rewardMap = ChestContentGenerator.generate(9 + (this.level / 5), this.damageMap);
 		spawnRewards(rewardMap);
 		congradulatePlayers(this.damageMap);
 	}
