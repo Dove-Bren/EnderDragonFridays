@@ -22,13 +22,13 @@ public class FireballCannon extends BukkitRunnable {
 	private double d_incr;
 	private int d_incr_range;
 	private Random rand;
-	private EnderDragon dragon;
+	private Dragon dragon;
 	
-	public FireballCannon(EnderDragon dragon, double min_delay, double max_delay) {
+	public FireballCannon(Dragon dragon, double min_delay, double max_delay) {
 		this(dragon, min_delay, max_delay, (max_delay-min_delay)/10); //default to 1/10 the range as increments
 	}
 	
-	public FireballCannon(EnderDragon dragon, double min_delay, double max_delay, double increments) {
+	public FireballCannon(Dragon dragon, double min_delay, double max_delay, double increments) {
 		this.dragon = dragon;
 		
 		this.d_min = min_delay;
@@ -86,6 +86,6 @@ public class FireballCannon extends BukkitRunnable {
 		}
 
 		
-		Bukkit.getPluginManager().callEvent(new FireCannonEvent(dragon.getDragon(), target));
+		Bukkit.getPluginManager().callEvent(new FireFireballEvent(dragon.getDragon(), target));
 	}
 }
