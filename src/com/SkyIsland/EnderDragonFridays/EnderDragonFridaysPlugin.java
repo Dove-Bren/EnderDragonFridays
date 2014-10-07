@@ -13,7 +13,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.SkyIsland.EnderDragonFridays.Dragon.Dragon;
 import com.SkyIsland.EnderDragonFridays.Dragon.EnderDragon;
+import com.SkyIsland.EnderDragonFridays.Dragon.MegaDragon;
 import com.SkyIsland.EnderDragonFridays.Name.BossNameGenerator;
 import com.griefcraft.lwc.LWCPlugin;
 
@@ -24,7 +26,7 @@ import com.griefcraft.lwc.LWCPlugin;
  */
 public class EnderDragonFridaysPlugin extends JavaPlugin {
 	
-	private EnderDragon dragon;
+	private Dragon dragon;
 	private BossNameGenerator bossName;
 	
 	public static LWCPlugin lwcPlugin;
@@ -79,7 +81,8 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 				sender.sendMessage("Fight already in progress!");
 			}
 			else {
-				dragon = new EnderDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), bossName.getName());
+				dragon = new MegaDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Mega Dragon");
+				//dragon = new EnderDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), bossName.getName());
 			}
 			return true;
 		}
