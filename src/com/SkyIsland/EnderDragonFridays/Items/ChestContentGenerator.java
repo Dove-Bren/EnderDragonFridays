@@ -51,7 +51,7 @@ public class ChestContentGenerator {
 			Player player = Bukkit.getPlayer(uuid);
 			
 			//Before anything, make sure they contributed!
-			if (inputMap.get(player) <= .01) {
+			if (inputMap.get(uuid) <= .01) {
 				//they have only contributed 1% or less of total health!
 				continue; //nothing for them!
 			}
@@ -59,8 +59,8 @@ public class ChestContentGenerator {
 			//Create a chest
 			chest = Bukkit.getServer().createInventory(null, 27);
 			//we are going to populate it with two items
-			chest.addItem(gen.generateItem(  inputMap.get(player)  )); //generate item. Use the double passed with player as weight
-			chest.addItem(gen.generateItem(  inputMap.get(player)  ));
+			chest.addItem(gen.generateItem(  inputMap.get(uuid)  )); //generate item. Use the double passed with player as weight
+			chest.addItem(gen.generateItem(  inputMap.get(uuid)  ));
 			//chest.addItem(new ItemStack(Material.DIAMOND_AXE));
 			
 

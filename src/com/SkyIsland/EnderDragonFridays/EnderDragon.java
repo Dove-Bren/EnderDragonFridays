@@ -151,7 +151,7 @@ public class EnderDragon implements Listener, Dragon {
 		}
 		
 		//Update the damage for the player
-		double oldDamage = damageMap.get(player);
+		double oldDamage = damageMap.get(player.getUniqueId());
 		damageMap.put(player.getUniqueId(), oldDamage + event.getDamage()); 
 	}
 	
