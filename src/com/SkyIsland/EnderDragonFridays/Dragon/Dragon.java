@@ -1,4 +1,4 @@
-package com.SkyIsland.EnderDragonFridays;
+package com.SkyIsland.EnderDragonFridays.Dragon;
 
 import java.util.Map;
 import java.util.UUID;

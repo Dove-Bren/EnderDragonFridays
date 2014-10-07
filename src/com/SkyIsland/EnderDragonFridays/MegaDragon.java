@@ -26,6 +26,9 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.util.Vector;
 
+import com.SkyIsland.EnderDragonFridays.Dragon.Dragon;
+import com.SkyIsland.EnderDragonFridays.Dragon.FireFireballEvent;
+import com.SkyIsland.EnderDragonFridays.Dragon.FireballCannon;
 import com.SkyIsland.EnderDragonFridays.Items.ChestContentGenerator;
 import com.griefcraft.model.Protection;
 import com.griefcraft.sql.PhysDB;

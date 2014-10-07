@@ -1,4 +1,4 @@
-package com.SkyIsland.EnderDragonFridays;
+package com.SkyIsland.EnderDragonFridays.Dragon;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
