@@ -1,4 +1,4 @@
-package com.SkyIsland.EnderDragonFridays.Dragon.Cannon.Events;
+package com.SkyIsland.EnderDragonFridays.Dragon.Cannon;
 
 /**
  * Types of targeting methods used in cannons.

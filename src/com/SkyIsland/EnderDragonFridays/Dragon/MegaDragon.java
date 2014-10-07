@@ -28,8 +28,8 @@ import org.bukkit.util.Vector;
 
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.FireballCannon;
+import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.TargetType;
 import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.Events.FireFireballEvent;
-import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.Events.TargetType;
 import com.SkyIsland.EnderDragonFridays.Items.ChestContentGenerator;
 import com.griefcraft.model.Protection;
 import com.griefcraft.sql.PhysDB;
