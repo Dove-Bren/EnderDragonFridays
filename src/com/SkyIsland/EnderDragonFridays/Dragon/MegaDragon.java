@@ -19,6 +19,7 @@ import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -27,8 +28,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.util.Vector;
 
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
+import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.BlazeCannon;
 import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.FireballCannon;
 import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.TargetType;
+import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.Events.FireBlazeEvent;
 import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.Events.FireFireballEvent;
 import com.SkyIsland.EnderDragonFridays.Items.ChestContentGenerator;
 import com.griefcraft.model.Protection;
@@ -71,14 +74,16 @@ public class MegaDragon implements Listener, Dragon {
 		}
 		
 		//Set the dragon's health
-		dragon.setMaxHealth(dragon.getMaxHealth() * (1 + (Math.log(level)/Math.log(2))));
+		dragon.setMaxHealth(dragon.getMaxHealth() * (2 + (Math.log(level)/Math.log(2))));
 		dragon.setHealth(dragon.getMaxHealth());
 
 		//Initialize the map of damage each player does to the dragon
 		damageMap = new HashMap<UUID, Double>();
 		
-		new FireballCannon(this, TargetType.MOSTDAMAGE, (20 / (1 + (Math.log(level)/Math.log(2)))), (20 / (1 + (Math.log(level)/Math.log(2)))) + 5);
-		//least delay is what it was before. Max is the same + 5 ticks
+		//Create cannons
+		new FireballCannon(this, TargetType.MOSTDAMAGE, (40 / (1 + (Math.log(level)/Math.log(2)))), (40 / (1 + (Math.log(level)/Math.log(2)))) + 5, 5.0, 0.0, 0.0);
+		new FireballCannon(this, TargetType.MOSTDAMAGE, (40 / (1 + (Math.log(level)/Math.log(2)))), (40 / (1 + (Math.log(level)/Math.log(2)))) + 5, -5.0, 0.0, 0.0);
+		new BlazeCannon(this, TargetType.MOSTDAMAGE, (20 / (1 + (Math.log(level)/Math.log(2)))), (20 / (1 + (Math.log(level)/Math.log(2)))) + 5, 0.0, 0.0, 5.0);
 		
 		EnderDragonFridaysPlugin.plugin.getServer().getPluginManager().registerEvents(this, EnderDragonFridaysPlugin.plugin);
 
@@ -263,7 +268,22 @@ public class MegaDragon implements Listener, Dragon {
 	}
 	
 	@EventHandler
-	public void cannonFired(FireFireballEvent event){
+	public void blazeCannonFired(FireBlazeEvent event){
+		LivingEntity target = event.getTarget();
+		LivingEntity shooter = event.getShooter();
+		
+		Vector launchV;
+		Location pPos, dPos;
+		dPos = shooter.getEyeLocation();
+		pPos = target.getEyeLocation();
+		launchV = pPos.toVector().subtract(dPos.toVector());
+		
+		SmallFireball f = shooter.launchProjectile(SmallFireball.class);
+		f.setDirection(launchV.normalize());
+	}
+	
+	@EventHandler
+	public void FireballCannonFired(FireFireballEvent event){
 		LivingEntity target = event.getTarget();
 		LivingEntity shooter = event.getShooter();
 		
@@ -276,6 +296,8 @@ public class MegaDragon implements Listener, Dragon {
 		LargeFireball f = shooter.launchProjectile(LargeFireball.class);
 		f.setDirection(launchV.normalize());
 	}
+	
+	
 
 	public void killDragon() {
 		if (!dragon.isDead())

@@ -11,15 +11,16 @@ import org.bukkit.entity.Player;
 
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Dragon.Dragon;
-import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.Events.FireFireballEvent;
+import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.Events.FireBlazeEvent;
 
 /**
- * 
+ * This is almost exactly a FireballCannon. I didn't go ahead and extract all code out to a generic cannon
+ * class and just change the projectile type because I want users to be able to create their own cannons.
  * @author Skyler
  * @note This could be extracted out to 'body part' class. There could be two. One that's independent and one that just
  * 			exists. I.e. one that extends thread and one that doens't get it's own.
  */
-public class FireballCannon extends Cannon {
+public class BlazeCannon extends Cannon {
 	
 	private double d_min;
 	private double d_max;
@@ -31,23 +32,23 @@ public class FireballCannon extends Cannon {
 	private double offsetX, offsetY, offsetZ;
 	
 	/**
-	 * Creates a fireball cannon with the provided min and max delay. Increments default to 1/10 the range.
-	 * The offset from where the fireballs are launched relative to the dragon is defaulted to 0. <u>This
-	 * is not encouraged</u>, as multiple fireballs spawned at the same location either explode or bounce off
+	 * Creates a blaze cannon with the provided min and max delay. Increments default to 1/10 the range.
+	 * The offset from where the blazes are launched relative to the dragon is defaulted to 0. <u>This
+	 * is not encouraged</u>, as multiple blazes spawned at the same location either explode or bounce off
 	 * in a random direction.
 	 * @param dragon The {@link com.SkyIsland.EnderDragonFridays.Dragon.Dragon Dragon} to fire cannonballs from.
 	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Dragon.Cannon.TargetType targeting type} is used.
 	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
 	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
 	 */
-	public FireballCannon(Dragon dragon, TargetType type, double min_delay, double max_delay) {
+	public BlazeCannon(Dragon dragon, TargetType type, double min_delay, double max_delay) {
 		this(dragon, type, min_delay, max_delay, (max_delay-min_delay)/10); //default to 1/10 the range as increments
 	}
 	
 	/**
 	 * Creates a cannon with the passed delay and increments.
-	 * The offset from where the fireballs are launched relative to the dragon is defaulted to 0. <u>This
-	 * is not encouraged</u>, as multiple fireballs spawned at the same location either explode or bounce off
+	 * The offset from where the blazes are launched relative to the dragon is defaulted to 0. <u>This
+	 * is not encouraged</u>, as multiple blazes spawned at the same location either explode or bounce off
 	 * in a random direction.
 	 * @param dragon The {@link com.SkyIsland.EnderDragonFridays.Dragon.Dragon Dragon} to fire cannonballs from.
 	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Dragon.Cannon.TargetType targeting type} is used.
@@ -55,42 +56,29 @@ public class FireballCannon extends Cannon {
 	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
 	 * @param increments The smallest amount of time (<b>again, in ticks</b>) in-between different firing times.
 	 */
-	public FireballCannon(Dragon dragon, TargetType type, double min_delay, double max_delay, double increments) {
+	public BlazeCannon(Dragon dragon, TargetType type, double min_delay, double max_delay, double increments) {
 		this(dragon, type, min_delay, max_delay, increments, 0.0, 0.0, 0.0);
 	}
 	
-	/**
-	 * Creates a cannon with the passed delay and increments.
-	 * The offset from where the fireballs are launched relative to the dragon is defaulted to 0. <u>This
-	 * is not encouraged</u>, as multiple fireballs spawned at the same location either explode or bounce off
-	 * in a random direction.
-	 * @param dragon The {@link com.SkyIsland.EnderDragonFridays.Dragon.Dragon Dragon} to fire cannonballs from.
-	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Dragon.Cannon.TargetType targeting type} is used.
-	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
-	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
-	 * @param offsetX The offset the fireball will be created from in relation to the dragon
-	 * @param offsetY The offset the fireball will be created from in relation to the dragon
-	 * @param offsetZ The offset the fireball will be created from in relation to the dragon
-	 */
-	public FireballCannon(Dragon dragon, TargetType type, double min_delay, double max_delay, double offsetX, double offsetY, double offsetZ) {
+	public BlazeCannon(Dragon dragon, TargetType type, double min_delay, double max_delay, double offsetX, double offsetY, double offsetZ) {
 		this(dragon, type, min_delay, max_delay, (max_delay - min_delay) / 10, offsetX, offsetY, offsetZ);
 	}
 	
 	/**
 	 * Creates a cannon with the passed delay and increments.
-	 * The offset from where the fireballs are launched relative to the dragon is defaulted to 0. <u>This
-	 * is not encouraged</u>, as multiple fireballs spawned at the same location either explode or bounce off
+	 * The offset from where the blazes are launched relative to the dragon is defaulted to 0. <u>This
+	 * is not encouraged</u>, as multiple blazes spawned at the same location either explode or bounce off
 	 * in a random direction.
 	 * @param dragon The {@link com.SkyIsland.EnderDragonFridays.Dragon.Dragon Dragon} to fire cannonballs from.
 	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Dragon.Cannon.TargetType targeting type} is used.
 	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
 	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
 	 * @param increments The smallest amount of time (<b>again, in ticks</b>) in-between different firing times.
-	 * @param offsetX The offset the fireball will be created from in relation to the dragon
-	 * @param offsetY The offset the fireball will be created from in relation to the dragon
-	 * @param offsetZ The offset the fireball will be created from in relation to the dragon
+	 * @param offsetX The offset the blaze will be created from in relation to the dragon
+	 * @param offsetY The offset the blaze will be created from in relation to the dragon
+	 * @param offsetZ The offset the blaze will be created from in relation to the dragon
 	 */
-	public FireballCannon(Dragon dragon, TargetType type, double min_delay, double max_delay, double increments, double offsetX, double offsetY, double offsetZ) {
+	public BlazeCannon(Dragon dragon, TargetType type, double min_delay, double max_delay, double increments, double offsetX, double offsetY, double offsetZ) {
 		this.dragon = dragon;
 		this.targetType = type;
 		
@@ -186,8 +174,8 @@ public class FireballCannon extends Cannon {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(EnderDragonFridaysPlugin.plugin, this, time);
 		
 		if (target != null) {
-			//actually launch fireball if we have a target
-			Bukkit.getPluginManager().callEvent(new FireFireballEvent(dragon.getDragon(), target, dragon.getDragon().getLocation().add(offsetX, offsetY, offsetZ)));
+			//actually launch blaze if we have a target
+			Bukkit.getPluginManager().callEvent(new FireBlazeEvent(dragon.getDragon(), target, dragon.getDragon().getLocation().add(offsetX, offsetY, offsetZ)));
 		}
 		
 	}
