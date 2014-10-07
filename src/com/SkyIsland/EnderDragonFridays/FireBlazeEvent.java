@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class FireCannonEvent extends Event {
+public class FireBlazeEvent extends Event {
 	
 	private static final HandlerList handlers = new HandlerList();
 	
@@ -22,7 +22,7 @@ public class FireCannonEvent extends Event {
 		return handlers;
 	}
 	
-	public FireCannonEvent(LivingEntity shooter, Player target) {
+	public FireBlazeEvent(LivingEntity shooter, Player target) {
 		this.target = target;
 		this.shooter = shooter;
 	}

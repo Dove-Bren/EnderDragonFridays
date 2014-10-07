@@ -30,7 +30,7 @@ import com.SkyIsland.EnderDragonFridays.Items.ChestContentGenerator;
 import com.griefcraft.model.Protection;
 import com.griefcraft.sql.PhysDB;
 
-public class EnderDragon implements Listener {
+public class EnderDragon implements Listener, Dragon {
 
 	private int level;							//The level of the dragon
 	private LivingEntity dragon;				//The actual Entity for the Ender Dragon
@@ -259,7 +259,7 @@ public class EnderDragon implements Listener {
 	}
 	
 	@EventHandler
-	public void cannonFired(FireCannonEvent event){
+	public void cannonFired(FireFireballEvent event){
 		LivingEntity target = event.getTarget();
 		LivingEntity shooter = event.getShooter();
 		
