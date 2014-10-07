@@ -72,6 +72,12 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		 * Temp command that creates the dragon
 		 */
 		if (cmd.getName().equalsIgnoreCase("startdragonfight")) {
+			
+			//!!!!If you change something here, change it in EnderDragonFriday command as well!!!!!//
+			
+			
+			
+			
 			if (Bukkit.getWorld(worldName) == null){
 				sender.sendMessage("World does not exist!");
 				return false;
@@ -81,8 +87,8 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 				sender.sendMessage("Fight already in progress!");
 			}
 			else {
-				dragon = new MegaDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Mega Dragon");
-				//dragon = new EnderDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), bossName.getName());
+				//dragon = new MegaDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Mega Dragon");
+				dragon = new EnderDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), bossName.getName());
 			}
 			return true;
 		}
@@ -108,11 +114,43 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		}
 		
 		if (cmd.getName().equalsIgnoreCase("enderdragonfridays") || cmd.getName().equalsIgnoreCase("edf")) {
-			return true;
+			if (args.length == 0) {
+				return false;
+			}
+			
+			if (args[0].equalsIgnoreCase("start")) {
+				if (Bukkit.getWorld(worldName) == null){
+					sender.sendMessage("World does not exist!");
+					return false;
+				}
+				
+				if (dragon != null && dragon.isAlive()) {
+					sender.sendMessage("Fight already in progress!");
+				}
+				else {
+					//start a dragon fight. If they put mega after, it will be a mega dragon
+					if (args.length >= 2 && args[1].equalsIgnoreCase("mega")) {
+						dragon = new MegaDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Mega Dragon");
+						return true;
+					}
+					//else they didn't sepcify or it is something else
+					dragon = new EnderDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), bossName.getName());
+					return true;
+				}
+			}
+			
+			if (args[0].equalsIgnoreCase("reload")) {
+				sender.sendMessage("Cannot reload because it's not properly implemented loooooser");
+				return true;
+			}
+			
+			if (args[0].equalsIgnoreCase("win")) {
+				dragon.killDragon();
+				return true;
+			}
 		}
 		
 		if (cmd.getName().equalsIgnoreCase("windragonwars")) {
-			this.getLogger().info("winning...");
 			dragon.killDragon();
 			
 			return true;
