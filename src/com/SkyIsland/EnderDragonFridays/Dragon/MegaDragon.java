@@ -14,6 +14,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Enderman;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.LivingEntity;
@@ -161,6 +162,22 @@ public class MegaDragon implements Listener, Dragon {
 		//Update the damage for the player
 		double oldDamage = damageMap.get(player.getUniqueId());
 		damageMap.put(player.getUniqueId(), oldDamage + event.getDamage()); 
+		
+		
+		
+		//The mega dragon also potentially summons ____ to attack the player.
+		//to make it happen about 1/4 times
+
+		Random rand = new Random();
+		if (rand.nextInt(4) == 1) {
+			Location pLoc = player.getLocation().add(rand.nextInt(2), 1, rand.nextInt(2));
+			Enderman e = (Enderman) player.getWorld().spawnEntity(pLoc, EntityType.ENDERMAN);
+			e.setTarget(player);
+			pLoc = player.getLocation().add(rand.nextInt(2), 1, rand.nextInt(2));
+			e = (Enderman) player.getWorld().spawnEntity(pLoc, EntityType.ENDERMAN);
+			e.setTarget(player);
+		}
+		
 	}
 	
 	@EventHandler
@@ -248,6 +265,9 @@ public class MegaDragon implements Listener, Dragon {
 		Sign sign = (Sign) block.getState();
 		sign.setLine(1, player.getName());
 		sign.update();
+		//register the sign
+		physDb.registerProtection(sign.getTypeId(), Protection.Type.PRIVATE, worldName, player.getName(), "", sign.getX(), sign.getY(), sign.getZ());
+		
 		
 	}
 	

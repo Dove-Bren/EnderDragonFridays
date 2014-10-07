@@ -237,7 +237,8 @@ public class EnderDragon implements Listener, Dragon {
 		PhysDB physDb = EnderDragonFridaysPlugin.lwcPlugin.getLWC().getPhysicalDatabase();
 		
 		String worldName = chestAreaBL.getWorld().getName();
-		/*protection = */physDb.registerProtection(chest.getTypeId(), Protection.Type.PRIVATE, worldName, player.getName(), "", chest.getX(), chest.getY(), chest.getZ());
+		/*protection = */
+		physDb.registerProtection(chest.getTypeId(), Protection.Type.PRIVATE, worldName, player.getName(), "", chest.getX(), chest.getY(), chest.getZ());
 		
 		EnderDragonFridaysPlugin.plugin.getLogger().info("success?");
 
@@ -247,6 +248,8 @@ public class EnderDragon implements Listener, Dragon {
 		Sign sign = (Sign) block.getState();
 		sign.setLine(1, player.getName());
 		sign.update();
+		//register the sign
+		physDb.registerProtection(sign.getTypeId(), Protection.Type.PRIVATE, worldName, player.getName(), "", sign.getX(), sign.getY(), sign.getZ());
 		
 	}
 	
