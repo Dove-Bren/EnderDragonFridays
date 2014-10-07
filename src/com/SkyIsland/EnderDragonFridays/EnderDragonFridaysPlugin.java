@@ -13,6 +13,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.SkyIsland.EnderDragonFridays.Dragon.EnderDragon;
 import com.SkyIsland.EnderDragonFridays.Name.BossNameGenerator;
 import com.griefcraft.lwc.LWCPlugin;
 

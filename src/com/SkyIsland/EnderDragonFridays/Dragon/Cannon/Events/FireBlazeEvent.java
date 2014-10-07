@@ -1,20 +1,17 @@
-package com.SkyIsland.EnderDragonFridays.Dragon;
+package com.SkyIsland.EnderDragonFridays.Dragon.Cannon.Events;
 
-import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class FireFireballEvent extends Event {
+public class FireBlazeEvent extends Event {
 	
 	private static final HandlerList handlers = new HandlerList();
 	
 	private final Player target;
 	
 	private final LivingEntity shooter;
-	
-	private final Location fromLocation;
 	
 	@Override
 	public HandlerList getHandlers() {
@@ -25,10 +22,9 @@ public class FireFireballEvent extends Event {
 		return handlers;
 	}
 	
-	public FireFireballEvent(LivingEntity shooter, Player target, Location fromLocation) {
+	public FireBlazeEvent(LivingEntity shooter, Player target) {
 		this.target = target;
 		this.shooter = shooter;
-		this.fromLocation = fromLocation;
 	}
 	
 	public Player getTarget() {
@@ -37,10 +33,6 @@ public class FireFireballEvent extends Event {
 	
 	public LivingEntity getShooter() {
 		return this.shooter;
-	}
-	
-	public Location getFromLocation() {
-		return this.fromLocation;
 	}
 
 }
