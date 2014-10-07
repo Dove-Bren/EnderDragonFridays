@@ -26,17 +26,61 @@ public class FireballCannon extends Cannon {
 	private Random rand;
 	private Dragon dragon;
 	private TargetType targetType;
+	private double offsetX, offsetY, offsetZ;
 	
+	/**
+	 * Creates a fireball cannon with the provided min and max delay. Increments default to 1/10 the range.
+	 * The offset from where the fireballs are launched relative to the dragon is defaulted to 0. <u>This
+	 * is not encouraged</u>, as multiple fireballs spawned at the same location either explode or bounce off
+	 * in a random direction.
+	 * @param dragon The {@link com.SkyIsland.EnderDragonFridays.Dragon.Dragon Dragon} to fire cannonballs from.
+	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Dragon.TargetType targeting type} is used.
+	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
+	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
+	 */
 	public FireballCannon(Dragon dragon, TargetType type, double min_delay, double max_delay) {
 		this(dragon, type, min_delay, max_delay, (max_delay-min_delay)/10); //default to 1/10 the range as increments
 	}
 	
+	/**
+	 * Creates a cannon with the passed delay and increments.
+	 * The offset from where the fireballs are launched relative to the dragon is defaulted to 0. <u>This
+	 * is not encouraged</u>, as multiple fireballs spawned at the same location either explode or bounce off
+	 * in a random direction.
+	 * @param dragon The {@link com.SkyIsland.EnderDragonFridays.Dragon.Dragon Dragon} to fire cannonballs from.
+	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Dragon.TargetType targeting type} is used.
+	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
+	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
+	 * @param increments The smallest amount of time (<b>again, in ticks</b>) in-between different firing times.
+	 */
 	public FireballCannon(Dragon dragon, TargetType type, double min_delay, double max_delay, double increments) {
+		this(dragon, type, min_delay, max_delay, increments, 0.0, 0.0, 0.0);
+	}
+	
+	/**
+	 * Creates a cannon with the passed delay and increments.
+	 * The offset from where the fireballs are launched relative to the dragon is defaulted to 0. <u>This
+	 * is not encouraged</u>, as multiple fireballs spawned at the same location either explode or bounce off
+	 * in a random direction.
+	 * @param dragon The {@link com.SkyIsland.EnderDragonFridays.Dragon.Dragon Dragon} to fire cannonballs from.
+	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Dragon.TargetType targeting type} is used.
+	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
+	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
+	 * @param increments The smallest amount of time (<b>again, in ticks</b>) in-between different firing times.
+	 * @param offsetX The offset the fireball will be created from in relation to the dragon
+	 * @param offsetY The offset the fireball will be created from in relation to the dragon
+	 * @param offsetZ The offset the fireball will be created from in relation to the dragon
+	 */
+	public FireballCannon(Dragon dragon, TargetType type, double min_delay, double max_delay, double increments, double offsetX, double offsetY, double offsetZ) {
 		this.dragon = dragon;
 		this.targetType = type;
 		
 		this.d_min = min_delay;
 		this.d_max = max_delay;
+		
+		this.offsetX = offsetX;
+		this.offsetY = offsetY;
+		this.offsetZ = offsetZ;
 		
 		//make sure min and max aren't reversed
 		if (d_min > d_max) {
@@ -136,7 +180,7 @@ public class FireballCannon extends Cannon {
 		
 		if (target != null) {
 			//actually launch fireball if we have a target
-			Bukkit.getPluginManager().callEvent(new FireFireballEvent(dragon.getDragon(), target));
+			Bukkit.getPluginManager().callEvent(new FireFireballEvent(dragon.getDragon(), target, dragon.getDragon().getLocation().add(offsetX, offsetY, offsetZ)));
 		}
 		
 	}

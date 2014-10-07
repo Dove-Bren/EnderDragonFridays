@@ -29,6 +29,7 @@ import org.bukkit.util.Vector;
 import com.SkyIsland.EnderDragonFridays.Dragon.Dragon;
 import com.SkyIsland.EnderDragonFridays.Dragon.FireFireballEvent;
 import com.SkyIsland.EnderDragonFridays.Dragon.FireballCannon;
+import com.SkyIsland.EnderDragonFridays.Dragon.TargetType;
 import com.SkyIsland.EnderDragonFridays.Items.ChestContentGenerator;
 import com.griefcraft.model.Protection;
 import com.griefcraft.sql.PhysDB;
@@ -80,7 +81,7 @@ public class EnderDragon implements Listener, Dragon {
 		//Bukkit.getScheduler().scheduleSyncRepeatingTask(EnderDragonFridaysPlugin.plugin, new FireballCannon(this, 500, 2000), 20, (long) (20 / (1 + (Math.log(level)/Math.log(2)))));
 		//Removed ^^ and handle this in FireballCannon instead
 		
-		new FireballCannon(this, (20 / (1 + (Math.log(level)/Math.log(2)))), (20 / (1 + (Math.log(level)/Math.log(2)))) + 5);
+		new FireballCannon(this, TargetType.MOSTDAMAGE, (20 / (1 + (Math.log(level)/Math.log(2)))), (20 / (1 + (Math.log(level)/Math.log(2)))) + 5);
 		//least delay is what it was before. Max is the same + 5 ticks
 		
 		EnderDragonFridaysPlugin.plugin.getServer().getPluginManager().registerEvents(this, EnderDragonFridaysPlugin.plugin);
