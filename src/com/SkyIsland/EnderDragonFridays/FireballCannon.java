@@ -55,6 +55,10 @@ public class FireballCannon extends BukkitRunnable {
 		
 		//create out random
 		rand = new Random();
+		
+		Long time = (long) (d_min + (d_incr * (rand.nextInt(d_incr_range)))); 
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(EnderDragonFridaysPlugin.plugin, this, time);
 	}
 	
 	@Override
@@ -87,5 +91,8 @@ public class FireballCannon extends BukkitRunnable {
 
 		
 		Bukkit.getPluginManager().callEvent(new FireFireballEvent(dragon.getDragon(), target));
+		
+		//reschedule this event to run
+		Bukkit.getScheduler().scheduleSyncDelayedTask(EnderDragonFridaysPlugin.plugin, this, time);
 	}
 }
