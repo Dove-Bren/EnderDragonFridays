@@ -288,7 +288,7 @@ public class LootGenerator {
 		meta.setDisplayName(name);
 		sword.setItemMeta(meta);
 		
-		return new ItemStack(Material.ANVIL);
+		return sword;
 	}
 	
 	/**
