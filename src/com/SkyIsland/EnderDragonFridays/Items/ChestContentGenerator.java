@@ -16,6 +16,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.SpawnEgg;
 
+import com.SkyIsland.EnderDragonFridays.Name.ArmorNameGenerator;
+import com.SkyIsland.EnderDragonFridays.Name.ItemNameGenerator;
+import com.SkyIsland.EnderDragonFridays.Name.NameGenerator;
+
 /**
  * Generates a chest-ful of equipment for players!<br />
  * Takes a mapping of players to their contribution and generates loot. The results are returned
@@ -32,7 +36,11 @@ public class ChestContentGenerator {
 	public static Map<UUID, Inventory> generate(double rarity, Map<UUID, Double> inputMap) {
 		
 		//First, create our generator
-		gen = new LootGenerator(rarity);
+		//get some name generators
+		NameGenerator tools, armor;
+		tools = new ItemNameGenerator();
+		armor = new ArmorNameGenerator(); 
+		gen = new LootGenerator(rarity, null, armor, tools);
 		
 		//Next, we set up our new map that will connect players to their chests
 		Map<UUID, Inventory> output = new HashMap<UUID, Inventory>();

@@ -115,6 +115,7 @@ public class EnderDragon implements Listener, Dragon {
 			if (play != null && entry.getValue() > max && play.getWorld().getName().equals(dragon.getWorld().getName()))
 			{
 				player = play;
+				max = entry.getValue();
 			}
 		}
 		

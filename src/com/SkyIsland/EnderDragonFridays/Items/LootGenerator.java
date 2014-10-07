@@ -25,9 +25,11 @@ public class LootGenerator {
 	
 	private List<String> names;
 	
-	private NameGenerator itemNameGen;
+	private NameGenerator weaponNameGen;
 	
 	private NameGenerator armorNameGen;
+	
+	private NameGenerator toolNameGen;
 	
 	private Random rand;
 	
@@ -55,13 +57,21 @@ public class LootGenerator {
 		this.rarity = rarity;
 		this.names = names;
 		this.rand = new Random();
+		loadEnchantments();
 	}
 	
-//	public LootGenerator(double rarity, NameGenerator generator) {
-//		this.rarity = rarity;
-//		this.generator = generator;
-//		this.rand = new Random();
-//	}
+	public LootGenerator(double rarity, NameGenerator WeaponNameGenerator, NameGenerator ArmorNameGenerator, NameGenerator ToolNameGenerator) {
+		this.rarity = rarity;
+		this.weaponNameGen = WeaponNameGenerator;
+		this.toolNameGen = ToolNameGenerator;
+		this.armorNameGen = ArmorNameGenerator;
+		
+		if (this.weaponNameGen == null || this.toolNameGen == null || this.armorNameGen == null) {
+			names = DefaultNames.generate();
+		}
+		this.rand = new Random();
+		loadEnchantments();
+	}
 	
 	/**
 	 * Goes through and loads up the enchantments in their respective lists.
@@ -203,7 +213,7 @@ public class LootGenerator {
 				tool = new ItemStack(Material.DIAMOND_PICKAXE);
 		}
 		
-		name = getItemName();
+		name = getToolName();
 		
 		ItemMeta meta = tool.getItemMeta();
 		meta.setDisplayName(name);
@@ -275,7 +285,7 @@ public class LootGenerator {
 	private ItemStack generateSword(double quality) {
 		String name;
 		ItemStack sword;
-		name = getItemName();
+		name = getWeaponName();
 		if (quality < 2)
 			sword =  new ItemStack(Material.STONE_SWORD);
 		else if (quality < 3)
@@ -298,7 +308,7 @@ public class LootGenerator {
 	private ItemStack generateBow() {
 		ItemStack bow = new ItemStack(Material.BOW);
 		String name;
-		name = getItemName();
+		name = getWeaponName();
 
 		ItemMeta meta = bow.getItemMeta();
 		meta.setDisplayName(name);
@@ -306,13 +316,25 @@ public class LootGenerator {
 		return bow;
 	}
 	
-	private String getItemName() {
+	private String getWeaponName() {
 		String name;
-		if (this.itemNameGen == null) {
+		if (this.weaponNameGen == null) {
 			name = names.get(rand.nextInt(names.size()));
 		}
 		else {
-			name = itemNameGen.getName();
+			name = weaponNameGen.getName();
+		}
+		
+		return name;
+	}
+	
+	private String getToolName() {
+		String name;
+		if (this.toolNameGen == null) {
+			name = names.get(rand.nextInt(names.size()));
+		}
+		else {
+			name = toolNameGen.getName();
 		}
 		
 		return name;

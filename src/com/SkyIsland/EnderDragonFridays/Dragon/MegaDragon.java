@@ -82,9 +82,9 @@ public class MegaDragon implements Listener, Dragon {
 		damageMap = new HashMap<UUID, Double>();
 		
 		//Create cannons
-		new FireballCannon(this, TargetType.MOSTDAMAGE, (40 / (1 + (Math.log(level)/Math.log(2)))), (40 / (1 + (Math.log(level)/Math.log(2)))) + 5, 5.0, 0.0, 0.0);
-		new FireballCannon(this, TargetType.MOSTDAMAGE, (40 / (1 + (Math.log(level)/Math.log(2)))), (40 / (1 + (Math.log(level)/Math.log(2)))) + 5, -5.0, 0.0, 0.0);
-		new BlazeCannon(this, TargetType.MOSTDAMAGE, (20 / (1 + (Math.log(level)/Math.log(2)))), (20 / (1 + (Math.log(level)/Math.log(2)))) + 5, 0.0, 0.0, 5.0);
+		new FireballCannon(this, TargetType.MOSTDAMAGE, (40 / (1 + (Math.log(level)/Math.log(2)))), (40 / (1 + (Math.log(level)/Math.log(2)))) + 5, 10.0, 0.0, 0.0);
+		new FireballCannon(this, TargetType.MOSTDAMAGE, (40 / (1 + (Math.log(level)/Math.log(2)))), (40 / (1 + (Math.log(level)/Math.log(2)))) + 5, -10.0, 0.0, 0.0);
+		new BlazeCannon(this, TargetType.MOSTDAMAGE, (20 / (1 + (Math.log(level)/Math.log(2)))), (20 / (1 + (Math.log(level)/Math.log(2)))) + 5, 0.0, 0.0, 10.0);
 		
 		EnderDragonFridaysPlugin.plugin.getServer().getPluginManager().registerEvents(this, EnderDragonFridaysPlugin.plugin);
 
@@ -117,6 +117,7 @@ public class MegaDragon implements Listener, Dragon {
 			if (play != null && entry.getValue() > max && play.getWorld().getName().equals(dragon.getWorld().getName()))
 			{
 				player = play;
+				max = entry.getValue();
 			}
 		}
 		
