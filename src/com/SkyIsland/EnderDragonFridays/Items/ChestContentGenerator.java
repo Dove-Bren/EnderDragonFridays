@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.SpawnEgg;
 
+import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Name.ArmorNameGenerator;
 import com.SkyIsland.EnderDragonFridays.Name.ItemNameGenerator;
 import com.SkyIsland.EnderDragonFridays.Name.NameGenerator;
@@ -61,6 +62,8 @@ public class ChestContentGenerator {
 			//Before anything, make sure they contributed!
 			if (inputMap.get(uuid) <= .01) {
 				//they have only contributed 1% or less of total health!
+				EnderDragonFridaysPlugin.plugin.getLogger().info("Did not give " + player.getDisplayName() + " an item"
+						+ " because they only did " + inputMap.get(uuid) + " contribution!");
 				continue; //nothing for them!
 			}
 			
@@ -86,15 +89,16 @@ public class ChestContentGenerator {
 				egg.setItemMeta(meta);
 				
 				chest.addItem(egg);
-
+				EnderDragonFridaysPlugin.plugin.getLogger().info("Gave an egg to " + player.getDisplayName());
 			}
 			
 			//add this inventory to the map
 			output.put(uuid, chest);
 			number++;
-
+			EnderDragonFridaysPlugin.plugin.getLogger().info("Finished generating items for: " + player.getDisplayName());
+			
 		}
-		
+		EnderDragonFridaysPlugin.plugin.getLogger().info("Generated a total of " + number + " chests!");
 		return output;
 	}
 }
