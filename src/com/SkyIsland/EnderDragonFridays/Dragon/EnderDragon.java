@@ -193,41 +193,23 @@ public class EnderDragon implements Listener, Dragon {
 			return;
 		}
 		
-		//we don't want to make two chests in the same area. We have to keep track of where we have put a chest.
-		//for that, we're going to hash the x and y we put a chest following:
-		//z = 10*x + y;
-		//where z is the hashed index of the chest
-		ArrayList<Integer> chestCoords = new ArrayList<Integer>();
-		Random rand = new Random();
-		int x, y, tries;
+		//We just put chests in a linear fashion. We do cap x to 10. <b>this is a magic number</b>
+		int x = 0, y = 0;
 		for (Entry<UUID, Inventory> entry : map.entrySet()) {
 			Player player = Bukkit.getPlayer(entry.getKey());
-			x = rand.nextInt(10);
-			y = rand.nextInt(10);
-			tries = 0;
-			while (chestCoords.contains((x * 10) + y)) {
-				x = rand.nextInt(10);
-				y = rand.nextInt(10);
-				if (tries > 10) {
-					System.out.println("Trying to generate unique chest location... Got x: " + x + "  and y: " + y);
-				}
-				if (tries == 30) {
-					EnderDragonFridaysPlugin.plugin.getLogger().info("Unable to generate a chest for player: " + player.getName());
-					break;
-				}
-			}
-			
-			if (chestCoords.contains((x * 10) + y)) {
-				
-				player.sendMessage("An error occurred. Please let an Admin know, and refer them to com.SkyIsland.EnderDragonFridays.EnderDragonFight line 125.\nTake a screenshot so you don't forget!");
-				continue;
-			}
 			
 			Block block = chestAreaBL.add(x,0,y).getBlock();
 			block.setType(Material.CHEST);
 			Chest chest = (Chest) block.getState();
 			chest.getInventory().setContents(entry.getValue().getContents()); //bummer I thought we would be able to just hand it the inv
 			doExtras(chest, player);
+			x++;
+			if (x > 9) {
+				x = 0;
+				y++;
+			}
+			
+			EnderDragonFridaysPlugin.plugin.getLogger().info("Created a chest for player " + player.getDisplayName() + " at " + chest.getLocation().toString());
 		}
 	}
 	
