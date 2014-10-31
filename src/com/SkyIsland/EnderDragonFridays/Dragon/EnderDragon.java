@@ -192,24 +192,28 @@ public class EnderDragon implements Listener, Dragon {
 			EnderDragonFridaysPlugin.plugin.getLogger().info("Map of contributions was empty!\nSpawning no rewards...");
 			return;
 		}
-		
+		System.out.println("Called \"Spawn Rewards\" ! %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 		//We just put chests in a linear fashion. We do cap x to 10. <b>this is a magic number</b>
-		int x = 0, y = 0;
+		int index = 0;
+		double x, y;
 		for (Entry<UUID, Inventory> entry : map.entrySet()) {
-			Player player = Bukkit.getPlayer(entry.getKey());
-			
-			Block block = chestAreaBL.add(x,0,y).getBlock();
-			block.setType(Material.CHEST);
-			Chest chest = (Chest) block.getState();
-			chest.getInventory().setContents(entry.getValue().getContents()); //bummer I thought we would be able to just hand it the inv
-			doExtras(chest, player);
-			x++;
-			if (x > 9) {
-				x = 0;
-				y++;
+			for (int i = 0; i < 7; i++) {
+				x = (index % 11);
+				y = (int) Math.floor(index / 11);
+				Player player = Bukkit.getPlayer(entry.getKey());
+				
+				Block block = chestAreaBL.getBlock().getLocation().add(x,0,y).getBlock();
+				block.setType(Material.CHEST);
+				Chest chest = (Chest) block.getState();
+				chest.getInventory().setContents(entry.getValue().getContents()); //bummer I thought we would be able to just hand it the inv
+				doExtras(chest, player);
+				index += 2;
+				System.out.println("Index now equals : " + index);
+				
+				EnderDragonFridaysPlugin.plugin.getLogger().info("Created a chest for player " + player.getDisplayName() + " at " + chest.getLocation().toString());
+
 			}
 			
-			EnderDragonFridaysPlugin.plugin.getLogger().info("Created a chest for player " + player.getDisplayName() + " at " + chest.getLocation().toString());
 		}
 	}
 	
