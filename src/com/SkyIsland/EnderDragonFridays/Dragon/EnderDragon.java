@@ -197,22 +197,20 @@ public class EnderDragon implements Listener, Dragon {
 		int index = 0;
 		double x, y;
 		for (Entry<UUID, Inventory> entry : map.entrySet()) {
-			for (int i = 0; i < 7; i++) {
-				x = (index % 11);
-				y = (int) Math.floor(index / 11);
-				Player player = Bukkit.getPlayer(entry.getKey());
-				
-				Block block = chestAreaBL.getBlock().getLocation().add(x,0,y).getBlock();
-				block.setType(Material.CHEST);
-				Chest chest = (Chest) block.getState();
-				chest.getInventory().setContents(entry.getValue().getContents()); //bummer I thought we would be able to just hand it the inv
-				doExtras(chest, player);
-				index += 2;
-				System.out.println("Index now equals : " + index);
-				
-				EnderDragonFridaysPlugin.plugin.getLogger().info("Created a chest for player " + player.getDisplayName() + " at " + chest.getLocation().toString());
+			x = (index % 11);
+			y = (int) Math.floor(index / 11);
+			Player player = Bukkit.getPlayer(entry.getKey());
+			
+			Block block = chestAreaBL.getBlock().getLocation().add(x,0,y).getBlock();
+			block.setType(Material.CHEST);
+			Chest chest = (Chest) block.getState();
+			chest.getInventory().setContents(entry.getValue().getContents()); //bummer I thought we would be able to just hand it the inv
+			doExtras(chest, player);
+			index += 2;
+			System.out.println("Index now equals : " + index);
+			
+			EnderDragonFridaysPlugin.plugin.getLogger().info("Created a chest for player " + player.getDisplayName() + " at " + chest.getLocation().toString());
 
-			}
 			
 		}
 	}
