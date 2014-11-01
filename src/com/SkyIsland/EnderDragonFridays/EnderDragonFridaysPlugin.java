@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.SkyIsland.EnderDragonFridays.Dragon.Dragon;
 import com.SkyIsland.EnderDragonFridays.Dragon.EnderDragon;
+import com.SkyIsland.EnderDragonFridays.Dragon.JackTheSkeleton;
 import com.SkyIsland.EnderDragonFridays.Dragon.MegaDragon;
 import com.SkyIsland.EnderDragonFridays.Name.BossNameGenerator;
 import com.griefcraft.lwc.LWCPlugin;
@@ -131,6 +132,10 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 					//start a dragon fight. If they put mega after, it will be a mega dragon
 					if (args.length >= 2 && args[1].equalsIgnoreCase("mega")) {
 						dragon = new MegaDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Mega Dragon");
+						return true;
+					}
+					if (args.length >= 2 && args[1].equalsIgnoreCase("halloween")) {
+						dragon = new JackTheSkeleton(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Skeleton");
 						return true;
 					}
 					//else they didn't sepcify or it is something else
