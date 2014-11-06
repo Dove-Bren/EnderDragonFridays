@@ -1,6 +1,8 @@
 package com.SkyIsland.EnderDragonFridays.Dragon;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Map.Entry;
@@ -80,10 +82,31 @@ public class MegaDragon implements Listener, Dragon {
 		//Initialize the map of damage each player does to the dragon
 		damageMap = new HashMap<UUID, Double>();
 		
+		//calculate base-times
+		Double baseTime = (1 + (Math.log(level)/Math.log(2)));
+		
 		//Create cannons
-		new FireballCannon(this, TargetType.MOSTDAMAGE, (40 / (1 + (Math.log(level)/Math.log(2)))), (40 / (1 + (Math.log(level)/Math.log(2)))) + 5, 10.0, 0.0, 0.0);
-		new FireballCannon(this, TargetType.MOSTDAMAGE, (40 / (1 + (Math.log(level)/Math.log(2)))), (40 / (1 + (Math.log(level)/Math.log(2)))) + 5, -10.0, 0.0, 0.0);
-		new BlazeCannon(this, TargetType.MOSTDAMAGE, (20 / (1 + (Math.log(level)/Math.log(2)))), (20 / (1 + (Math.log(level)/Math.log(2)))) + 5, 0.0, 0.0, 10.0);
+		new FireballCannon(this, TargetType.MOSTDAMAGE, (40 / baseTime), (40 / baseTime) + 5, 10.0, 0.0, 0.0);
+		new FireballCannon(this, TargetType.MOSTDAMAGE, (40 / baseTime), (40 / baseTime) + 5, -10.0, 0.0, 0.0);
+		new BlazeCannon(this, TargetType.MOSTDAMAGE, (20 / baseTime), (20 / baseTime) + 5, 0.0, 0.0, 10.0);
+		
+		Random rand = new Random();
+		for (int i = 5; i < level; i+=4) {
+			boolean fireball = rand.nextBoolean(); //is it going to be a fireball cannon or a blaze cannon?
+			TargetType type;
+			if (rand.nextBoolean()) { //is it going to by all_cyclic?
+				type = TargetType.ALL_CYCLE;
+			}
+			else {
+				type = TargetType.RANDOM;
+			}
+			
+			if (fireball) {
+				new FireballCannon(this, type, (40 / baseTime), (40 / baseTime) + 5, (rand.nextDouble() * 10) - 5, (rand.nextDouble() * 10) - 5, (rand.nextDouble() * 10) - 5);
+			} else {
+				new BlazeCannon(this, type, (20 / baseTime), (20 / baseTime) + 5, (rand.nextDouble() * 10) - 5, (rand.nextDouble() * 10) - 5, (rand.nextDouble() * 10) - 5);
+			}
+		}
 		
 		EnderDragonFridaysPlugin.plugin.getServer().getPluginManager().registerEvents(this, EnderDragonFridaysPlugin.plugin);
 
@@ -248,6 +271,7 @@ public class MegaDragon implements Listener, Dragon {
 //		}
 //	}
 	
+	@Override
 	public void spawnRewards(Map<UUID, Inventory> map) {
 		//spawn chests at random in 10x10 area with bottom left block at location chestAreaBL
 		
@@ -366,5 +390,9 @@ public class MegaDragon implements Listener, Dragon {
 		}
 		
 		return (!dragon.isDead());
+	}
+	
+	public List<UUID> getDamageList() {
+		return new ArrayList<UUID>(damageMap.keySet());
 	}
 }

@@ -1,7 +1,9 @@
 package com.SkyIsland.EnderDragonFridays.Dragon;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -283,5 +285,9 @@ public class EnderDragon implements Listener, Dragon {
 		}
 		
 		return (!dragon.isDead());
+	}
+	
+	public List<UUID> getDamageList() {
+		return new ArrayList<UUID>(damageMap.keySet());
 	}
 }

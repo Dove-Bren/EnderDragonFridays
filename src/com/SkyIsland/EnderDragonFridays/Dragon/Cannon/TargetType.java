@@ -13,6 +13,8 @@ package com.SkyIsland.EnderDragonFridays.Dragon.Cannon;
 public enum TargetType {
 	
 	NEAREST,
-	MOSTDAMAGE;
+	MOSTDAMAGE,
+	RANDOM,
+	ALL_CYCLE;
 	
 }
