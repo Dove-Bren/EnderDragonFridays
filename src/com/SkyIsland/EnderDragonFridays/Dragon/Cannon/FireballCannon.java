@@ -29,6 +29,7 @@ public class FireballCannon extends Cannon {
 	private Dragon dragon;
 	private TargetType targetType;
 	private double offsetX, offsetY, offsetZ;
+	private int listIndex;
 	
 	/**
 	 * Creates a fireball cannon with the provided min and max delay. Increments default to 1/10 the range.
@@ -101,6 +102,8 @@ public class FireballCannon extends Cannon {
 		this.offsetY = offsetY;
 		this.offsetZ = offsetZ;
 		
+		listIndex = 0;
+		
 		//make sure min and max aren't reversed
 		if (d_min > d_max) {
 			d_max = min_delay;
@@ -154,9 +157,39 @@ public class FireballCannon extends Cannon {
 		case MOSTDAMAGE:
 			//try and get who has done the most damage
 			target = dragon.getMostDamage();
-			if (target != null) {
+			break;
+		case ALL_CYCLE:
+			if (dragon.getDamageList().isEmpty()) {
 				break;
 			}
+			Player player;
+			if (listIndex >= dragon.getDamageList().size()) {
+				listIndex = 0;
+			}
+			int startIndex = listIndex;
+			do {
+				player = Bukkit.getPlayer(dragon.getDamageList().get(listIndex));
+				if (!player.getWorld().getName().equals(dragon.getDragon().getWorld().getName())) {
+					listIndex++;
+					continue;
+				}
+				target = player;
+				listIndex++;
+				break;
+			} while (startIndex != listIndex);
+			break;
+		
+		case RANDOM:
+			List<Player> plays = dragon.getDragon().getWorld().getPlayers();
+			
+			if (plays.isEmpty()) {
+				target = null;
+				break;
+			}
+			
+			target = plays.get(rand.nextInt(plays.size()));
+			
+			break;
 			//if target is null, we want it to operate like NEAREST. So we don't break and instead continue;
 		case NEAREST:
 		default:

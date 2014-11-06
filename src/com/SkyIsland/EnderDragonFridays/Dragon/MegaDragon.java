@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -351,6 +352,8 @@ public class MegaDragon implements Listener, Dragon {
 		LivingEntity target = event.getTarget();
 		LivingEntity shooter = event.getShooter();
 		
+		target.getWorld().playEffect(target.getLocation(), Effect.MOBSPAWNER_FLAMES, 2004);
+		
 		Vector launchV;
 		Location pPos, dPos;
 		dPos = shooter.getEyeLocation();
@@ -365,6 +368,8 @@ public class MegaDragon implements Listener, Dragon {
 	public void FireballCannonFired(FireFireballEvent event){
 		LivingEntity target = event.getTarget();
 		LivingEntity shooter = event.getShooter();
+		
+		target.getWorld().playEffect(target.getLocation(), Effect.ENDER_SIGNAL, 2003);
 		
 		Vector launchV;
 		Location pPos, dPos;

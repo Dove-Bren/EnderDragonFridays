@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -145,16 +146,15 @@ public class BlazeCannon extends Cannon {
 		case MOSTDAMAGE:
 			//try and get who has done the most damage
 			target = dragon.getMostDamage();
-			if (target != null) {
-				break;
-			}
-			//if target is null, we want it to operate like NEAREST. So we don't break and instead continue;
-		
+			break;		
 		case ALL_CYCLE:
 			if (dragon.getDamageList().isEmpty()) {
 				break;
 			}
 			Player player;
+			if (listIndex >= dragon.getDamageList().size()) {
+				listIndex = 0;
+			}
 			int startIndex = listIndex;
 			do {
 				player = Bukkit.getPlayer(dragon.getDamageList().get(listIndex));
