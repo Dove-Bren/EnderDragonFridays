@@ -1,9 +1,8 @@
 package com.SkyIsland.EnderDragonFridays.Dragon;
 
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -211,8 +210,8 @@ public class EnderDragon implements Listener, Dragon {
 			
 			EnderDragonFridaysPlugin.plugin.getLogger().info("Created a chest for player " + player.getDisplayName() + " at " + chest.getLocation().toString());
 
-			
-		}
+			}
+		
 	}
 	
 	@SuppressWarnings("deprecation")
