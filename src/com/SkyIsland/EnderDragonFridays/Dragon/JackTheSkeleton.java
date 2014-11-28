@@ -333,4 +333,10 @@ public class JackTheSkeleton implements Listener, Dragon {
 		
 		return (!dragon.isDead());
 	}
+
+
+	@Override
+	public List<UUID> getDamageList() {
+		return new ArrayList<UUID>(damageMap.keySet());
+	}
 }
