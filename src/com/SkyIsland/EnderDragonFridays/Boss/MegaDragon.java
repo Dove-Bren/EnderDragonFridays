@@ -68,7 +68,7 @@ public class MegaDragon extends Dragon {
 			else {
 				type = TargetType.RANDOM;
 			}
-			System.out.println("Making an additional cannon of target type " + type.toString() + "!");
+			System.out.println("Making an additional cannon of target type [" + type.toString() + "]!");
 			if (fireball) {
 				new FireballCannon(this, type, (40 / baseTime), (40 / baseTime) + 5, (rand.nextDouble() * 10) - 5, (rand.nextDouble() * 10) - 5, (rand.nextDouble() * 10) - 5);
 			} else {
