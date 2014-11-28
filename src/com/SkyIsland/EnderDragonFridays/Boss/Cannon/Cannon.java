@@ -1,10 +1,13 @@
 package com.SkyIsland.EnderDragonFridays.Boss.Cannon;
 
+import com.SkyIsland.EnderDragonFridays.Boss.Component.BossComponent;
+import com.SkyIsland.EnderDragonFridays.Boss.Component.TargetType;
+
 
 public abstract class Cannon extends BossComponent {
 	
 	/**
-	 * The mode of selecting a target. See {@link com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType TargetType}
+	 * The mode of selecting a target. See {@link com.SkyIsland.EnderDragonFridays.Boss.Component.TargetType TargetType}
 	 * for more info.
 	 */
 	protected TargetType targetType;
@@ -37,7 +40,7 @@ public abstract class Cannon extends BossComponent {
 	protected int delayRange;
 	
 	/**
-	 * Returns the {@link com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType TargetType} used when
+	 * Returns the {@link com.SkyIsland.EnderDragonFridays.Boss.Component.TargetType TargetType} used when
 	 * selecting a target to fire on.
 	 * @return
 	 */
@@ -77,7 +80,7 @@ public abstract class Cannon extends BossComponent {
 	/**
 	 * Gives the cannon the passed method of selecting a target to fire on.
 	 * @param type Mode of selecting the target.
-	 * @see {@link com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType TargetType}
+	 * @see {@link com.SkyIsland.EnderDragonFridays.Boss.Component.TargetType TargetType}
 	 */
 	public void setTargetType(TargetType type) {
 		this.targetType = type;

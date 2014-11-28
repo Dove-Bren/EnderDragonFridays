@@ -10,7 +10,7 @@ import org.bukkit.entity.LivingEntity;
 
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Boss.Cannon.FireballCannon;
-import com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType;
+import com.SkyIsland.EnderDragonFridays.Boss.Component.TargetType;
 
 public class EnderDragon extends Dragon {
 

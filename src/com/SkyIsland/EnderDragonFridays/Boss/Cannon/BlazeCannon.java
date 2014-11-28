@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Boss.Boss;
 import com.SkyIsland.EnderDragonFridays.Boss.Cannon.Events.FireBlazeEvent;
+import com.SkyIsland.EnderDragonFridays.Boss.Component.TargetType;
 
 /**
  * This is almost exactly a FireballCannon. I didn't go ahead and extract all code out to a generic cannon
@@ -32,7 +33,7 @@ public class BlazeCannon extends Cannon {
 	 * is not encouraged</u>, as multiple blazes spawned at the same location either explode or bounce off
 	 * in a random direction.
 	 * @param boss The {@link com.SkyIsland.EnderDragonFridays.Boss.Boss Boss} to fire cannonballs from.
-	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType targeting type} is used.
+	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Boss.Component.TargetType targeting type} is used.
 	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
 	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
 	 */
@@ -46,7 +47,7 @@ public class BlazeCannon extends Cannon {
 	 * is not encouraged</u>, as multiple blazes spawned at the same location either explode or bounce off
 	 * in a random direction.
 	 * @param boss The {@link com.SkyIsland.EnderDragonFridays.Boss.Boss Boss} to fire cannonballs from.
-	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType targeting type} is used.
+	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Boss.Component.TargetType targeting type} is used.
 	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
 	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
 	 * @param increments The smallest amount of time (<b>again, in ticks</b>) in-between different firing times.
@@ -65,7 +66,7 @@ public class BlazeCannon extends Cannon {
 	 * is not encouraged</u>, as multiple blazes spawned at the same location either explode or bounce off
 	 * in a random direction.
 	 * @param boss The {@link com.SkyIsland.EnderDragonFridays.Boss.Boss Boss} to fire cannonballs from.
-	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType targeting type} is used.
+	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Boss.Component.TargetType targeting type} is used.
 	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
 	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
 	 * @param increments The smallest amount of time (<b>again, in ticks</b>) in-between different firing times.
