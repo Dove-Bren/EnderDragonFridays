@@ -17,7 +17,6 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -31,14 +30,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Boss.Cannon.BlindnessVeil;
-import com.SkyIsland.EnderDragonFridays.Boss.Cannon.FireballCannon;
-import com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType;
 import com.SkyIsland.EnderDragonFridays.Boss.Cannon.Events.BlindnessVeilEvent;
-import com.SkyIsland.EnderDragonFridays.Boss.Cannon.Events.FireFireballEvent;
 import com.SkyIsland.EnderDragonFridays.Items.ChestContentGenerator;
 import com.griefcraft.model.Protection;
 import com.griefcraft.sql.PhysDB;
@@ -108,7 +103,7 @@ public class JackTheSkeleton implements Listener, Boss {
 		//Bukkit.getScheduler().scheduleSyncRepeatingTask(EnderDragonFridaysPlugin.plugin, new FireballCannon(this, 500, 2000), 20, (long) (20 / (1 + (Math.log(level)/Math.log(2)))));
 		//Removed ^^ and handle this in FireballCannon instead
 		
-		new BlindnessVeil(this, TargetType.MOSTDAMAGE, 20, 30);
+		new BlindnessVeil(this, 20, 30);
 		//least delay is what it was before. Max is the same + 5 ticks
 		
 		EnderDragonFridaysPlugin.plugin.getServer().getPluginManager().registerEvents(this, EnderDragonFridaysPlugin.plugin);
