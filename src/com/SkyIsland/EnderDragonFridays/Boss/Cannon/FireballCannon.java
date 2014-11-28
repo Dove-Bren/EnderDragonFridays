@@ -23,7 +23,6 @@ public class FireballCannon extends Cannon {
 	
 
 	private Random rand;
-	private Boss boss;
 	private double offsetX, offsetY, offsetZ;
 	private int listIndex;
 	
