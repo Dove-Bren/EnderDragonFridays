@@ -251,6 +251,7 @@ public class LootGenerator {
 				tool = new ItemStack(Material.IRON_AXE);
 			else
 				tool = new ItemStack(Material.DIAMOND_AXE);
+			break;
 		case 1:
 			if (quality < 2)
 				tool = new ItemStack(Material.STONE_SPADE);
@@ -258,6 +259,7 @@ public class LootGenerator {
 				tool = new ItemStack(Material.IRON_SPADE);
 			else
 				tool = new ItemStack(Material.DIAMOND_SPADE);
+			break;
 		case 2:
 		default:
 			if (quality < 2)
@@ -296,6 +298,7 @@ public class LootGenerator {
 				armor =  new ItemStack(Material.IRON_HELMET);
 			else
 				armor =  new ItemStack(Material.DIAMOND_HELMET);
+			break;
 		case 1:
 			if (quality < 2)
 				armor =  new ItemStack(Material.LEATHER_CHESTPLATE);
@@ -303,6 +306,7 @@ public class LootGenerator {
 				armor =  new ItemStack(Material.IRON_CHESTPLATE);
 			else
 				armor =  new ItemStack(Material.DIAMOND_CHESTPLATE);
+			break;
 		case 2:
 			if (quality < 2)
 				armor =  new ItemStack(Material.LEATHER_LEGGINGS);
@@ -310,6 +314,7 @@ public class LootGenerator {
 				armor =  new ItemStack(Material.IRON_LEGGINGS);
 			else
 				armor =  new ItemStack(Material.DIAMOND_LEGGINGS);
+			break;
 		case 3:
 		default:
 			if (quality < 2)
