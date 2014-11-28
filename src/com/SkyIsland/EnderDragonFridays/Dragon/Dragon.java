@@ -1,5 +1,6 @@
 package com.SkyIsland.EnderDragonFridays.Dragon;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,6 +28,8 @@ public interface Dragon {
 	public void spawnRewards(Map<UUID, Inventory> map);
 	
 	public void killDragon();
+	
+	public List<UUID> getDamageList();
 	
 	
 }

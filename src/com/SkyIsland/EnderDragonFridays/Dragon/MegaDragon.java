@@ -2,12 +2,14 @@ package com.SkyIsland.EnderDragonFridays.Dragon;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -81,10 +83,31 @@ public class MegaDragon implements Listener, Dragon {
 		//Initialize the map of damage each player does to the dragon
 		damageMap = new HashMap<UUID, Double>();
 		
+		//calculate base-times
+		Double baseTime = (1 + (Math.log(level)/Math.log(2)));
+		
 		//Create cannons
-		new FireballCannon(this, TargetType.MOSTDAMAGE, (40 / (1 + (Math.log(level)/Math.log(2)))), (40 / (1 + (Math.log(level)/Math.log(2)))) + 5, 10.0, 0.0, 0.0);
-		new FireballCannon(this, TargetType.MOSTDAMAGE, (40 / (1 + (Math.log(level)/Math.log(2)))), (40 / (1 + (Math.log(level)/Math.log(2)))) + 5, -10.0, 0.0, 0.0);
-		new BlazeCannon(this, TargetType.MOSTDAMAGE, (20 / (1 + (Math.log(level)/Math.log(2)))), (20 / (1 + (Math.log(level)/Math.log(2)))) + 5, 0.0, 0.0, 10.0);
+		new FireballCannon(this, TargetType.MOSTDAMAGE, (40 / baseTime), (40 / baseTime) + 5, 10.0, 0.0, 0.0);
+		new FireballCannon(this, TargetType.MOSTDAMAGE, (40 / baseTime), (40 / baseTime) + 5, -10.0, 0.0, 0.0);
+		new BlazeCannon(this, TargetType.MOSTDAMAGE, (20 / baseTime), (20 / baseTime) + 5, 0.0, 0.0, 10.0);
+		
+		Random rand = new Random();
+		for (int i = 5; i < level; i+=4) {
+			boolean fireball = rand.nextBoolean(); //is it going to be a fireball cannon or a blaze cannon?
+			TargetType type;
+			if (rand.nextBoolean()) { //is it going to by all_cyclic?
+				type = TargetType.ALL_CYCLE;
+			}
+			else {
+				type = TargetType.RANDOM;
+			}
+			System.out.println("Making an additional cannon of target type " + type.toString() + "!");
+			if (fireball) {
+				new FireballCannon(this, type, (40 / baseTime), (40 / baseTime) + 5, (rand.nextDouble() * 10) - 5, (rand.nextDouble() * 10) - 5, (rand.nextDouble() * 10) - 5);
+			} else {
+				new BlazeCannon(this, type, (20 / baseTime), (20 / baseTime) + 5, (rand.nextDouble() * 10) - 5, (rand.nextDouble() * 10) - 5, (rand.nextDouble() * 10) - 5);
+			}
+		}
 		
 		EnderDragonFridaysPlugin.plugin.getServer().getPluginManager().registerEvents(this, EnderDragonFridaysPlugin.plugin);
 
@@ -201,6 +224,55 @@ public class MegaDragon implements Listener, Dragon {
 		congradulatePlayers(this.damageMap);
 	}
 	
+//	public void spawnRewards(Map<UUID, Inventory> map) {
+//		//spawn chests at random in 10x10 area with bottom left block at location chestAreaBL
+//		
+//		//first make sure map isn't empty. If it is... something went wrong, but we're just 
+//		//going to ignore it for now
+//		if (map.isEmpty()) {
+//			EnderDragonFridaysPlugin.plugin.getLogger().info("Map of contributions was empty!\nSpawning no rewards...");
+//			return;
+//		}
+//		
+//		//we don't want to make two chests in the same area. We have to keep track of where we have put a chest.
+//		//for that, we're going to hash the x and y we put a chest following:
+//		//z = 10*x + y;
+//		//where z is the hashed index of the chest
+//		ArrayList<Integer> chestCoords = new ArrayList<Integer>();
+//		Random rand = new Random();
+//		int x, y, tries;
+//		for (Entry<UUID, Inventory> entry : map.entrySet()) {
+//			Player player = Bukkit.getPlayer(entry.getKey());
+//			x = rand.nextInt(10);
+//			y = rand.nextInt(10);
+//			tries = 0;
+//			while (chestCoords.contains((x * 10) + y)) {
+//				x = rand.nextInt(10);
+//				y = rand.nextInt(10);
+//				if (tries > 10) {
+//					System.out.println("Trying to generate unique chest location... Got x: " + x + "  and y: " + y);
+//				}
+//				if (tries == 30) {
+//					EnderDragonFridaysPlugin.plugin.getLogger().info("Unable to generate a chest for player: " + player.getName());
+//					break;
+//				}
+//			}
+//			
+//			if (chestCoords.contains((x * 10) + y)) {
+//				
+//				player.sendMessage("An error occurred. Please let an Admin know, and refer them to com.SkyIsland.EnderDragonFridays.EnderDragonFight line 125.\nTake a screenshot so you don't forget!");
+//				continue;
+//			}
+//			
+//			Block block = chestAreaBL.add(x,0,y).getBlock();
+//			block.setType(Material.CHEST);
+//			Chest chest = (Chest) block.getState();
+//			chest.getInventory().setContents(entry.getValue().getContents()); //bummer I thought we would be able to just hand it the inv
+//			doExtras(chest, player);
+//		}
+//	}
+	
+	@Override
 	public void spawnRewards(Map<UUID, Inventory> map) {
 		//spawn chests at random in 10x10 area with bottom left block at location chestAreaBL
 		
@@ -210,42 +282,26 @@ public class MegaDragon implements Listener, Dragon {
 			EnderDragonFridaysPlugin.plugin.getLogger().info("Map of contributions was empty!\nSpawning no rewards...");
 			return;
 		}
-		
-		//we don't want to make two chests in the same area. We have to keep track of where we have put a chest.
-		//for that, we're going to hash the x and y we put a chest following:
-		//z = 10*x + y;
-		//where z is the hashed index of the chest
-		ArrayList<Integer> chestCoords = new ArrayList<Integer>();
-		Random rand = new Random();
-		int x, y, tries;
+		System.out.println("Called \"Spawn Rewards\" ! %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		//We just put chests in a linear fashion. We do cap x to 10. <b>this is a magic number</b>
+		int index = 0;
+		double x, y;
 		for (Entry<UUID, Inventory> entry : map.entrySet()) {
+			x = (index % 11);
+			y = (int) Math.floor(index / 11);
 			Player player = Bukkit.getPlayer(entry.getKey());
-			x = rand.nextInt(10);
-			y = rand.nextInt(10);
-			tries = 0;
-			while (chestCoords.contains((x * 10) + y)) {
-				x = rand.nextInt(10);
-				y = rand.nextInt(10);
-				if (tries > 10) {
-					System.out.println("Trying to generate unique chest location... Got x: " + x + "  and y: " + y);
-				}
-				if (tries == 30) {
-					EnderDragonFridaysPlugin.plugin.getLogger().info("Unable to generate a chest for player: " + player.getName());
-					break;
-				}
-			}
 			
-			if (chestCoords.contains((x * 10) + y)) {
-				
-				player.sendMessage("An error occurred. Please let an Admin know, and refer them to com.SkyIsland.EnderDragonFridays.EnderDragonFight line 125.\nTake a screenshot so you don't forget!");
-				continue;
-			}
-			
-			Block block = chestAreaBL.add(x,0,y).getBlock();
+			Block block = chestAreaBL.getBlock().getLocation().clone().add(x,0,y).getBlock();
 			block.setType(Material.CHEST);
 			Chest chest = (Chest) block.getState();
 			chest.getInventory().setContents(entry.getValue().getContents()); //bummer I thought we would be able to just hand it the inv
 			doExtras(chest, player);
+			index += 2;
+			System.out.println("Index now equals : " + index);
+			
+			EnderDragonFridaysPlugin.plugin.getLogger().info("Created a chest for player " + player.getDisplayName() + " at " + chest.getLocation().toString());
+
+			
 		}
 	}
 	
@@ -296,6 +352,8 @@ public class MegaDragon implements Listener, Dragon {
 		LivingEntity target = event.getTarget();
 		LivingEntity shooter = event.getShooter();
 		
+		target.getWorld().playEffect(target.getLocation(), Effect.MOBSPAWNER_FLAMES, 2004);
+		
 		Vector launchV;
 		Location pPos, dPos;
 		dPos = shooter.getEyeLocation();
@@ -310,6 +368,8 @@ public class MegaDragon implements Listener, Dragon {
 	public void FireballCannonFired(FireFireballEvent event){
 		LivingEntity target = event.getTarget();
 		LivingEntity shooter = event.getShooter();
+		
+		target.getWorld().playEffect(target.getLocation(), Effect.ENDER_SIGNAL, 2003);
 		
 		Vector launchV;
 		Location pPos, dPos;
@@ -335,5 +395,9 @@ public class MegaDragon implements Listener, Dragon {
 		}
 		
 		return (!dragon.isDead());
+	}
+	
+	public List<UUID> getDamageList() {
+		return new ArrayList<UUID>(damageMap.keySet());
 	}
 }

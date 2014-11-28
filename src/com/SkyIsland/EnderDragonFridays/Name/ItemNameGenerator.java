@@ -45,6 +45,21 @@ public class ItemNameGenerator implements NameGenerator {
 		firstNames.add("Weak");
 		firstNames.add("Regular");
 		firstNames.add("World");
+		firstNames.add("Mythical");
+		firstNames.add("Legendary");
+		firstNames.add("Corrupting");
+		firstNames.add("A rather useful");
+		firstNames.add("Useful");
+		firstNames.add("Maliwan");
+		firstNames.add("Binary");
+		firstNames.add("\"Dubble\"");
+		firstNames.add("Woeful");
+		firstNames.add("Gentleman's");
+		firstNames.add("Frau");
+		firstNames.add("Ice");
+		firstNames.add("Magma");
+		firstNames.add("Digital");
+		firstNames.add("Analog");
 	}
 	
 	private void setupLast() {
@@ -56,5 +71,20 @@ public class ItemNameGenerator implements NameGenerator {
 		lastNames.add("Levithan");
 		lastNames.add("Cracker");
 		lastNames.add("Breaker");
+		lastNames.add("Ratchet");
+		lastNames.add("Tire Iron");
+		lastNames.add("Oil Filter");
+		lastNames.add("Carburetor");
+		lastNames.add("Fuel injector");
+		lastNames.add("Radiator");
+		lastNames.add("Multimeter");
+		lastNames.add("Portal Gun");
+		lastNames.add("Credit Card");
+		lastNames.add("Debit Card");
+		lastNames.add("Mix tape");
+		lastNames.add("Walkman");
+		lastNames.add("Bukkit");
+		lastNames.add("Gameboy");
+		lastNames.add("SD Card");
 	}
 }

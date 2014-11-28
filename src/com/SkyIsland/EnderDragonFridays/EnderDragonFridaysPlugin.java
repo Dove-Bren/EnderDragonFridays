@@ -134,6 +134,7 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 					//start a dragon fight. If they put mega after, it will be a mega dragon
 					if (args.length >= 2 && args[1].equalsIgnoreCase("mega")) {
 						dragon = new MegaDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Mega Dragon");
+						
 						return true;
 					}
 					if (args.length >= 2 && args[1].equalsIgnoreCase("halloween") && Bukkit.getWorld(worldName).getDifficulty() != Difficulty.PEACEFUL) {
