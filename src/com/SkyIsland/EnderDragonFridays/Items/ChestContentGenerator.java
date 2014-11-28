@@ -54,51 +54,59 @@ public class ChestContentGenerator {
 		rec.add(rand.nextInt(inputMap.keySet().size())); //if we get the same number as before, that just
 		rec.add(rand.nextInt(inputMap.keySet().size())); //means we wont get 3 eggs
 		int number = 0;
-		
-		for (UUID uuid : inputMap.keySet()) {
-			
-			Player player = Bukkit.getPlayer(uuid);
-			
-			//Before anything, make sure they contributed!
-			if (inputMap.get(uuid) <= .01) {
-				//they have only contributed 1% or less of total health!
-				EnderDragonFridaysPlugin.plugin.getLogger().info("Did not give " + player.getDisplayName() + " an item"
-						+ " because they only did " + inputMap.get(uuid) + " contribution!");
-				continue; //nothing for them!
+		try {
+			for (UUID uuid : inputMap.keySet()) {
+				
+				Player player = Bukkit.getPlayer(uuid);
+				
+				//Before anything, make sure they contributed!
+				if (inputMap.get(uuid) <= .01) {
+					//they have only contributed 1% or less of total health!
+					EnderDragonFridaysPlugin.plugin.getLogger().info("Did not give " + player.getDisplayName() + " an item"
+							+ " because they only did " + inputMap.get(uuid) + " contribution!");
+					continue; //nothing for them!
+				}
+				
+				//Create a chest
+				chest = Bukkit.getServer().createInventory(null, 27);
+				//we are going to populate it with two items
+				chest.addItem(gen.generateItem(  inputMap.get(uuid)  )); //generate item. Use the double passed with player as weight
+				chest.addItem(gen.generateItem(  inputMap.get(uuid)  ));
+				//chest.addItem(new ItemStack(Material.DIAMOND_AXE));
+				
+	
+				//check if they got a dragon egg
+				if (rec.contains(number)) {
+					ItemStack egg = new SpawnEgg(EntityType.ENDER_DRAGON).toItemStack(1);
+					ItemMeta meta = egg.getItemMeta();
+					
+					meta.setDisplayName("Easter Egg: " + "Dragon Egg");
+					
+					List<String> lore = new LinkedList<String>();
+					lore.add(ChatColor.BLACK + "The Egg of an Ender Dragon");
+					meta.setLore(lore);
+					
+					egg.setItemMeta(meta);
+					
+					chest.addItem(egg);
+					EnderDragonFridaysPlugin.plugin.getLogger().info("Gave an egg to " + player.getDisplayName());
+				}
+				
+				//add this inventory to the map
+				output.put(uuid, chest);
+				number++;
+				EnderDragonFridaysPlugin.plugin.getLogger().info("Finished generating items for: " + player.getDisplayName());
+				
 			}
-			
-			//Create a chest
-			chest = Bukkit.getServer().createInventory(null, 27);
-			//we are going to populate it with two items
-			chest.addItem(gen.generateItem(  inputMap.get(uuid)  )); //generate item. Use the double passed with player as weight
-			chest.addItem(gen.generateItem(  inputMap.get(uuid)  ));
-			//chest.addItem(new ItemStack(Material.DIAMOND_AXE));
-			
-
-			//check if they got a dragon egg
-			if (rec.contains(number)) {
-				ItemStack egg = new SpawnEgg(EntityType.ENDER_DRAGON).toItemStack(1);
-				ItemMeta meta = egg.getItemMeta();
-				
-				meta.setDisplayName("Easter Egg: " + "Dragon Egg");
-				
-				List<String> lore = new LinkedList<String>();
-				lore.add(ChatColor.BLACK + "The Egg of an Ender Dragon");
-				meta.setLore(lore);
-				
-				egg.setItemMeta(meta);
-				
-				chest.addItem(egg);
-				EnderDragonFridaysPlugin.plugin.getLogger().info("Gave an egg to " + player.getDisplayName());
-			}
-			
-			//add this inventory to the map
-			output.put(uuid, chest);
-			number++;
-			EnderDragonFridaysPlugin.plugin.getLogger().info("Finished generating items for: " + player.getDisplayName());
+			EnderDragonFridaysPlugin.plugin.getLogger().info("Generated a total of " + number + " chests!");
+		}
+		catch (Exception e) {
 			
 		}
-		EnderDragonFridaysPlugin.plugin.getLogger().info("Generated a total of " + number + " chests!");
+		finally {
+			gen.saveBackup();
+		}
+		
 		return output;
 	}
 }

@@ -2,6 +2,7 @@ package com.SkyIsland.EnderDragonFridays.Dragon;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Map.Entry;
@@ -71,14 +72,18 @@ public class JackTheSkeleton implements Listener, Dragon {
 		this.level = level;
 
 		//Spawn an ender dragon
-		dragon = (LivingEntity) world.spawnEntity(world.getSpawnLocation().add(0, 50, 0), EntityType.SKELETON);
+		dragon = (LivingEntity) world.spawnEntity(world.getSpawnLocation(), EntityType.SKELETON);
 		((Skeleton) dragon).setSkeletonType(SkeletonType.WITHER);
+		dragon.setRemoveWhenFarAway(false);
+		
+		dragon.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 999999, 2));
 		
 		
 		dragon.getEquipment().setHelmet(new ItemStack(Material.JACK_O_LANTERN));
 		ItemStack sword = new ItemStack(Material.DIAMOND_SWORD);
 		sword.addEnchantment(Enchantment.FIRE_ASPECT, 1);
 		sword.addUnsafeEnchantment(Enchantment.KNOCKBACK, 4);
+		sword.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 2);
 		dragon.getEquipment().setItemInHand(sword);
 		
 		//Set the dragon's name
@@ -86,12 +91,12 @@ public class JackTheSkeleton implements Listener, Dragon {
 			dragon.setCustomName(name + " (Lvl " + level + ")");
 			dragon.setCustomNameVisible(true);
 		}
+		this.healthbar = (org.bukkit.entity.EnderDragon) world.spawnEntity(world.getSpawnLocation().add(0, -40000, 0), EntityType.ENDER_DRAGON);
 		
 		//Set the dragon's health
 		dragon.setMaxHealth(healthbar.getMaxHealth() * (2 + (Math.log(level)/Math.log(2))));
 		dragon.setHealth(dragon.getMaxHealth());
 		
-		this.healthbar = (org.bukkit.entity.EnderDragon) world.spawnEntity(world.getSpawnLocation().add(0, -40000, 0), EntityType.ENDER_DRAGON);
 		healthbar.setMaxHealth(dragon.getMaxHealth());
 		healthbar.setHealth(dragon.getMaxHealth());
 		healthbar.setCustomName(dragon.getCustomName());
@@ -158,17 +163,21 @@ public class JackTheSkeleton implements Listener, Dragon {
 		
 		//update healthbar
 		healthbar.setHealth(dragon.getHealth());
-		
+		Random rand = new Random();
 		
 		//Try to get the player who damaged the dragon
 		Player player = null;
 		if (event.getDamager() instanceof Player) {
 			player = (Player) event.getDamager();
+			Player tmp;
+			tmp = dragon.getWorld().getPlayers().get(rand.nextInt(dragon.getWorld().getPlayers().size()));
+			dragon.teleport(tmp.getLocation().add(rand.nextInt(10), 0, rand.nextInt(10)));
 		}
 		else if (event.getDamager() instanceof Projectile) {
 			Projectile proj = (Projectile) event.getDamager();
 			if (proj.getShooter() instanceof Player){
 				player = (Player) proj.getShooter();
+				dragon.teleport(player.getLocation().add(rand.nextInt(10), 0, rand.nextInt(10)));
 			}
 		}
 		
@@ -203,7 +212,13 @@ public class JackTheSkeleton implements Listener, Dragon {
 	 */
 	public void win() {
 		killDragon();
-		Map<UUID, Inventory> rewardMap = ChestContentGenerator.generate(5 + (this.level / 5), this.damageMap);
+		Location loc = dragon.getLocation();
+		World world = dragon.getWorld();
+		Random rand = new Random();
+		for (int i = 0; i < 3000; i++) {
+			world.spawnEntity(loc.add(rand.nextFloat() * 10, 0, rand.nextFloat()), EntityType.EXPERIENCE_ORB);
+		}
+		Map<UUID, Inventory> rewardMap = ChestContentGenerator.generate(7 + (this.level / 5), this.damageMap);
 		spawnRewards(rewardMap);
 		congradulatePlayers(this.damageMap);
 	}
@@ -290,12 +305,23 @@ public class JackTheSkeleton implements Listener, Dragon {
 		for (Player p : event.getShooter().getWorld().getPlayers()) {
 			p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 300, 1));
 		}
+		
+		Skeleton skel = (Skeleton) dragon;
+		if (skel.getTarget() == null) {
+			List<Player> plays = dragon.getWorld().getPlayers();
+			if (plays.isEmpty()) {
+				return;
+			}
+			Random rand = new Random();
+			skel.setTarget(plays.get(rand.nextInt(plays.size())));
+		}
 	}
 
 	public void killDragon() {
+		healthbar.damage(healthbar.getMaxHealth());
+		healthbar.remove();
 		if (!dragon.isDead()) {
 			dragon.damage(dragon.getMaxHealth());
-			healthbar.damage(healthbar.getMaxHealth());
 		}
 	}
 	

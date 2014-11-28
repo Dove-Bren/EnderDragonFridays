@@ -1,15 +1,21 @@
 package com.SkyIsland.EnderDragonFridays.Items;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Name.DefaultNames;
 import com.SkyIsland.EnderDragonFridays.Name.NameGenerator;
 
@@ -41,30 +47,44 @@ public class LootGenerator {
 	
 	private List<LootEnchantment> toolEnchantments;
 	
+	private YamlConfiguration backup;
+	private int index;
+	
+	private static final File backupFile = new File(EnderDragonFridaysPlugin.plugin.getDataFolder(), "backup.yml");
+	
 	/**
 	 * Creates a loot generator with the passed rarity.<br />
 	 * The loot generator will use a list of names defined in {@link com.SkyIsland.EnderDragonFridays.Name.DefaultNames DefaultNames}
 	 * @param rarity The relative rarity of items produced through this generator. A good range of values are from 1 to 10, but any number is theoritically supported.
 	 */
 	public LootGenerator(double rarity) {
+		index = 0;
 		this.rarity = rarity;
 		this.names = DefaultNames.generate();
 		this.rand = new Random();
+		this.backup = new YamlConfiguration();
+		setupBackup();
 		loadEnchantments();
 	}
 	
 	public LootGenerator(double rarity, List<String> names) {
+		index = 0;
 		this.rarity = rarity;
 		this.names = names;
 		this.rand = new Random();
+		this.backup = new YamlConfiguration();
+		setupBackup();
 		loadEnchantments();
 	}
 	
 	public LootGenerator(double rarity, NameGenerator WeaponNameGenerator, NameGenerator ArmorNameGenerator, NameGenerator ToolNameGenerator) {
 		this.rarity = rarity;
+		index = 0;
 		this.weaponNameGen = WeaponNameGenerator;
 		this.toolNameGen = ToolNameGenerator;
 		this.armorNameGen = ArmorNameGenerator;
+		this.backup = new YamlConfiguration();
+		setupBackup();
 		
 		if (this.weaponNameGen == null || this.toolNameGen == null || this.armorNameGen == null) {
 			names = DefaultNames.generate();
@@ -123,6 +143,40 @@ public class LootGenerator {
 		armorEnchantments.add(new LootEnchantment(Enchantment.WATER_WORKER, 2.0, 3));
 	}
 	
+	private void setupBackup() {
+		
+		if (backupFile.exists()) {
+			backupFile.delete();
+		}
+		try {
+			backupFile.createNewFile();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			backup.load(backupFile);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void saveBackup() {
+		try {
+			backup.save(backupFile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * This method determines an item quality with 0 being no item and values near or above 1 are 'rares'.
 	 * <p>DO NOT pass this function negative numbers otherwise undefined behavior will be exhibited.
@@ -173,6 +227,7 @@ public class LootGenerator {
 		break;
 		}
 		
+		backup.set("" + index, item);
 		
 		return item;
 	}

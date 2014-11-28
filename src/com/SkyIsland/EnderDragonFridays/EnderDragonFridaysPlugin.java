@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Difficulty;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -18,6 +19,7 @@ import com.SkyIsland.EnderDragonFridays.Dragon.EnderDragon;
 import com.SkyIsland.EnderDragonFridays.Dragon.JackTheSkeleton;
 import com.SkyIsland.EnderDragonFridays.Dragon.MegaDragon;
 import com.SkyIsland.EnderDragonFridays.Name.BossNameGenerator;
+import com.SkyIsland.EnderDragonFridays.Name.WitherNameGenerator;
 import com.griefcraft.lwc.LWCPlugin;
 
 /**
@@ -134,8 +136,8 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 						dragon = new MegaDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Mega Dragon");
 						return true;
 					}
-					if (args.length >= 2 && args[1].equalsIgnoreCase("halloween")) {
-						dragon = new JackTheSkeleton(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Skeleton");
+					if (args.length >= 2 && args[1].equalsIgnoreCase("halloween") && Bukkit.getWorld(worldName).getDifficulty() != Difficulty.PEACEFUL) {
+						dragon = new JackTheSkeleton(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), (new WitherNameGenerator()).getName());
 						return true;
 					}
 					//else they didn't sepcify or it is something else
