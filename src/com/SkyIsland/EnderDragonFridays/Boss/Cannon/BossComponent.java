@@ -19,4 +19,14 @@ public abstract class BossComponent extends BukkitRunnable {
 	 * The {@link com.SkyIsland.EnderDragonFridays.Boss.Boss Boss} this component is part of.
 	 */
 	protected Boss boss;
+	
+	/**
+	 * Returns the boss this component is part of
+	 * @return The {@link com.SkyIsland.EnderDragonFridays.Boss.Boss Boss} this component belongs to.
+	 */
+	public Boss getBoss() {
+		return this.boss;
+	}
+	
+	
 }
