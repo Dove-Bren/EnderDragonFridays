@@ -1,4 +1,4 @@
-package com.SkyIsland.EnderDragonFridays.Dragon;
+package com.SkyIsland.EnderDragonFridays.Boss;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +13,7 @@ import org.bukkit.inventory.Inventory;
  * @author Skyler
  *
  */
-public interface Dragon {
+public interface Boss {
 	
 	public boolean isLiving();
 	

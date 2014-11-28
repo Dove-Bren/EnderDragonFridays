@@ -14,22 +14,22 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.SkyIsland.EnderDragonFridays.Dragon.Dragon;
-import com.SkyIsland.EnderDragonFridays.Dragon.EnderDragon;
-import com.SkyIsland.EnderDragonFridays.Dragon.JackTheSkeleton;
-import com.SkyIsland.EnderDragonFridays.Dragon.MegaDragon;
+import com.SkyIsland.EnderDragonFridays.Boss.Boss;
+import com.SkyIsland.EnderDragonFridays.Boss.EnderDragon;
+import com.SkyIsland.EnderDragonFridays.Boss.JackTheSkeleton;
+import com.SkyIsland.EnderDragonFridays.Boss.MegaDragon;
 import com.SkyIsland.EnderDragonFridays.Name.BossNameGenerator;
 import com.SkyIsland.EnderDragonFridays.Name.WitherNameGenerator;
 import com.griefcraft.lwc.LWCPlugin;
 
 /**
- * The EnderDragonFridaysPlugin makes an Ender Dragon appear once a week in the end.
+ * The EnderDragonFridaysPlugin makes an Ender Boss appear once a week in the end.
  * Upon killing it, awesome custom loot is dropped.
  *
  */
 public class EnderDragonFridaysPlugin extends JavaPlugin {
 	
-	private Dragon dragon;
+	private Boss boss;
 	private BossNameGenerator bossName;
 	
 	public static LWCPlugin lwcPlugin;
@@ -46,7 +46,7 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	}
 	
 	public void onEnable() {
-		dragon = null;
+		boss = null;
 		bossName = new BossNameGenerator();
 		lwcPlugin = (LWCPlugin) Bukkit.getPluginManager().getPlugin("LWC");
 		if (lwcPlugin == null) {
@@ -57,10 +57,10 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	
 	public void onDisable() {
 		lwcPlugin = null;
-		if (dragon != null && dragon.isAlive()){
-			dragon.killDragon();
+		if (boss != null && boss.isAlive()){
+			boss.killDragon();
 		}
-		dragon = null;
+		boss = null;
 		save();
 	}
 	
@@ -72,7 +72,7 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 		
 		/**
-		 * Temp command that creates the dragon
+		 * Temp command that creates the boss
 		 */
 		if (cmd.getName().equalsIgnoreCase("startdragonfight")) {
 			
@@ -86,23 +86,23 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 				return false;
 			}
 			
-			if (dragon != null && dragon.isAlive()) {
+			if (boss != null && boss.isAlive()) {
 				sender.sendMessage("Fight already in progress!");
 			}
 			else {
-				//dragon = new MegaDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Mega Dragon");
-				dragon = new EnderDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), bossName.getName());
+				//boss = new MegaDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Mega Boss");
+				boss = new EnderDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), bossName.getName());
 			}
 			return true;
 		}
 		
 		if (cmd.getName().equalsIgnoreCase("killdragon")) {
-			if (dragon == null || !dragon.isAlive()) {
+			if (boss == null || !boss.isAlive()) {
 				sender.sendMessage("No fight currently engaged");
 				return true;
 			}
-			dragon.killDragon();
-			dragon = null;
+			boss.killDragon();
+			boss = null;
 			return true;
 		}
 		
@@ -127,22 +127,22 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 					return false;
 				}
 				
-				if (dragon != null && dragon.isAlive()) {
+				if (boss != null && boss.isAlive()) {
 					sender.sendMessage("Fight already in progress!");
 				}
 				else {
-					//start a dragon fight. If they put mega after, it will be a mega dragon
+					//start a boss fight. If they put mega after, it will be a mega boss
 					if (args.length >= 2 && args[1].equalsIgnoreCase("mega")) {
-						dragon = new MegaDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Mega Dragon");
+						boss = new MegaDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Mega Boss");
 						
 						return true;
 					}
 					if (args.length >= 2 && args[1].equalsIgnoreCase("halloween") && Bukkit.getWorld(worldName).getDifficulty() != Difficulty.PEACEFUL) {
-						dragon = new JackTheSkeleton(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), (new WitherNameGenerator()).getName());
+						boss = new JackTheSkeleton(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), (new WitherNameGenerator()).getName());
 						return true;
 					}
 					//else they didn't sepcify or it is something else
-					dragon = new EnderDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), bossName.getName());
+					boss = new EnderDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), bossName.getName());
 					return true;
 				}
 			}
@@ -153,13 +153,13 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 			}
 			
 			if (args[0].equalsIgnoreCase("win")) {
-				dragon.killDragon();
+				boss.killDragon();
 				return true;
 			}
 		}
 		
 		if (cmd.getName().equalsIgnoreCase("windragonwars")) {
-			dragon.killDragon();
+			boss.killDragon();
 			
 			return true;
 		}

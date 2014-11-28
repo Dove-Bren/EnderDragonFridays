@@ -1,4 +1,4 @@
-package com.SkyIsland.EnderDragonFridays.Dragon.Cannon;
+package com.SkyIsland.EnderDragonFridays.Boss.Cannon;
 
 import java.util.Iterator;
 import java.util.List;
@@ -10,9 +10,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
-import com.SkyIsland.EnderDragonFridays.Dragon.Dragon;
-import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.Events.BlindnessVeilEvent;
-import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.Events.FireFireballEvent;
+import com.SkyIsland.EnderDragonFridays.Boss.Boss;
+import com.SkyIsland.EnderDragonFridays.Boss.Cannon.Events.BlindnessVeilEvent;
+import com.SkyIsland.EnderDragonFridays.Boss.Cannon.Events.FireFireballEvent;
 
 /**
  * 
@@ -27,72 +27,72 @@ public class BlindnessVeil extends Cannon {
 	private double d_incr;
 	private int d_incr_range;
 	private Random rand;
-	private Dragon dragon;
+	private Boss boss;
 	private TargetType targetType;
 	private double offsetX, offsetY, offsetZ;
 	
 	/**
 	 * Creates a fireball cannon with the provided min and max delay. Increments default to 1/10 the range.
-	 * The offset from where the fireballs are launched relative to the dragon is defaulted to 0. <u>This
+	 * The offset from where the fireballs are launched relative to the boss is defaulted to 0. <u>This
 	 * is not encouraged</u>, as multiple fireballs spawned at the same location either explode or bounce off
 	 * in a random direction.
-	 * @param dragon The {@link com.SkyIsland.EnderDragonFridays.Dragon.Dragon Dragon} to fire cannonballs from.
-	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Dragon.Cannon.TargetType targeting type} is used.
+	 * @param boss The {@link com.SkyIsland.EnderDragonFridays.Boss.Boss Boss} to fire cannonballs from.
+	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType targeting type} is used.
 	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
 	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
 	 */
-	public BlindnessVeil(Dragon dragon, TargetType type, double min_delay, double max_delay) {
-		this(dragon, type, min_delay, max_delay, (max_delay-min_delay)/10); //default to 1/10 the range as increments
+	public BlindnessVeil(Boss boss, TargetType type, double min_delay, double max_delay) {
+		this(boss, type, min_delay, max_delay, (max_delay-min_delay)/10); //default to 1/10 the range as increments
 	}
 	
 	/**
 	 * Creates a cannon with the passed delay and increments.
-	 * The offset from where the fireballs are launched relative to the dragon is defaulted to 0. <u>This
+	 * The offset from where the fireballs are launched relative to the boss is defaulted to 0. <u>This
 	 * is not encouraged</u>, as multiple fireballs spawned at the same location either explode or bounce off
 	 * in a random direction.
-	 * @param dragon The {@link com.SkyIsland.EnderDragonFridays.Dragon.Dragon Dragon} to fire cannonballs from.
-	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Dragon.Cannon.TargetType targeting type} is used.
+	 * @param boss The {@link com.SkyIsland.EnderDragonFridays.Boss.Boss Boss} to fire cannonballs from.
+	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType targeting type} is used.
 	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
 	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
 	 * @param increments The smallest amount of time (<b>again, in ticks</b>) in-between different firing times.
 	 */
-	public BlindnessVeil(Dragon dragon, TargetType type, double min_delay, double max_delay, double increments) {
-		this(dragon, type, min_delay, max_delay, increments, 0.0, 0.0, 0.0);
+	public BlindnessVeil(Boss boss, TargetType type, double min_delay, double max_delay, double increments) {
+		this(boss, type, min_delay, max_delay, increments, 0.0, 0.0, 0.0);
 	}
 	
 	/**
 	 * Creates a cannon with the passed delay and increments.
-	 * The offset from where the fireballs are launched relative to the dragon is defaulted to 0. <u>This
+	 * The offset from where the fireballs are launched relative to the boss is defaulted to 0. <u>This
 	 * is not encouraged</u>, as multiple fireballs spawned at the same location either explode or bounce off
 	 * in a random direction.
-	 * @param dragon The {@link com.SkyIsland.EnderDragonFridays.Dragon.Dragon Dragon} to fire cannonballs from.
-	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Dragon.Cannon.TargetType targeting type} is used.
+	 * @param boss The {@link com.SkyIsland.EnderDragonFridays.Boss.Boss Boss} to fire cannonballs from.
+	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType targeting type} is used.
 	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
 	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
-	 * @param offsetX The offset the fireball will be created from in relation to the dragon
-	 * @param offsetY The offset the fireball will be created from in relation to the dragon
-	 * @param offsetZ The offset the fireball will be created from in relation to the dragon
+	 * @param offsetX The offset the fireball will be created from in relation to the boss
+	 * @param offsetY The offset the fireball will be created from in relation to the boss
+	 * @param offsetZ The offset the fireball will be created from in relation to the boss
 	 */
-	public BlindnessVeil(Dragon dragon, TargetType type, double min_delay, double max_delay, double offsetX, double offsetY, double offsetZ) {
-		this(dragon, type, min_delay, max_delay, (max_delay - min_delay) / 10, offsetX, offsetY, offsetZ);
+	public BlindnessVeil(Boss boss, TargetType type, double min_delay, double max_delay, double offsetX, double offsetY, double offsetZ) {
+		this(boss, type, min_delay, max_delay, (max_delay - min_delay) / 10, offsetX, offsetY, offsetZ);
 	}
 	
 	/**
 	 * Creates a cannon with the passed delay and increments.
-	 * The offset from where the fireballs are launched relative to the dragon is defaulted to 0. <u>This
+	 * The offset from where the fireballs are launched relative to the boss is defaulted to 0. <u>This
 	 * is not encouraged</u>, as multiple fireballs spawned at the same location either explode or bounce off
 	 * in a random direction.
-	 * @param dragon The {@link com.SkyIsland.EnderDragonFridays.Dragon.Dragon Dragon} to fire cannonballs from.
-	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Dragon.Cannon.TargetType targeting type} is used.
+	 * @param boss The {@link com.SkyIsland.EnderDragonFridays.Boss.Boss Boss} to fire cannonballs from.
+	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType targeting type} is used.
 	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
 	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
 	 * @param increments The smallest amount of time (<b>again, in ticks</b>) in-between different firing times.
-	 * @param offsetX The offset the fireball will be created from in relation to the dragon
-	 * @param offsetY The offset the fireball will be created from in relation to the dragon
-	 * @param offsetZ The offset the fireball will be created from in relation to the dragon
+	 * @param offsetX The offset the fireball will be created from in relation to the boss
+	 * @param offsetY The offset the fireball will be created from in relation to the boss
+	 * @param offsetZ The offset the fireball will be created from in relation to the boss
 	 */
-	public BlindnessVeil(Dragon dragon, TargetType type, double min_delay, double max_delay, double increments, double offsetX, double offsetY, double offsetZ) {
-		this.dragon = dragon;
+	public BlindnessVeil(Boss boss, TargetType type, double min_delay, double max_delay, double increments, double offsetX, double offsetY, double offsetZ) {
+		this.boss = boss;
 		this.targetType = type;
 		
 		this.d_min = min_delay;
@@ -131,10 +131,10 @@ public class BlindnessVeil extends Cannon {
 	
 	@Override
 	public void run() {
-		LivingEntity dDragon = dragon.getDragon();
+		LivingEntity dDragon = boss.getDragon();
 
-		//very first, make sure dragon is still alive. If not, kill self
-		if (dragon == null || !dragon.isAlive()) {
+		//very first, make sure boss is still alive. If not, kill self
+		if (boss == null || !boss.isAlive()) {
 			return;
 		}
 		Long time = (long) (d_min + (d_incr * (rand.nextInt(d_incr_range))));
@@ -153,7 +153,7 @@ public class BlindnessVeil extends Cannon {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(EnderDragonFridaysPlugin.plugin, this, time);
 		
 		//actually launch blindness 
-		Bukkit.getPluginManager().callEvent(new BlindnessVeilEvent(dragon.getDragon(), null, dragon.getDragon().getLocation().add(offsetX, offsetY, offsetZ)));
+		Bukkit.getPluginManager().callEvent(new BlindnessVeilEvent(boss.getDragon(), null, boss.getDragon().getLocation().add(offsetX, offsetY, offsetZ)));
 		
 		
 	}

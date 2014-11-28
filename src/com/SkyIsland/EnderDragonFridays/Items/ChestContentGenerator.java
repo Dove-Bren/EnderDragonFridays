@@ -80,10 +80,10 @@ public class ChestContentGenerator {
 					ItemStack egg = new SpawnEgg(EntityType.ENDER_DRAGON).toItemStack(1);
 					ItemMeta meta = egg.getItemMeta();
 					
-					meta.setDisplayName("Easter Egg: " + "Dragon Egg");
+					meta.setDisplayName("Easter Egg: " + "Boss Egg");
 					
 					List<String> lore = new LinkedList<String>();
-					lore.add(ChatColor.BLACK + "The Egg of an Ender Dragon");
+					lore.add(ChatColor.BLACK + "The Egg of an Ender Boss");
 					meta.setLore(lore);
 					
 					egg.setItemMeta(meta);

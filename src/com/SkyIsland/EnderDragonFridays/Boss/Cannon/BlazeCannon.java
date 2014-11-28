@@ -1,4 +1,4 @@
-package com.SkyIsland.EnderDragonFridays.Dragon.Cannon;
+package com.SkyIsland.EnderDragonFridays.Boss.Cannon;
 
 import java.util.Iterator;
 import java.util.List;
@@ -11,8 +11,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
-import com.SkyIsland.EnderDragonFridays.Dragon.Dragon;
-import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.Events.FireBlazeEvent;
+import com.SkyIsland.EnderDragonFridays.Boss.Boss;
+import com.SkyIsland.EnderDragonFridays.Boss.Cannon.Events.FireBlazeEvent;
 
 /**
  * This is almost exactly a FireballCannon. I didn't go ahead and extract all code out to a generic cannon
@@ -28,60 +28,60 @@ public class BlazeCannon extends Cannon {
 	private double d_incr;
 	private int d_incr_range;
 	private Random rand;
-	private Dragon dragon;
+	private Boss boss;
 	private TargetType targetType;
 	private double offsetX, offsetY, offsetZ;
 	private int listIndex;
 	
 	/**
 	 * Creates a blaze cannon with the provided min and max delay. Increments default to 1/10 the range.
-	 * The offset from where the blazes are launched relative to the dragon is defaulted to 0. <u>This
+	 * The offset from where the blazes are launched relative to the boss is defaulted to 0. <u>This
 	 * is not encouraged</u>, as multiple blazes spawned at the same location either explode or bounce off
 	 * in a random direction.
-	 * @param dragon The {@link com.SkyIsland.EnderDragonFridays.Dragon.Dragon Dragon} to fire cannonballs from.
-	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Dragon.Cannon.TargetType targeting type} is used.
+	 * @param boss The {@link com.SkyIsland.EnderDragonFridays.Boss.Boss Boss} to fire cannonballs from.
+	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType targeting type} is used.
 	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
 	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
 	 */
-	public BlazeCannon(Dragon dragon, TargetType type, double min_delay, double max_delay) {
-		this(dragon, type, min_delay, max_delay, (max_delay-min_delay)/10); //default to 1/10 the range as increments
+	public BlazeCannon(Boss boss, TargetType type, double min_delay, double max_delay) {
+		this(boss, type, min_delay, max_delay, (max_delay-min_delay)/10); //default to 1/10 the range as increments
 	}
 	
 	/**
 	 * Creates a cannon with the passed delay and increments.
-	 * The offset from where the blazes are launched relative to the dragon is defaulted to 0. <u>This
+	 * The offset from where the blazes are launched relative to the boss is defaulted to 0. <u>This
 	 * is not encouraged</u>, as multiple blazes spawned at the same location either explode or bounce off
 	 * in a random direction.
-	 * @param dragon The {@link com.SkyIsland.EnderDragonFridays.Dragon.Dragon Dragon} to fire cannonballs from.
-	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Dragon.Cannon.TargetType targeting type} is used.
+	 * @param boss The {@link com.SkyIsland.EnderDragonFridays.Boss.Boss Boss} to fire cannonballs from.
+	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType targeting type} is used.
 	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
 	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
 	 * @param increments The smallest amount of time (<b>again, in ticks</b>) in-between different firing times.
 	 */
-	public BlazeCannon(Dragon dragon, TargetType type, double min_delay, double max_delay, double increments) {
-		this(dragon, type, min_delay, max_delay, increments, 0.0, 0.0, 0.0);
+	public BlazeCannon(Boss boss, TargetType type, double min_delay, double max_delay, double increments) {
+		this(boss, type, min_delay, max_delay, increments, 0.0, 0.0, 0.0);
 	}
 	
-	public BlazeCannon(Dragon dragon, TargetType type, double min_delay, double max_delay, double offsetX, double offsetY, double offsetZ) {
-		this(dragon, type, min_delay, max_delay, (max_delay - min_delay) / 10, offsetX, offsetY, offsetZ);
+	public BlazeCannon(Boss boss, TargetType type, double min_delay, double max_delay, double offsetX, double offsetY, double offsetZ) {
+		this(boss, type, min_delay, max_delay, (max_delay - min_delay) / 10, offsetX, offsetY, offsetZ);
 	}
 	
 	/**
 	 * Creates a cannon with the passed delay and increments.
-	 * The offset from where the blazes are launched relative to the dragon is defaulted to 0. <u>This
+	 * The offset from where the blazes are launched relative to the boss is defaulted to 0. <u>This
 	 * is not encouraged</u>, as multiple blazes spawned at the same location either explode or bounce off
 	 * in a random direction.
-	 * @param dragon The {@link com.SkyIsland.EnderDragonFridays.Dragon.Dragon Dragon} to fire cannonballs from.
-	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Dragon.Cannon.TargetType targeting type} is used.
+	 * @param boss The {@link com.SkyIsland.EnderDragonFridays.Boss.Boss Boss} to fire cannonballs from.
+	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType targeting type} is used.
 	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
 	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
 	 * @param increments The smallest amount of time (<b>again, in ticks</b>) in-between different firing times.
-	 * @param offsetX The offset the blaze will be created from in relation to the dragon
-	 * @param offsetY The offset the blaze will be created from in relation to the dragon
-	 * @param offsetZ The offset the blaze will be created from in relation to the dragon
+	 * @param offsetX The offset the blaze will be created from in relation to the boss
+	 * @param offsetY The offset the blaze will be created from in relation to the boss
+	 * @param offsetZ The offset the blaze will be created from in relation to the boss
 	 */
-	public BlazeCannon(Dragon dragon, TargetType type, double min_delay, double max_delay, double increments, double offsetX, double offsetY, double offsetZ) {
-		this.dragon = dragon;
+	public BlazeCannon(Boss boss, TargetType type, double min_delay, double max_delay, double increments, double offsetX, double offsetY, double offsetZ) {
+		this.boss = boss;
 		this.targetType = type;
 		
 		this.d_min = min_delay;
@@ -122,10 +122,10 @@ public class BlazeCannon extends Cannon {
 	
 	@Override
 	public void run() {
-		LivingEntity dDragon = dragon.getDragon();
+		LivingEntity dDragon = boss.getDragon();
 
-		//very first, make sure dragon is still alive. If not, kill self
-		if (dragon == null || !dragon.isAlive()) {
+		//very first, make sure boss is still alive. If not, kill self
+		if (boss == null || !boss.isAlive()) {
 			return;
 		}
 		Long time = (long) (d_min + (d_incr * (rand.nextInt(d_incr_range))));
@@ -145,20 +145,20 @@ public class BlazeCannon extends Cannon {
 		switch (targetType) {
 		case MOSTDAMAGE:
 			//try and get who has done the most damage
-			target = dragon.getMostDamage();
+			target = boss.getMostDamage();
 			break;		
 		case ALL_CYCLE:
-			if (dragon.getDamageList().isEmpty()) {
+			if (boss.getDamageList().isEmpty()) {
 				break;
 			}
 			Player player;
-			if (listIndex >= dragon.getDamageList().size()) {
+			if (listIndex >= boss.getDamageList().size()) {
 				listIndex = 0;
 			}
 			int startIndex = listIndex;
 			do {
-				player = Bukkit.getPlayer(dragon.getDamageList().get(listIndex));
-				if (!player.getWorld().getName().equals(dragon.getDragon().getWorld().getName())) {
+				player = Bukkit.getPlayer(boss.getDamageList().get(listIndex));
+				if (!player.getWorld().getName().equals(boss.getDragon().getWorld().getName())) {
 					listIndex++;
 					continue;
 				}
@@ -169,7 +169,7 @@ public class BlazeCannon extends Cannon {
 			break;
 		
 		case RANDOM:
-			List<Player> plays = dragon.getDragon().getWorld().getPlayers();
+			List<Player> plays = boss.getDragon().getWorld().getPlayers();
 			
 			if (plays.isEmpty()) {
 				target = null;
@@ -184,7 +184,7 @@ public class BlazeCannon extends Cannon {
 			boolean go = true;
 			Entity next;
 			for (int i = 10; go == true && i < 200; i++) {
-				List<Entity> players = dragon.getDragon().getNearbyEntities(i, 150, i);
+				List<Entity> players = boss.getDragon().getNearbyEntities(i, 150, i);
 				if (players.isEmpty())
 					continue;
 				Iterator<Entity> it = players.iterator();
@@ -209,7 +209,7 @@ public class BlazeCannon extends Cannon {
 		
 		if (target != null) {
 			//actually launch blaze if we have a target
-			Bukkit.getPluginManager().callEvent(new FireBlazeEvent(dragon.getDragon(), target, dragon.getDragon().getLocation().add(offsetX, offsetY, offsetZ)));
+			Bukkit.getPluginManager().callEvent(new FireBlazeEvent(boss.getDragon(), target, boss.getDragon().getLocation().add(offsetX, offsetY, offsetZ)));
 		}
 		
 	}

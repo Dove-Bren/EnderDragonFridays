@@ -1,4 +1,4 @@
-package com.SkyIsland.EnderDragonFridays.Dragon;
+package com.SkyIsland.EnderDragonFridays.Boss;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,44 +9,48 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Enderman;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.entity.SmallFireball;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
-import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.BlazeCannon;
-import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.FireballCannon;
-import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.TargetType;
-import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.Events.FireBlazeEvent;
-import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.Events.FireFireballEvent;
+import com.SkyIsland.EnderDragonFridays.Boss.Cannon.BlindnessVeil;
+import com.SkyIsland.EnderDragonFridays.Boss.Cannon.FireballCannon;
+import com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType;
+import com.SkyIsland.EnderDragonFridays.Boss.Cannon.Events.BlindnessVeilEvent;
+import com.SkyIsland.EnderDragonFridays.Boss.Cannon.Events.FireFireballEvent;
 import com.SkyIsland.EnderDragonFridays.Items.ChestContentGenerator;
 import com.griefcraft.model.Protection;
 import com.griefcraft.sql.PhysDB;
 
-public class MegaDragon implements Listener, Dragon {
+public class JackTheSkeleton implements Listener, Boss {
 
 	private int level;							//The level of the dragon
-	private LivingEntity dragon;				//The actual Entity for the Ender Dragon
+	private LivingEntity dragon;				//The actual Entity for the Ender Boss
 	private Map<UUID, Double> damageMap;		//The damage each player has done to the ender dragon
 	private double damageTaken;
 	private Location chestAreaBL;
+	private org.bukkit.entity.EnderDragon healthbar;
 	
 	/**
 	 * Creates a default enderdragon
@@ -55,7 +59,7 @@ public class MegaDragon implements Listener, Dragon {
 	 * @param loc
 	 * @param name it's name
 	 */
-	public MegaDragon(World world, int level, String name) {
+	public JackTheSkeleton(World world, int level, String name) {
 		
 		this.chestAreaBL = world.getSpawnLocation();
 		
@@ -68,46 +72,44 @@ public class MegaDragon implements Listener, Dragon {
 		this.level = level;
 
 		//Spawn an ender dragon
-		dragon = (LivingEntity) world.spawnEntity(world.getSpawnLocation().add(0, 50, 0), EntityType.ENDER_DRAGON);
+		dragon = (LivingEntity) world.spawnEntity(world.getSpawnLocation(), EntityType.SKELETON);
+		((Skeleton) dragon).setSkeletonType(SkeletonType.WITHER);
+		dragon.setRemoveWhenFarAway(false);
+		
+		dragon.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 999999, 2));
+		
+		
+		dragon.getEquipment().setHelmet(new ItemStack(Material.JACK_O_LANTERN));
+		ItemStack sword = new ItemStack(Material.DIAMOND_SWORD);
+		sword.addEnchantment(Enchantment.FIRE_ASPECT, 1);
+		sword.addUnsafeEnchantment(Enchantment.KNOCKBACK, 4);
+		sword.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 2);
+		dragon.getEquipment().setItemInHand(sword);
 		
 		//Set the dragon's name
 		if (name != null && name.length() > 0) {
 			dragon.setCustomName(name + " (Lvl " + level + ")");
 			dragon.setCustomNameVisible(true);
 		}
+		this.healthbar = (org.bukkit.entity.EnderDragon) world.spawnEntity(world.getSpawnLocation().add(0, -40000, 0), EntityType.ENDER_DRAGON);
 		
 		//Set the dragon's health
-		dragon.setMaxHealth(dragon.getMaxHealth() * (2 + (Math.log(level)/Math.log(2))));
+		dragon.setMaxHealth(healthbar.getMaxHealth() * (2 + (Math.log(level)/Math.log(2))));
 		dragon.setHealth(dragon.getMaxHealth());
+		
+		healthbar.setMaxHealth(dragon.getMaxHealth());
+		healthbar.setHealth(dragon.getMaxHealth());
+		healthbar.setCustomName(dragon.getCustomName());
 
 		//Initialize the map of damage each player does to the dragon
 		damageMap = new HashMap<UUID, Double>();
 		
-		//calculate base-times
-		Double baseTime = (1 + (Math.log(level)/Math.log(2)));
+		//Start firing the dragon's fireballs
+		//Bukkit.getScheduler().scheduleSyncRepeatingTask(EnderDragonFridaysPlugin.plugin, new FireballCannon(this, 500, 2000), 20, (long) (20 / (1 + (Math.log(level)/Math.log(2)))));
+		//Removed ^^ and handle this in FireballCannon instead
 		
-		//Create cannons
-		new FireballCannon(this, TargetType.MOSTDAMAGE, (40 / baseTime), (40 / baseTime) + 5, 10.0, 0.0, 0.0);
-		new FireballCannon(this, TargetType.MOSTDAMAGE, (40 / baseTime), (40 / baseTime) + 5, -10.0, 0.0, 0.0);
-		new BlazeCannon(this, TargetType.MOSTDAMAGE, (20 / baseTime), (20 / baseTime) + 5, 0.0, 0.0, 10.0);
-		
-		Random rand = new Random();
-		for (int i = 5; i < level; i+=4) {
-			boolean fireball = rand.nextBoolean(); //is it going to be a fireball cannon or a blaze cannon?
-			TargetType type;
-			if (rand.nextBoolean()) { //is it going to by all_cyclic?
-				type = TargetType.ALL_CYCLE;
-			}
-			else {
-				type = TargetType.RANDOM;
-			}
-			System.out.println("Making an additional cannon of target type " + type.toString() + "!");
-			if (fireball) {
-				new FireballCannon(this, type, (40 / baseTime), (40 / baseTime) + 5, (rand.nextDouble() * 10) - 5, (rand.nextDouble() * 10) - 5, (rand.nextDouble() * 10) - 5);
-			} else {
-				new BlazeCannon(this, type, (20 / baseTime), (20 / baseTime) + 5, (rand.nextDouble() * 10) - 5, (rand.nextDouble() * 10) - 5, (rand.nextDouble() * 10) - 5);
-			}
-		}
+		new BlindnessVeil(this, TargetType.MOSTDAMAGE, 20, 30);
+		//least delay is what it was before. Max is the same + 5 ticks
 		
 		EnderDragonFridaysPlugin.plugin.getServer().getPluginManager().registerEvents(this, EnderDragonFridaysPlugin.plugin);
 
@@ -159,16 +161,23 @@ public class MegaDragon implements Listener, Dragon {
 		//Add the damage to the total counter
 		damageTaken += event.getDamage();
 		
+		//update healthbar
+		healthbar.setHealth(dragon.getHealth());
+		Random rand = new Random();
 		
 		//Try to get the player who damaged the dragon
 		Player player = null;
 		if (event.getDamager() instanceof Player) {
 			player = (Player) event.getDamager();
+			Player tmp;
+			tmp = dragon.getWorld().getPlayers().get(rand.nextInt(dragon.getWorld().getPlayers().size()));
+			dragon.teleport(tmp.getLocation().add(rand.nextInt(10), 0, rand.nextInt(10)));
 		}
 		else if (event.getDamager() instanceof Projectile) {
 			Projectile proj = (Projectile) event.getDamager();
 			if (proj.getShooter() instanceof Player){
 				player = (Player) proj.getShooter();
+				dragon.teleport(player.getLocation().add(rand.nextInt(10), 0, rand.nextInt(10)));
 			}
 		}
 		
@@ -186,22 +195,6 @@ public class MegaDragon implements Listener, Dragon {
 		//Update the damage for the player
 		double oldDamage = damageMap.get(player.getUniqueId());
 		damageMap.put(player.getUniqueId(), oldDamage + event.getDamage()); 
-		
-		
-		
-		//The mega dragon also potentially summons ____ to attack the player.
-		//to make it happen about 1/4 times
-
-		Random rand = new Random();
-		if (rand.nextInt(4) == 1) {
-			Location pLoc = player.getLocation().add(rand.nextInt(2), 1, rand.nextInt(2));
-			Enderman e = (Enderman) player.getWorld().spawnEntity(pLoc, EntityType.ENDERMAN);
-			e.setTarget(player);
-			pLoc = player.getLocation().add(rand.nextInt(2), 1, rand.nextInt(2));
-			e = (Enderman) player.getWorld().spawnEntity(pLoc, EntityType.ENDERMAN);
-			e.setTarget(player);
-		}
-		
 	}
 	
 	@EventHandler
@@ -219,60 +212,17 @@ public class MegaDragon implements Listener, Dragon {
 	 */
 	public void win() {
 		killDragon();
-		Map<UUID, Inventory> rewardMap = ChestContentGenerator.generate(9 + (this.level / 5), this.damageMap);
+		Location loc = dragon.getLocation();
+		World world = dragon.getWorld();
+		Random rand = new Random();
+		for (int i = 0; i < 3000; i++) {
+			world.spawnEntity(loc.add(rand.nextFloat() * 10, 0, rand.nextFloat()), EntityType.EXPERIENCE_ORB);
+		}
+		Map<UUID, Inventory> rewardMap = ChestContentGenerator.generate(7 + (this.level / 5), this.damageMap);
 		spawnRewards(rewardMap);
 		congradulatePlayers(this.damageMap);
 	}
 	
-//	public void spawnRewards(Map<UUID, Inventory> map) {
-//		//spawn chests at random in 10x10 area with bottom left block at location chestAreaBL
-//		
-//		//first make sure map isn't empty. If it is... something went wrong, but we're just 
-//		//going to ignore it for now
-//		if (map.isEmpty()) {
-//			EnderDragonFridaysPlugin.plugin.getLogger().info("Map of contributions was empty!\nSpawning no rewards...");
-//			return;
-//		}
-//		
-//		//we don't want to make two chests in the same area. We have to keep track of where we have put a chest.
-//		//for that, we're going to hash the x and y we put a chest following:
-//		//z = 10*x + y;
-//		//where z is the hashed index of the chest
-//		ArrayList<Integer> chestCoords = new ArrayList<Integer>();
-//		Random rand = new Random();
-//		int x, y, tries;
-//		for (Entry<UUID, Inventory> entry : map.entrySet()) {
-//			Player player = Bukkit.getPlayer(entry.getKey());
-//			x = rand.nextInt(10);
-//			y = rand.nextInt(10);
-//			tries = 0;
-//			while (chestCoords.contains((x * 10) + y)) {
-//				x = rand.nextInt(10);
-//				y = rand.nextInt(10);
-//				if (tries > 10) {
-//					System.out.println("Trying to generate unique chest location... Got x: " + x + "  and y: " + y);
-//				}
-//				if (tries == 30) {
-//					EnderDragonFridaysPlugin.plugin.getLogger().info("Unable to generate a chest for player: " + player.getName());
-//					break;
-//				}
-//			}
-//			
-//			if (chestCoords.contains((x * 10) + y)) {
-//				
-//				player.sendMessage("An error occurred. Please let an Admin know, and refer them to com.SkyIsland.EnderDragonFridays.EnderDragonFight line 125.\nTake a screenshot so you don't forget!");
-//				continue;
-//			}
-//			
-//			Block block = chestAreaBL.add(x,0,y).getBlock();
-//			block.setType(Material.CHEST);
-//			Chest chest = (Chest) block.getState();
-//			chest.getInventory().setContents(entry.getValue().getContents()); //bummer I thought we would be able to just hand it the inv
-//			doExtras(chest, player);
-//		}
-//	}
-	
-	@Override
 	public void spawnRewards(Map<UUID, Inventory> map) {
 		//spawn chests at random in 10x10 area with bottom left block at location chestAreaBL
 		
@@ -291,7 +241,7 @@ public class MegaDragon implements Listener, Dragon {
 			y = (int) Math.floor(index / 11);
 			Player player = Bukkit.getPlayer(entry.getKey());
 			
-			Block block = chestAreaBL.getBlock().getLocation().clone().add(x,0,y).getBlock();
+			Block block = chestAreaBL.getBlock().getLocation().add(x,0,y).getBlock();
 			block.setType(Material.CHEST);
 			Chest chest = (Chest) block.getState();
 			chest.getInventory().setContents(entry.getValue().getContents()); //bummer I thought we would be able to just hand it the inv
@@ -312,7 +262,8 @@ public class MegaDragon implements Listener, Dragon {
 		PhysDB physDb = EnderDragonFridaysPlugin.lwcPlugin.getLWC().getPhysicalDatabase();
 		
 		String worldName = chestAreaBL.getWorld().getName();
-		/*protection = */physDb.registerProtection(chest.getTypeId(), Protection.Type.PRIVATE, worldName, player.getName(), "", chest.getX(), chest.getY(), chest.getZ());
+		/*protection = */
+		physDb.registerProtection(chest.getTypeId(), Protection.Type.PRIVATE, worldName, player.getName(), "", chest.getX(), chest.getY(), chest.getZ());
 		
 		EnderDragonFridaysPlugin.plugin.getLogger().info("success?");
 
@@ -324,7 +275,6 @@ public class MegaDragon implements Listener, Dragon {
 		sign.update();
 		//register the sign
 		physDb.registerProtection(sign.getTypeId(), Protection.Type.PRIVATE, worldName, player.getName(), "", sign.getX(), sign.getY(), sign.getZ());
-		
 		
 	}
 	
@@ -348,44 +298,31 @@ public class MegaDragon implements Listener, Dragon {
 	}
 	
 	@EventHandler
-	public void blazeCannonFired(FireBlazeEvent event){
-		LivingEntity target = event.getTarget();
-		LivingEntity shooter = event.getShooter();
+	public void cannonFired(BlindnessVeilEvent event){
+		//reset health bar just cause
+		healthbar.teleport(event.getShooter().getWorld().getSpawnLocation().add(0, -100, 0));
+		//blind everyone
+		for (Player p : event.getShooter().getWorld().getPlayers()) {
+			p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 300, 1));
+		}
 		
-		target.getWorld().playEffect(target.getLocation(), Effect.MOBSPAWNER_FLAMES, 2004);
-		
-		Vector launchV;
-		Location pPos, dPos;
-		dPos = shooter.getEyeLocation();
-		pPos = target.getEyeLocation();
-		launchV = pPos.toVector().subtract(dPos.toVector());
-		
-		SmallFireball f = shooter.launchProjectile(SmallFireball.class);
-		f.setDirection(launchV.normalize());
+		Skeleton skel = (Skeleton) dragon;
+		if (skel.getTarget() == null) {
+			List<Player> plays = dragon.getWorld().getPlayers();
+			if (plays.isEmpty()) {
+				return;
+			}
+			Random rand = new Random();
+			skel.setTarget(plays.get(rand.nextInt(plays.size())));
+		}
 	}
-	
-	@EventHandler
-	public void FireballCannonFired(FireFireballEvent event){
-		LivingEntity target = event.getTarget();
-		LivingEntity shooter = event.getShooter();
-		
-		target.getWorld().playEffect(target.getLocation(), Effect.ENDER_SIGNAL, 2003);
-		
-		Vector launchV;
-		Location pPos, dPos;
-		dPos = shooter.getEyeLocation();
-		pPos = target.getEyeLocation();
-		launchV = pPos.toVector().subtract(dPos.toVector());
-		
-		LargeFireball f = shooter.launchProjectile(LargeFireball.class);
-		f.setDirection(launchV.normalize());
-	}
-	
-	
 
 	public void killDragon() {
-		if (!dragon.isDead())
-		dragon.damage(dragon.getMaxHealth());
+		healthbar.damage(healthbar.getMaxHealth());
+		healthbar.remove();
+		if (!dragon.isDead()) {
+			dragon.damage(dragon.getMaxHealth());
+		}
 	}
 	
 	public boolean isAlive(){
@@ -396,7 +333,9 @@ public class MegaDragon implements Listener, Dragon {
 		
 		return (!dragon.isDead());
 	}
-	
+
+
+	@Override
 	public List<UUID> getDamageList() {
 		return new ArrayList<UUID>(damageMap.keySet());
 	}

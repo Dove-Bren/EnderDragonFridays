@@ -1,10 +1,10 @@
-package com.SkyIsland.EnderDragonFridays.Dragon;
+package com.SkyIsland.EnderDragonFridays.Boss;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -15,42 +15,33 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
-import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.BlindnessVeil;
-import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.FireballCannon;
-import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.TargetType;
-import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.Events.BlindnessVeilEvent;
-import com.SkyIsland.EnderDragonFridays.Dragon.Cannon.Events.FireFireballEvent;
+import com.SkyIsland.EnderDragonFridays.Boss.Cannon.FireballCannon;
+import com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType;
+import com.SkyIsland.EnderDragonFridays.Boss.Cannon.Events.FireFireballEvent;
 import com.SkyIsland.EnderDragonFridays.Items.ChestContentGenerator;
 import com.griefcraft.model.Protection;
 import com.griefcraft.sql.PhysDB;
 
-public class JackTheSkeleton implements Listener, Dragon {
+public class EnderDragon implements Listener, Boss {
 
 	private int level;							//The level of the dragon
-	private LivingEntity dragon;				//The actual Entity for the Ender Dragon
+	private LivingEntity dragon;				//The actual Entity for the Ender Boss
 	private Map<UUID, Double> damageMap;		//The damage each player has done to the ender dragon
 	private double damageTaken;
 	private Location chestAreaBL;
-	private org.bukkit.entity.EnderDragon healthbar;
 	
 	/**
 	 * Creates a default enderdragon
@@ -59,7 +50,7 @@ public class JackTheSkeleton implements Listener, Dragon {
 	 * @param loc
 	 * @param name it's name
 	 */
-	public JackTheSkeleton(World world, int level, String name) {
+	public EnderDragon(World world, int level, String name) {
 		
 		this.chestAreaBL = world.getSpawnLocation();
 		
@@ -72,34 +63,17 @@ public class JackTheSkeleton implements Listener, Dragon {
 		this.level = level;
 
 		//Spawn an ender dragon
-		dragon = (LivingEntity) world.spawnEntity(world.getSpawnLocation(), EntityType.SKELETON);
-		((Skeleton) dragon).setSkeletonType(SkeletonType.WITHER);
-		dragon.setRemoveWhenFarAway(false);
-		
-		dragon.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 999999, 2));
-		
-		
-		dragon.getEquipment().setHelmet(new ItemStack(Material.JACK_O_LANTERN));
-		ItemStack sword = new ItemStack(Material.DIAMOND_SWORD);
-		sword.addEnchantment(Enchantment.FIRE_ASPECT, 1);
-		sword.addUnsafeEnchantment(Enchantment.KNOCKBACK, 4);
-		sword.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 2);
-		dragon.getEquipment().setItemInHand(sword);
+		dragon = (LivingEntity) world.spawnEntity(world.getSpawnLocation().add(0, 50, 0), EntityType.ENDER_DRAGON);
 		
 		//Set the dragon's name
 		if (name != null && name.length() > 0) {
 			dragon.setCustomName(name + " (Lvl " + level + ")");
 			dragon.setCustomNameVisible(true);
 		}
-		this.healthbar = (org.bukkit.entity.EnderDragon) world.spawnEntity(world.getSpawnLocation().add(0, -40000, 0), EntityType.ENDER_DRAGON);
 		
 		//Set the dragon's health
-		dragon.setMaxHealth(healthbar.getMaxHealth() * (2 + (Math.log(level)/Math.log(2))));
+		dragon.setMaxHealth(dragon.getMaxHealth() * (1 + (Math.log(level)/Math.log(2))));
 		dragon.setHealth(dragon.getMaxHealth());
-		
-		healthbar.setMaxHealth(dragon.getMaxHealth());
-		healthbar.setHealth(dragon.getMaxHealth());
-		healthbar.setCustomName(dragon.getCustomName());
 
 		//Initialize the map of damage each player does to the dragon
 		damageMap = new HashMap<UUID, Double>();
@@ -108,7 +82,7 @@ public class JackTheSkeleton implements Listener, Dragon {
 		//Bukkit.getScheduler().scheduleSyncRepeatingTask(EnderDragonFridaysPlugin.plugin, new FireballCannon(this, 500, 2000), 20, (long) (20 / (1 + (Math.log(level)/Math.log(2)))));
 		//Removed ^^ and handle this in FireballCannon instead
 		
-		new BlindnessVeil(this, TargetType.MOSTDAMAGE, 20, 30);
+		new FireballCannon(this, TargetType.MOSTDAMAGE, (20 / (1 + (Math.log(level)/Math.log(2)))), (20 / (1 + (Math.log(level)/Math.log(2)))) + 5);
 		//least delay is what it was before. Max is the same + 5 ticks
 		
 		EnderDragonFridaysPlugin.plugin.getServer().getPluginManager().registerEvents(this, EnderDragonFridaysPlugin.plugin);
@@ -161,23 +135,16 @@ public class JackTheSkeleton implements Listener, Dragon {
 		//Add the damage to the total counter
 		damageTaken += event.getDamage();
 		
-		//update healthbar
-		healthbar.setHealth(dragon.getHealth());
-		Random rand = new Random();
 		
 		//Try to get the player who damaged the dragon
 		Player player = null;
 		if (event.getDamager() instanceof Player) {
 			player = (Player) event.getDamager();
-			Player tmp;
-			tmp = dragon.getWorld().getPlayers().get(rand.nextInt(dragon.getWorld().getPlayers().size()));
-			dragon.teleport(tmp.getLocation().add(rand.nextInt(10), 0, rand.nextInt(10)));
 		}
 		else if (event.getDamager() instanceof Projectile) {
 			Projectile proj = (Projectile) event.getDamager();
 			if (proj.getShooter() instanceof Player){
 				player = (Player) proj.getShooter();
-				dragon.teleport(player.getLocation().add(rand.nextInt(10), 0, rand.nextInt(10)));
 			}
 		}
 		
@@ -212,13 +179,7 @@ public class JackTheSkeleton implements Listener, Dragon {
 	 */
 	public void win() {
 		killDragon();
-		Location loc = dragon.getLocation();
-		World world = dragon.getWorld();
-		Random rand = new Random();
-		for (int i = 0; i < 3000; i++) {
-			world.spawnEntity(loc.add(rand.nextFloat() * 10, 0, rand.nextFloat()), EntityType.EXPERIENCE_ORB);
-		}
-		Map<UUID, Inventory> rewardMap = ChestContentGenerator.generate(7 + (this.level / 5), this.damageMap);
+		Map<UUID, Inventory> rewardMap = ChestContentGenerator.generate(5 + (this.level / 5), this.damageMap);
 		spawnRewards(rewardMap);
 		congradulatePlayers(this.damageMap);
 	}
@@ -251,8 +212,8 @@ public class JackTheSkeleton implements Listener, Dragon {
 			
 			EnderDragonFridaysPlugin.plugin.getLogger().info("Created a chest for player " + player.getDisplayName() + " at " + chest.getLocation().toString());
 
-			
-		}
+			}
+		
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -298,31 +259,23 @@ public class JackTheSkeleton implements Listener, Dragon {
 	}
 	
 	@EventHandler
-	public void cannonFired(BlindnessVeilEvent event){
-		//reset health bar just cause
-		healthbar.teleport(event.getShooter().getWorld().getSpawnLocation().add(0, -100, 0));
-		//blind everyone
-		for (Player p : event.getShooter().getWorld().getPlayers()) {
-			p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 300, 1));
-		}
+	public void cannonFired(FireFireballEvent event){
+		LivingEntity target = event.getTarget();
+		LivingEntity shooter = event.getShooter();
 		
-		Skeleton skel = (Skeleton) dragon;
-		if (skel.getTarget() == null) {
-			List<Player> plays = dragon.getWorld().getPlayers();
-			if (plays.isEmpty()) {
-				return;
-			}
-			Random rand = new Random();
-			skel.setTarget(plays.get(rand.nextInt(plays.size())));
-		}
+		Vector launchV;
+		Location pPos, dPos;
+		dPos = shooter.getEyeLocation();
+		pPos = target.getEyeLocation();
+		launchV = pPos.toVector().subtract(dPos.toVector());
+		
+		LargeFireball f = shooter.launchProjectile(LargeFireball.class);
+		f.setDirection(launchV.normalize());
 	}
 
 	public void killDragon() {
-		healthbar.damage(healthbar.getMaxHealth());
-		healthbar.remove();
-		if (!dragon.isDead()) {
-			dragon.damage(dragon.getMaxHealth());
-		}
+		if (!dragon.isDead())
+		dragon.damage(dragon.getMaxHealth());
 	}
 	
 	public boolean isAlive(){
@@ -333,9 +286,7 @@ public class JackTheSkeleton implements Listener, Dragon {
 		
 		return (!dragon.isDead());
 	}
-
-
-	@Override
+	
 	public List<UUID> getDamageList() {
 		return new ArrayList<UUID>(damageMap.keySet());
 	}

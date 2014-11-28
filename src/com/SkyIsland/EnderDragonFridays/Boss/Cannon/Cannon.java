@@ -1,4 +1,4 @@
-package com.SkyIsland.EnderDragonFridays.Dragon.Cannon;
+package com.SkyIsland.EnderDragonFridays.Boss.Cannon;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
