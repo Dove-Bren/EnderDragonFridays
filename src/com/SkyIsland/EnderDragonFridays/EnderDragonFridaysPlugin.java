@@ -58,7 +58,7 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	public void onDisable() {
 		lwcPlugin = null;
 		if (boss != null && boss.isAlive()){
-			boss.killDragon();
+			boss.kill();
 		}
 		boss = null;
 		save();
@@ -101,7 +101,7 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 				sender.sendMessage("No fight currently engaged");
 				return true;
 			}
-			boss.killDragon();
+			boss.kill();
 			boss = null;
 			return true;
 		}
@@ -153,13 +153,13 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 			}
 			
 			if (args[0].equalsIgnoreCase("win")) {
-				boss.killDragon();
+				boss.kill();
 				return true;
 			}
 		}
 		
 		if (cmd.getName().equalsIgnoreCase("windragonwars")) {
-			boss.killDragon();
+			boss.kill();
 			
 			return true;
 		}

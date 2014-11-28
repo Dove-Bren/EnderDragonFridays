@@ -123,7 +123,7 @@ public class MegaDragon implements Listener, Boss {
 		//Register this class as a listener
 	}
 	
-	public LivingEntity getDragon() {
+	public LivingEntity getEntity() {
 		return this.dragon;
 	}
 	
@@ -218,7 +218,7 @@ public class MegaDragon implements Listener, Boss {
 	 * kills the fight.
 	 */
 	public void win() {
-		killDragon();
+		kill();
 		Map<UUID, Inventory> rewardMap = ChestContentGenerator.generate(9 + (this.level / 5), this.damageMap);
 		spawnRewards(rewardMap);
 		congradulatePlayers(this.damageMap);
@@ -383,7 +383,7 @@ public class MegaDragon implements Listener, Boss {
 	
 	
 
-	public void killDragon() {
+	public void kill() {
 		if (!dragon.isDead())
 		dragon.damage(dragon.getMaxHealth());
 	}

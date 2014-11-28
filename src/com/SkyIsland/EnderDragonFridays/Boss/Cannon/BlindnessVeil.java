@@ -131,7 +131,7 @@ public class BlindnessVeil extends Cannon {
 	
 	@Override
 	public void run() {
-		LivingEntity dDragon = boss.getDragon();
+		LivingEntity dDragon = boss.getEntity();
 
 		//very first, make sure boss is still alive. If not, kill self
 		if (boss == null || !boss.isAlive()) {
@@ -153,7 +153,7 @@ public class BlindnessVeil extends Cannon {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(EnderDragonFridaysPlugin.plugin, this, time);
 		
 		//actually launch blindness 
-		Bukkit.getPluginManager().callEvent(new BlindnessVeilEvent(boss.getDragon(), null, boss.getDragon().getLocation().add(offsetX, offsetY, offsetZ)));
+		Bukkit.getPluginManager().callEvent(new BlindnessVeilEvent(boss.getEntity(), null, boss.getEntity().getLocation().add(offsetX, offsetY, offsetZ)));
 		
 		
 	}

@@ -133,7 +133,7 @@ public class FireballCannon extends Cannon {
 	
 	@Override
 	public void run() {
-		LivingEntity dDragon = boss.getDragon();
+		LivingEntity dDragon = boss.getEntity();
 
 		//very first, make sure boss is still alive. If not, kill self
 		if (boss == null || !boss.isAlive()) {
@@ -169,7 +169,7 @@ public class FireballCannon extends Cannon {
 			int startIndex = listIndex;
 			do {
 				player = Bukkit.getPlayer(boss.getDamageList().get(listIndex));
-				if (!player.getWorld().getName().equals(boss.getDragon().getWorld().getName())) {
+				if (!player.getWorld().getName().equals(boss.getEntity().getWorld().getName())) {
 					listIndex++;
 					continue;
 				}
@@ -180,7 +180,7 @@ public class FireballCannon extends Cannon {
 			break;
 		
 		case RANDOM:
-			List<Player> plays = boss.getDragon().getWorld().getPlayers();
+			List<Player> plays = boss.getEntity().getWorld().getPlayers();
 			
 			if (plays.isEmpty()) {
 				target = null;
@@ -196,7 +196,7 @@ public class FireballCannon extends Cannon {
 			boolean go = true;
 			Entity next;
 			for (int i = 10; go == true && i < 200; i++) {
-				List<Entity> players = boss.getDragon().getNearbyEntities(i, 150, i);
+				List<Entity> players = boss.getEntity().getNearbyEntities(i, 150, i);
 				if (players.isEmpty())
 					continue;
 				Iterator<Entity> it = players.iterator();
@@ -220,7 +220,7 @@ public class FireballCannon extends Cannon {
 		
 		if (target != null) {
 			//actually launch fireball if we have a target
-			Bukkit.getPluginManager().callEvent(new FireFireballEvent(boss.getDragon(), target, boss.getDragon().getLocation().add(offsetX, offsetY, offsetZ)));
+			Bukkit.getPluginManager().callEvent(new FireFireballEvent(boss.getEntity(), target, boss.getEntity().getLocation().add(offsetX, offsetY, offsetZ)));
 		}
 		
 	}

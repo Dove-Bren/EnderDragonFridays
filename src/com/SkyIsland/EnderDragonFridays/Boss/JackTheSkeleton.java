@@ -125,7 +125,7 @@ public class JackTheSkeleton implements Listener, Boss {
 		//Register this class as a listener
 	}
 	
-	public LivingEntity getDragon() {
+	public LivingEntity getEntity() {
 		return this.dragon;
 	}
 	
@@ -211,7 +211,7 @@ public class JackTheSkeleton implements Listener, Boss {
 	 * kills the fight.
 	 */
 	public void win() {
-		killDragon();
+		kill();
 		Location loc = dragon.getLocation();
 		World world = dragon.getWorld();
 		Random rand = new Random();
@@ -317,7 +317,7 @@ public class JackTheSkeleton implements Listener, Boss {
 		}
 	}
 
-	public void killDragon() {
+	public void kill() {
 		healthbar.damage(healthbar.getMaxHealth());
 		healthbar.remove();
 		if (!dragon.isDead()) {

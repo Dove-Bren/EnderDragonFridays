@@ -99,7 +99,7 @@ public class EnderDragon implements Listener, Boss {
 		//Register this class as a listener
 	}
 	
-	public LivingEntity getDragon() {
+	public LivingEntity getEntity() {
 		return this.dragon;
 	}
 	
@@ -178,7 +178,7 @@ public class EnderDragon implements Listener, Boss {
 	 * kills the fight.
 	 */
 	public void win() {
-		killDragon();
+		kill();
 		Map<UUID, Inventory> rewardMap = ChestContentGenerator.generate(5 + (this.level / 5), this.damageMap);
 		spawnRewards(rewardMap);
 		congradulatePlayers(this.damageMap);
@@ -273,7 +273,7 @@ public class EnderDragon implements Listener, Boss {
 		f.setDirection(launchV.normalize());
 	}
 
-	public void killDragon() {
+	public void kill() {
 		if (!dragon.isDead())
 		dragon.damage(dragon.getMaxHealth());
 	}
