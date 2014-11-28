@@ -21,13 +21,9 @@ import com.SkyIsland.EnderDragonFridays.Boss.Cannon.Events.FireFireballEvent;
  */
 public class FireballCannon extends Cannon {
 	
-	private double d_min;
-	private double d_max;
-	private double d_incr;
-	private int d_incr_range;
+
 	private Random rand;
 	private Boss boss;
-	private TargetType targetType;
 	private double offsetX, offsetY, offsetZ;
 	private int listIndex;
 	
@@ -95,8 +91,9 @@ public class FireballCannon extends Cannon {
 		this.boss = boss;
 		this.targetType = type;
 		
-		this.d_min = min_delay;
-		this.d_max = max_delay;
+		this.delayMin = min_delay;
+		this.delayMax = max_delay;
+		
 		
 		this.offsetX = offsetX;
 		this.offsetY = offsetY;
@@ -105,28 +102,28 @@ public class FireballCannon extends Cannon {
 		listIndex = 0;
 		
 		//make sure min and max aren't reversed
-		if (d_min > d_max) {
-			d_max = min_delay;
-			d_min = max_delay;
+		if (delayMin > delayMax) {
+			delayMax = min_delay;
+			delayMin = max_delay;
 		}
 		
 		//make sure increments aren't negative
-		d_incr = Math.abs(increments);
+		delayIncr = Math.abs(increments);
 		
 		//we need to make sure the increments are sound
-		if ( ((d_max - d_min) / d_incr) % 1 <= .0001) {
+		if ( ((delayMax - delayMin) / delayIncr) % 1 <= .0001) {
 			//if increments doesn't 'evenly' divide our range, we're in trouble
 			//so we'll round to nearest increment that would
-			float even = (int) Math.round((d_max - d_min) / d_incr);
-			d_incr = (d_max - d_min) / even; 
+			float even = (int) Math.round((delayMax - delayMin) / delayIncr);
+			delayIncr = (delayMax - delayMin) / even; 
 		}
 		
-		d_incr_range = (int) Math.round((d_max - d_min) / d_incr); //store so we don't have to do this math over and over again
+		delayRange = (int) Math.round((delayMax - delayMin) / delayIncr); //store so we don't have to do this math over and over again
 		
-		//create out random
+		//create our random
 		rand = new Random();
 		
-		Long time = (long) (d_min + (d_incr * (rand.nextInt(d_incr_range)))); 
+		Long time = (long) (delayMin + (delayIncr * (rand.nextInt(delayRange)))); 
 		
 		Bukkit.getScheduler().scheduleSyncDelayedTask(EnderDragonFridaysPlugin.plugin, this, time);
 	}
@@ -139,7 +136,7 @@ public class FireballCannon extends Cannon {
 		if (boss == null || !boss.isAlive()) {
 			return;
 		}
-		Long time = (long) (d_min + (d_incr * (rand.nextInt(d_incr_range))));
+		Long time = (long) (delayMin + (delayIncr * (rand.nextInt(delayRange))));
 		
 		//make sure there are players to fire at
 		if (dDragon.getWorld().getPlayers().isEmpty()) {

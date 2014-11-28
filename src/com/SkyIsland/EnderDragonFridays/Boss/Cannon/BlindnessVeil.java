@@ -1,26 +1,19 @@
 package com.SkyIsland.EnderDragonFridays.Boss.Cannon;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Boss.Boss;
 import com.SkyIsland.EnderDragonFridays.Boss.Cannon.Events.BlindnessVeilEvent;
-import com.SkyIsland.EnderDragonFridays.Boss.Cannon.Events.FireFireballEvent;
 
 /**
- * 
+ * A blindnessVeil continuously casts blindness on all players in the world.
  * @author Skyler
- * @note This could be extracted out to 'body part' class. There could be two. One that's independent and one that just
- * 			exists. I.e. one that extends thread and one that doens't get it's own.
  */
-public class BlindnessVeil extends Cannon {
+public class BlindnessVeil extends BossComponent {
 	
 	private double d_min;
 	private double d_max;
@@ -28,21 +21,17 @@ public class BlindnessVeil extends Cannon {
 	private int d_incr_range;
 	private Random rand;
 	private Boss boss;
-	private TargetType targetType;
 	private double offsetX, offsetY, offsetZ;
 	
 	/**
-	 * Creates a fireball cannon with the provided min and max delay. Increments default to 1/10 the range.
-	 * The offset from where the fireballs are launched relative to the boss is defaulted to 0. <u>This
-	 * is not encouraged</u>, as multiple fireballs spawned at the same location either explode or bounce off
-	 * in a random direction.
+	 * Instantiates a BlindnessViel. 
 	 * @param boss The {@link com.SkyIsland.EnderDragonFridays.Boss.Boss Boss} to fire cannonballs from.
 	 * @param type What {@link com.SkyIsland.EnderDragonFridays.Boss.Cannon.TargetType targeting type} is used.
 	 * @param min_delay The smallest amount of time (<b>in ticks</b>) to wait before firing again
 	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
 	 */
-	public BlindnessVeil(Boss boss, TargetType type, double min_delay, double max_delay) {
-		this(boss, type, min_delay, max_delay, (max_delay-min_delay)/10); //default to 1/10 the range as increments
+	public BlindnessVeil(Boss boss, double min_delay, double max_delay) {
+		this(boss, min_delay, max_delay, (max_delay-min_delay)/10); //default to 1/10 the range as increments
 	}
 	
 	/**
@@ -56,8 +45,8 @@ public class BlindnessVeil extends Cannon {
 	 * @param max_delay The largest amount of time (<b>also in ticks</b>) to wait before firing again
 	 * @param increments The smallest amount of time (<b>again, in ticks</b>) in-between different firing times.
 	 */
-	public BlindnessVeil(Boss boss, TargetType type, double min_delay, double max_delay, double increments) {
-		this(boss, type, min_delay, max_delay, increments, 0.0, 0.0, 0.0);
+	public BlindnessVeil(Boss boss, double min_delay, double max_delay, double increments) {
+		this(boss, min_delay, max_delay, increments, 0.0, 0.0, 0.0);
 	}
 	
 	/**
@@ -73,8 +62,8 @@ public class BlindnessVeil extends Cannon {
 	 * @param offsetY The offset the fireball will be created from in relation to the boss
 	 * @param offsetZ The offset the fireball will be created from in relation to the boss
 	 */
-	public BlindnessVeil(Boss boss, TargetType type, double min_delay, double max_delay, double offsetX, double offsetY, double offsetZ) {
-		this(boss, type, min_delay, max_delay, (max_delay - min_delay) / 10, offsetX, offsetY, offsetZ);
+	public BlindnessVeil(Boss boss, double min_delay, double max_delay, double offsetX, double offsetY, double offsetZ) {
+		this(boss, min_delay, max_delay, (max_delay - min_delay) / 10, offsetX, offsetY, offsetZ);
 	}
 	
 	/**
@@ -91,9 +80,8 @@ public class BlindnessVeil extends Cannon {
 	 * @param offsetY The offset the fireball will be created from in relation to the boss
 	 * @param offsetZ The offset the fireball will be created from in relation to the boss
 	 */
-	public BlindnessVeil(Boss boss, TargetType type, double min_delay, double max_delay, double increments, double offsetX, double offsetY, double offsetZ) {
+	public BlindnessVeil(Boss boss, double min_delay, double max_delay, double increments, double offsetX, double offsetY, double offsetZ) {
 		this.boss = boss;
-		this.targetType = type;
 		
 		this.d_min = min_delay;
 		this.d_max = max_delay;
