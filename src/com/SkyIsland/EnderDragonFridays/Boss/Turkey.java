@@ -1,5 +1,6 @@
 package com.SkyIsland.EnderDragonFridays.Boss;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.Inventory;
@@ -28,7 +30,7 @@ import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Boss.Component.ChickenMinion;
 import com.SkyIsland.EnderDragonFridays.Boss.Component.ChickenRegroupEvent;
 
-public class Turkey implements Boss {
+public class Turkey implements Boss, Listener {
 	
 	/**
 	 * A concrete list of all the living entities involved with this boss
@@ -82,6 +84,7 @@ public class Turkey implements Boss {
 					+ " is null!" + ChatColor.RESET);
 			return;
 		}
+		this.world = world;
 		if (name == null) {
 			//hardcoded default!
 			name = "Kjilnor the Fierce";
@@ -119,6 +122,11 @@ public class Turkey implements Boss {
 		
 		entities = new LinkedList<LivingEntity>();
 		entities.add(dragon);
+		chickens = new LinkedList<ChickenMinion>();
+		
+		damageMap = new HashMap<UUID, Double>();
+		
+		Bukkit.getPluginManager().registerEvents(this,  EnderDragonFridaysPlugin.plugin);
 	}
 	
 	@EventHandler

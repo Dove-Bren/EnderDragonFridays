@@ -19,7 +19,9 @@ import com.SkyIsland.EnderDragonFridays.Boss.Boss;
 import com.SkyIsland.EnderDragonFridays.Boss.EnderDragon;
 import com.SkyIsland.EnderDragonFridays.Boss.JackTheSkeleton;
 import com.SkyIsland.EnderDragonFridays.Boss.MegaDragon;
+import com.SkyIsland.EnderDragonFridays.Boss.Turkey;
 import com.SkyIsland.EnderDragonFridays.Name.BossNameGenerator;
+import com.SkyIsland.EnderDragonFridays.Name.TurkeyNameGenerator;
 import com.SkyIsland.EnderDragonFridays.Name.WitherNameGenerator;
 import com.griefcraft.lwc.LWCPlugin;
 
@@ -144,6 +146,10 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 					}
 					if (args.length >= 2 && args[1].equalsIgnoreCase("halloween") && Bukkit.getWorld(worldName).getDifficulty() != Difficulty.PEACEFUL) {
 						boss = new JackTheSkeleton(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), (new WitherNameGenerator()).getName());
+						return true;
+					}
+					if (args.length >= 2 && args[1].equalsIgnoreCase("thanksgiving") && Bukkit.getWorld(worldName).getDifficulty() != Difficulty.PEACEFUL) {
+						boss = new Turkey(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), (new TurkeyNameGenerator()).getName());
 						return true;
 					}
 					//else they didn't sepcify or it is something else

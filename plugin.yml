@@ -36,7 +36,7 @@ commands:
         permission: enderdragonfridays.killalldragons
     enderdragonfridays:
         permission: enderdragonfridays.*
-        usage: /edf [reload / start [mega]]
+        usage: /edf [reload / start [mega / halloween / thanksgiving]]
         description: Executes a command for ender dragon fridays plugin
         aliases: edf
     windragonwars:

@@ -2,6 +2,7 @@ package com.SkyIsland.EnderDragonFridays.Boss.Component;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Chicken;
@@ -9,6 +10,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.potion.PotionEffect;
@@ -17,7 +20,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Boss.Boss;
 
-public class ChickenMinion {
+public class ChickenMinion implements Listener {
 	
 	private Chicken chicken;
 	
@@ -43,6 +46,7 @@ public class ChickenMinion {
 		vehicle.setTarget(players.get(EnderDragonFridaysPlugin.rand.nextInt(players.size())));
 		//lulz attack a random player in the world
 		
+		Bukkit.getPluginManager().registerEvents(this, EnderDragonFridaysPlugin.plugin);
 		
 	}
 	
@@ -65,6 +69,14 @@ public class ChickenMinion {
 			if (!vehicle.isDead()) {
 				vehicle.remove();
 			}
+		}
+	}
+	
+	@EventHandler
+	public void chickenDamage(EntityDamageEvent e) {
+		//make sure our wolf doesn't die from fall damage
+		if (e.getEntity() == vehicle) {
+			e.setCancelled(true);
 		}
 	}
 	
