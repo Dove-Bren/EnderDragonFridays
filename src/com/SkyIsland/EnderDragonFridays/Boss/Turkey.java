@@ -190,7 +190,7 @@ public class Turkey implements Boss, Listener {
 				health -= 1;
 				
 				world.playEffect(chicken.getLocation(), Effect.GHAST_SHRIEK, 1007); //play ender effect
-				player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 10, 1));
+				player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 300, 1));
 				
 				//regroup every so often back into a dragon. This should happen n times per fight, where
 				//n is the number of people playing!
