@@ -181,7 +181,8 @@ public class Turkey implements Boss {
 				//remove 1 from the boss's health
 				health -= 1;
 				
-				world.playEffect(chicken.getLocation(), Effect.ENDER_SIGNAL, 2003); //play ender effect
+				world.playEffect(chicken.getLocation(), Effect.GHAST_SHRIEK, 1007); //play ender effect
+				player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 10, 1));
 				
 				//regroup every so often back into a dragon. This should happen n times per fight, where
 				//n is the number of people playing!
@@ -248,6 +249,7 @@ public class Turkey implements Boss {
 		}
 		
 		dragon.remove();
+		dragonForm = false;
 	}
 	
 	private void groupUp() {
@@ -268,6 +270,7 @@ public class Turkey implements Boss {
 		
 		entities = new LinkedList<LivingEntity>();
 		entities.add(dragon);
+		dragonForm = true;
 	}
 	
 	
