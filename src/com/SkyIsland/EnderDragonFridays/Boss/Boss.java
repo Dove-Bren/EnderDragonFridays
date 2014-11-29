@@ -21,8 +21,6 @@ import org.bukkit.inventory.Inventory;
  */
 public interface Boss {
 	
-	public boolean isLiving();
-	
 	public boolean isAlive();
 	
 	public LivingEntity getEntity();

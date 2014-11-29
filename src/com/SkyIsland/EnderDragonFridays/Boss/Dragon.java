@@ -2,7 +2,6 @@ package com.SkyIsland.EnderDragonFridays.Boss;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,11 +10,9 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -28,7 +25,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.util.Vector;
 
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
-import com.SkyIsland.EnderDragonFridays.Boss.Cannon.FireballCannon;
 import com.SkyIsland.EnderDragonFridays.Boss.Cannon.Events.FireFireballEvent;
 import com.SkyIsland.EnderDragonFridays.Items.ChestContentGenerator;
 import com.griefcraft.model.Protection;
@@ -42,14 +38,6 @@ public abstract class Dragon implements Listener, Boss {
 	protected double damageTaken;
 	protected Location chestAreaBL;
 	
-	public boolean isLiving() {
-		if (dragon == null) {
-			return false;
-		}
-
-		return !dragon.isDead();
-		//Register this class as a listener
-	}
 	
 	public LivingEntity getEntity() {
 		return this.dragon;

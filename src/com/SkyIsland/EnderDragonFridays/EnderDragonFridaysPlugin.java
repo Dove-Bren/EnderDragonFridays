@@ -2,6 +2,7 @@ package com.SkyIsland.EnderDragonFridays;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
@@ -34,6 +35,7 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	
 	public static LWCPlugin lwcPlugin;
 	public static EnderDragonFridaysPlugin plugin;
+	public static Random rand;
 	
 	private static final String configFilename = "config.yml";
 	private File configFile;
@@ -52,6 +54,9 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		if (lwcPlugin == null) {
 			getLogger().info("lwc is null");
 		}
+		
+		rand = new Random();
+		
 		load();
 	}
 	
