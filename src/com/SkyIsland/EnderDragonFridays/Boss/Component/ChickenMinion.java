@@ -133,7 +133,7 @@ public class ChickenMinion implements Listener {
 	@EventHandler
 	public void chickenDeath(EntityDeathEvent e) {
 		if (e.getEntity() == chicken) {
-			if (!vehicle.isDead()) {
+			if (vehicle != null && !vehicle.isDead()) {
 				vehicle.remove();
 			}
 		}
