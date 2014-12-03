@@ -125,7 +125,7 @@ public class ChickenMinion implements Listener {
 			chicken.getWorld().playEffect(chicken.getLocation(), Effect.ENDER_SIGNAL, 2003);
 			chicken.remove();
 		}
-		if (!vehicle.isDead()) {
+		if (vehicle != null && !vehicle.isDead()) {
 			vehicle.remove();
 		}
 	}
