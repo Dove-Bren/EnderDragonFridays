@@ -162,5 +162,15 @@ public class ChickenMinion implements Listener {
 	public Chicken getChicken() {
 		return this.chicken;
 	}
+	
+	public void kill() {
+		//kill entities if they aren't dead
+		if (!chicken.isDead()) {
+			chicken.remove();
+		}
+		if (vehicle != null && !vehicle.isDead()) {
+			vehicle.remove();
+		}
+	}
 
 }

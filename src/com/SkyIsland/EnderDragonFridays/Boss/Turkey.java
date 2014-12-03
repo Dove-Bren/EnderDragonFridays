@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,6 +30,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Boss.Component.ChickenMinion;
 import com.SkyIsland.EnderDragonFridays.Boss.Component.ChickenRegroupEvent;
+import com.SkyIsland.EnderDragonFridays.Items.ChestContentGenerator;
 
 public class Turkey implements Boss, Listener {
 	
@@ -226,7 +228,7 @@ public class Turkey implements Boss, Listener {
 		else {
 			//make sure it dies
 			((LivingEntity) e.getEntity()).damage(maxHealth);
-			win();
+			win(7);
 		}
 		
 		
@@ -331,8 +333,17 @@ public class Turkey implements Boss, Listener {
 
 	@Override
 	public void win() {
-		alive = false;
+		win(5);
+	}
+	
+	public void win(int base) {
+		if (alive) {
+			kill();
+		}
 		
+		Map<UUID, Inventory> rewardMap = ChestContentGenerator.generate(base + (this.level / 5), this.damageMap);
+		spawnRewards(rewardMap);
+		congradulatePlayers(this.damageMap);
 	}
 
 	@Override
@@ -343,13 +354,46 @@ public class Turkey implements Boss, Listener {
 
 	@Override
 	public void kill() {
-		// TODO Auto-generated method stub
-		
+		alive = false;
+
+		if (!entities.isEmpty()) {
+			for (Entity e : entities) {
+				if (!e.isDead()) {
+					e.remove();
+				}
+			}
+			entities.clear();
+		}
+		if (!chickens.isEmpty()) {
+			for (ChickenMinion ch : chickens) {
+				ch.kill();
+			}
+			chickens.clear();
+		}
 	}
 
 	@Override
 	public List<UUID> getDamageList() {
 		return new LinkedList<UUID>(damageMap.keySet());
+	}
+	
+	/**
+	 * Print out custom message to player letting them know how they did
+	 * @param map
+	 */
+	public void congradulatePlayers(Map<UUID, Double> map) {
+		for (Entry<UUID, Double> entry : map.entrySet()) {
+			
+			Player player = Bukkit.getPlayer(entry.getKey());
+			try{
+				player.sendMessage("Nice Fight!\n  "
+					+ "You did " + (entry.getValue().intValue()) + " points of damage!\n"
+							+ "Your contribution was " + ((entry.getValue() / maxHealth) * 100) + "%!");
+			}
+			catch (Exception e){
+				//Player wasn't online anymore
+			}
+		}
 	}
 	
 }
