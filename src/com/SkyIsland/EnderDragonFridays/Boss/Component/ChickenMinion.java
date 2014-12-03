@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
@@ -16,6 +17,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Boss.Boss;
@@ -28,10 +30,48 @@ public class ChickenMinion implements Listener {
 	
 	private Boss boss;
 	
+	private boolean falling;
+	
+	private FallDetector fallDetector;
+	
+	private class FallDetector extends BukkitRunnable {
+		
+		private Chicken chicken;
+		
+		public FallDetector(Chicken chicken) {
+			this.chicken = chicken;
+			System.out.println("Creating FAll Detector!");
+		}
+		
+		@Override
+		public void run() {
+			//check if chicken has landed
+			if (chicken == null) {
+				return;
+			}
+			if (chicken.isOnGround()) {
+				Bukkit.getPluginManager().callEvent(new ChickenLandEvent(chicken));
+				chicken = null;
+			}
+		}
+	
+	}
+	
 	public ChickenMinion(Boss boss, Location loc) {
 		this.boss = boss;
-		vehicle = (Wolf) loc.getWorld().spawnEntity(loc, EntityType.WOLF);
+		this.falling = true;
 		chicken = (Chicken) loc.getWorld().spawnEntity(loc, EntityType.CHICKEN);
+		chicken.setRemoveWhenFarAway(false);
+		
+		Bukkit.getPluginManager().registerEvents(this, EnderDragonFridaysPlugin.plugin);
+		
+		fallDetector = new FallDetector(chicken);
+		fallDetector.runTaskTimer(EnderDragonFridaysPlugin.plugin, 10, 10);
+		
+	}
+	
+	private void mount() {
+		vehicle = (Wolf) chicken.getWorld().spawnEntity(chicken.getLocation(), EntityType.WOLF);
 		vehicle.setPassenger(chicken);
 		vehicle.setBaby();
 		vehicle.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 99999999, 1));
@@ -39,15 +79,42 @@ public class ChickenMinion implements Listener {
 		vehicle.setTamed(false);
 		vehicle.setAngry(true);
 		vehicle.setRemoveWhenFarAway(false);
-		chicken.setRemoveWhenFarAway(false);
 		vehicle.setAgeLock(true);
 		
-		List<Player> players = loc.getWorld().getPlayers();
+		List<Player> players = chicken.getWorld().getPlayers();
 		vehicle.setTarget(players.get(EnderDragonFridaysPlugin.rand.nextInt(players.size())));
 		//lulz attack a random player in the world
 		
-		Bukkit.getPluginManager().registerEvents(this, EnderDragonFridaysPlugin.plugin);
 		
+	}
+	
+	@EventHandler
+	public void land(ChickenLandEvent e) {
+		if (this.falling && e.getChicken().equals(chicken)) {
+			//our chicken has landed
+			
+			mount();
+			this.falling = false;
+			this.fallDetector.cancel();
+			this.fallDetector = null;
+			
+			if (vehicle.getTarget() == null) {
+				return;
+			}
+			
+			//is our new fighter too far away?
+			if (vehicle.getLocation().distance(vehicle.getTarget().getLocation()) > 30 || !vehicle.hasLineOfSight(vehicle.getTarget())) {
+				//if far away or behind a wall, teleport them close
+				//teleport each entity separately because it doesn't work if vehicle stuff
+				vehicle.eject();
+				if (chicken.isInsideVehicle()) {
+					chicken.leaveVehicle();
+				}
+				vehicle.teleport(vehicle.getTarget().getLocation().add(EnderDragonFridaysPlugin.rand.nextDouble() * 20, 10, EnderDragonFridaysPlugin.rand.nextDouble() * 20));
+				chicken.teleport(vehicle.getLocation());
+				vehicle.setPassenger(chicken);
+			}
+		}
 	}
 	
 	
