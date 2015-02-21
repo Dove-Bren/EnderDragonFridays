@@ -44,13 +44,11 @@ public class ChestContentGenerator {
 	private static final File backupFile = new File(EnderDragonFridaysPlugin.plugin.getDataFolder(), "backup.yml");
 	
 	
-	{
+	public static Map<UUID, Inventory> generate(double rarity, Map<UUID, Double> inputMap) {
+		
 
 		backup = new YamlConfiguration();
 		setupBackup();
-	}
-	
-	public static Map<UUID, Inventory> generate(double rarity, Map<UUID, Double> inputMap) {
 		
 		//First, create our generator
 		//get some name generators
@@ -91,12 +89,12 @@ public class ChestContentGenerator {
 				item = gen.generateItem(  inputMap.get(uuid)  );
 				
 				//record generated item incase of accidents
-				backup.set(uuid + ".item1", item);
+				backup.set(Bukkit.getPlayer(uuid).getName() + uuid + ".item1", item);
 				chest.addItem(item); //generate item. Use the double passed with player as weight
 				
 				//do again
 				item = gen.generateItem(  inputMap.get(uuid)  );
-				backup.set(uuid + ".item2", item);
+				backup.set(Bukkit.getPlayer(uuid).getName() + uuid + ".item2", item);
 				chest.addItem(item);
 				//chest.addItem(new ItemStack(Material.DIAMOND_AXE));
 				
@@ -115,7 +113,7 @@ public class ChestContentGenerator {
 					egg.setItemMeta(meta);
 					
 
-					backup.set(uuid + ".egg", item);
+					backup.set(Bukkit.getPlayer(uuid).getName() + uuid + ".egg", item);
 					chest.addItem(egg);
 					EnderDragonFridaysPlugin.plugin.getLogger().info("Gave an egg to " + player.getDisplayName());
 				}
