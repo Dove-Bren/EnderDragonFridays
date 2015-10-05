@@ -23,7 +23,6 @@ import com.SkyIsland.EnderDragonFridays.Boss.Turkey;
 import com.SkyIsland.EnderDragonFridays.Name.BossNameGenerator;
 import com.SkyIsland.EnderDragonFridays.Name.TurkeyNameGenerator;
 import com.SkyIsland.EnderDragonFridays.Name.WitherNameGenerator;
-import com.griefcraft.lwc.LWCPlugin;
 
 /**
  * The EnderDragonFridaysPlugin makes an Ender Boss appear once a week in the end.
@@ -35,7 +34,6 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	private Boss boss;
 	private BossNameGenerator bossName;
 	
-	public static LWCPlugin lwcPlugin;
 	public static EnderDragonFridaysPlugin plugin;
 	public static Random rand;
 	
@@ -52,10 +50,6 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	public void onEnable() {
 		boss = null;
 		bossName = new BossNameGenerator();
-		lwcPlugin = (LWCPlugin) Bukkit.getPluginManager().getPlugin("LWC");
-		if (lwcPlugin == null) {
-			getLogger().info("lwc is null");
-		}
 		
 		rand = new Random();
 		
@@ -63,7 +57,6 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	}
 	
 	public void onDisable() {
-		lwcPlugin = null;
 		if (boss != null && boss.isAlive()){
 			boss.kill();
 		}

@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,9 +13,7 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
@@ -35,8 +33,6 @@ import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Boss.Component.ChickenMinion;
 import com.SkyIsland.EnderDragonFridays.Boss.Component.ChickenRegroupEvent;
 import com.SkyIsland.EnderDragonFridays.Items.ChestContentGenerator;
-import com.griefcraft.model.Protection;
-import com.griefcraft.sql.PhysDB;
 
 public class Turkey implements Boss, Listener {
 	
@@ -79,6 +75,8 @@ public class Turkey implements Boss, Listener {
 	 */
 	private World world;
 	
+	private Location chestAreaBL;
+	
 	private int level;
 	
 	
@@ -93,6 +91,9 @@ public class Turkey implements Boss, Listener {
 			return;
 		}
 		this.world = world;
+		
+		chestAreaBL = world.getSpawnLocation();
+		
 		if (name == null) {
 			//hardcoded default!
 			name = "Kjilnor the Fierce";
@@ -354,7 +355,7 @@ public class Turkey implements Boss, Listener {
 
 	@Override
 	public void spawnRewards(Map<UUID, Inventory> map) {
-		//spawn chests at random in 10x10 area with bottom left block at location chestAreaBL
+		//spawn the loot chest, and create inventories for every player
 		
 		//first make sure map isn't empty. If it is... something went wrong, but we're just 
 		//going to ignore it for now
@@ -362,50 +363,21 @@ public class Turkey implements Boss, Listener {
 			EnderDragonFridaysPlugin.plugin.getLogger().info("Map of contributions was empty!\nSpawning no rewards...");
 			return;
 		}
-		System.out.println("Called \"Spawn Rewards\" ! %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-		//We just put chests in a linear fashion. We do cap x to 10. <b>this is a magic number</b>
-		int index = 0;
-		double x, y;
-		for (Entry<UUID, Inventory> entry : map.entrySet()) {
-			x = (index % 11);
-			y = (int) Math.floor(index / 11);
-			Player player = Bukkit.getPlayer(entry.getKey());
-			
-			Block block = world.getSpawnLocation().getBlock().getLocation().add(x,0,y).getBlock();
-			block.setType(Material.CHEST);
-			Chest chest = (Chest) block.getState();
-			chest.getInventory().setContents(entry.getValue().getContents()); //bummer I thought we would be able to just hand it the inv
-			doExtras(chest, player);
-			index += 2;
-			System.out.println("Index now equals : " + index);
-			
-			EnderDragonFridaysPlugin.plugin.getLogger().info("Created a chest for player " + player.getDisplayName() + " at " + chest.getLocation().toString());
+		
+		//do fancy stuff
+		chestAreaBL.getWorld().spawnEntity(chestAreaBL, EntityType.LIGHTNING);
 
-			}
+		//Create our loot chest
+		chestAreaBL.getBlock().setType(Material.CHEST);
+		Chest chest = (Chest) chestAreaBL.getBlock().getState();
 		
-	}
-	
-	@SuppressWarnings("deprecation")
-	public void doExtras(Chest chest, Player player) {
-		//for EDF's, we want to lock the chest and put a sign above it telling who's it is
-		//Protection protection;
-		PhysDB physDb = EnderDragonFridaysPlugin.lwcPlugin.getLWC().getPhysicalDatabase();
-		
-		String worldName = world.getName();
-		/*protection = */
-		physDb.registerProtection(chest.getTypeId(), Protection.Type.PRIVATE, worldName, player.getName(), "", chest.getX(), chest.getY(), chest.getZ());
-		
-		EnderDragonFridaysPlugin.plugin.getLogger().info("success?");
-
-		//Now create a sign above it
-		Block block = chest.getLocation().add(0,1,0).getBlock();
-		block.setType(Material.SIGN_POST);
-		Sign sign = (Sign) block.getState();
-		sign.setLine(1, player.getName());
-		sign.update();
-		//register the sign
-		physDb.registerProtection(sign.getTypeId(), Protection.Type.PRIVATE, worldName, player.getName(), "", sign.getX(), sign.getY(), sign.getZ());
-		
+		//tell players it's there
+		for (Player p : chestAreaBL.getWorld().getPlayers()) {
+			p.sendMessage("The loot chest has been generated at (" 
+		+ chestAreaBL.getBlockX() + ", "
+		+ chestAreaBL.getBlockY() + ", "
+		+ chestAreaBL.getBlockZ() + ")");
+		}
 	}
 	
 	@Override
