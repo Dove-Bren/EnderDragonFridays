@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -22,7 +23,7 @@ import org.bukkit.entity.Player;
  */
 public interface Boss {
 	
-	public void start(double difficulty);
+	public void start(Location startLocation);
 	
 	public boolean isAlive();
 	

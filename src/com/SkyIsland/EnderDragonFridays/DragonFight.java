@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -45,11 +46,14 @@ public class DragonFight implements Listener {
 	
 	private double difficultyBase;
 	
-	public DragonFight(Boss boss, double difficulty, double difficultyBase, Location chestLocation) {
+	private World world;
+	
+	public DragonFight(World world, Boss boss, double difficulty, double difficultyBase, Location chestLocation) {
 		this.boss = boss;
 		this.chestLocation = chestLocation;
 		this.difficulty = difficulty;
 		this.difficultyBase = difficultyBase;
+		this.world = world;
 		
 		this.state = State.PREFIGHT;
 		
@@ -67,7 +71,7 @@ public class DragonFight implements Listener {
 		}
 		
 		state = State.DURING;
-		boss.start(difficulty);
+		boss.start(world.getSpawnLocation().add(0, 50.0, 0));
 		
 		return true;
 	}

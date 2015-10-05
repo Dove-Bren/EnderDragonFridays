@@ -11,9 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Chest;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
@@ -25,14 +23,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Boss.Component.ChickenMinion;
 import com.SkyIsland.EnderDragonFridays.Boss.Component.ChickenRegroupEvent;
-import com.SkyIsland.EnderDragonFridays.Items.ChestContentGenerator;
 
 public class Turkey implements Boss, Listener {
 	
@@ -75,24 +71,19 @@ public class Turkey implements Boss, Listener {
 	 */
 	private World world;
 	
-	private Location chestAreaBL;
-	
 	private int level;
 	
 	
-	public Turkey(World world, int level) {
-		this(world, level, null);
+	public Turkey(int level) {
+		this(level, null);
 	}
 	
-	public Turkey(World world, int level, String name) {
+	public Turkey(int level, String name) {
 		if (world == null) {
 			EnderDragonFridaysPlugin.plugin.getLogger().info(ChatColor.RED + "INVALID TURKEY CREATION! WORLD"
 					+ " is null!" + ChatColor.RESET);
 			return;
 		}
-		this.world = world;
-		
-		chestAreaBL = world.getSpawnLocation();
 		
 		if (name == null) {
 			//hardcoded default!
@@ -118,8 +109,16 @@ public class Turkey implements Boss, Listener {
 		 */
 		maxHealth = (int) (Math.log(level)/Math.log(2) + 1) * (25);
 		health = maxHealth;
+
 		
+		damageMap = new HashMap<UUID, Double>();
+		
+	}
+	
+	@Override
+	public void start(Location startingLocation) {
 		dragonForm = true;
+		this.world = startingLocation.getWorld();
 		
 		org.bukkit.entity.EnderDragon dragon = (EnderDragon) world.spawnEntity(world.getSpawnLocation().add(0, 50, 0), EntityType.ENDER_DRAGON);
 		
@@ -132,8 +131,6 @@ public class Turkey implements Boss, Listener {
 		entities = new LinkedList<LivingEntity>();
 		entities.add(dragon);
 		chickens = new LinkedList<ChickenMinion>();
-		
-		damageMap = new HashMap<UUID, Double>();
 		
 		Bukkit.getPluginManager().registerEvents(this,  EnderDragonFridaysPlugin.plugin);
 	}
@@ -235,7 +232,8 @@ public class Turkey implements Boss, Listener {
 		else {
 			//make sure it dies
 			((LivingEntity) e.getEntity()).damage(maxHealth);
-			win(7);
+			win();
+			Bukkit.getPluginManager().callEvent(new BossDeathEvent(this));
 		}
 		
 		
@@ -340,43 +338,8 @@ public class Turkey implements Boss, Listener {
 
 	@Override
 	public void win() {
-		win(5);
-	}
-	
-	public void win(int base) {
 		if (alive) {
 			kill();
-		}
-		
-		Map<UUID, Inventory> rewardMap = ChestContentGenerator.generate(base + (this.level / 5), this.damageMap);
-		spawnRewards(rewardMap);
-		congradulatePlayers(this.damageMap);
-	}
-
-	@Override
-	public void spawnRewards(Map<UUID, Inventory> map) {
-		//spawn the loot chest, and create inventories for every player
-		
-		//first make sure map isn't empty. If it is... something went wrong, but we're just 
-		//going to ignore it for now
-		if (map.isEmpty()) {
-			EnderDragonFridaysPlugin.plugin.getLogger().info("Map of contributions was empty!\nSpawning no rewards...");
-			return;
-		}
-		
-		//do fancy stuff
-		chestAreaBL.getWorld().spawnEntity(chestAreaBL, EntityType.LIGHTNING);
-
-		//Create our loot chest
-		chestAreaBL.getBlock().setType(Material.CHEST);
-		Chest chest = (Chest) chestAreaBL.getBlock().getState();
-		
-		//tell players it's there
-		for (Player p : chestAreaBL.getWorld().getPlayers()) {
-			p.sendMessage("The loot chest has been generated at (" 
-		+ chestAreaBL.getBlockX() + ", "
-		+ chestAreaBL.getBlockY() + ", "
-		+ chestAreaBL.getBlockZ() + ")");
 		}
 	}
 	
@@ -423,5 +386,28 @@ public class Turkey implements Boss, Listener {
 			}
 		}
 	}
+
+	@Override
+	public double getDamageTaken() {
+		return maxHealth - health;
+	}
+
+	@Override
+	public boolean equals(Boss boss) {
+		return toString().equals(boss.toString());
+	}
 	
+	@Override
+	public String toString() {
+		return "TurkeyBoss[" + name + "]";
+	}
+
+	@Override
+	public Map<UUID, Double> getDamageMap() {
+		return damageMap;
+	}
+	
+	public boolean isDragonForm() {
+		return dragonForm;
+	}
 }

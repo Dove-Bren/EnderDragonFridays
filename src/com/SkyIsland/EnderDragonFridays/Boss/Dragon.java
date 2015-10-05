@@ -9,9 +9,6 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Chest;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -20,12 +17,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.util.Vector;
 
-import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Boss.Cannon.Events.FireFireballEvent;
-import com.SkyIsland.EnderDragonFridays.Items.ChestContentGenerator;
 
 public abstract class Dragon implements Listener, Boss {
 
@@ -33,13 +27,14 @@ public abstract class Dragon implements Listener, Boss {
 	protected LivingEntity dragon;				//The actual Entity for the Ender Boss
 	protected Map<UUID, Double> damageMap;		//The damage each player has done to the ender dragon
 	protected double damageTaken;
-	protected Location chestAreaBL;
 	
-	
+
+	@Override
 	public LivingEntity getEntity() {
 		return this.dragon;
 	}
-	
+
+	@Override
 	public Player getMostDamage() {
 		if (damageMap.isEmpty()) {
 			return null;
@@ -107,45 +102,16 @@ public abstract class Dragon implements Listener, Boss {
 		//if the dragon has died
 		if (event.getEntity().equals(dragon)) {
 			win();
+			Bukkit.getPluginManager().callEvent(new BossDeathEvent(this));
 		}
 	}
 	
 	/**
-	 * Specifies that the fight was won. This is different from endFight in that this method spawns rewards and
-	 * kills the fight.
+	 * Wins the fight, taking care of the cleanup
 	 */
-	public void win(int base) {
-		kill();
-		Map<UUID, Inventory> rewardMap = ChestContentGenerator.generate(base + (this.level / 5), this.damageMap);
-		spawnRewards(rewardMap);
-		congradulatePlayers(this.damageMap);
-	}
-	
-	/**
-	 * Generic win command. <br />
-	 * Uses a base value of <b>5</b>
-	 */
+	@Override
 	public void win() {
-		win(5);
-	}
-	
-	/**
-	 * Print out custom message to player letting them know how they did
-	 * @param map
-	 */
-	public void congradulatePlayers(Map<UUID, Double> map) {
-		for (Entry<UUID, Double> entry : map.entrySet()) {
-			
-			Player player = Bukkit.getPlayer(entry.getKey());
-			try{
-				player.sendMessage("Nice Fight!\n  "
-					+ "You did " + (entry.getValue().intValue()) + " points of damage!\n"
-							+ "Your contribution was " + ((entry.getValue() / damageTaken) * 100) + "%!");
-			}
-			catch (Exception e){
-				//Player wasn't online anymore
-			}
-		}
+		kill();
 	}
 	
 	@EventHandler
@@ -163,11 +129,13 @@ public abstract class Dragon implements Listener, Boss {
 		f.setDirection(launchV.normalize());
 	}
 
+	@Override
 	public void kill() {
 		if (!dragon.isDead())
 		dragon.damage(dragon.getMaxHealth());
 	}
-	
+
+	@Override
 	public boolean isAlive(){
 		
 		if (dragon == null) {
@@ -176,8 +144,25 @@ public abstract class Dragon implements Listener, Boss {
 		
 		return (!dragon.isDead());
 	}
-	
+
+	@Override
 	public List<UUID> getDamageList() {
 		return new ArrayList<UUID>(damageMap.keySet());
+	}
+	
+	@Override
+	public Map<UUID, Double> getDamageMap() {
+		return damageMap;
+	}
+
+	@Override
+	public double getDamageTaken() {
+		return damageTaken;
+	}
+
+
+	@Override
+	public boolean equals(Boss boss) {
+		return boss.getEntity().getUniqueId().equals(dragon.getUniqueId());
 	}
 }
