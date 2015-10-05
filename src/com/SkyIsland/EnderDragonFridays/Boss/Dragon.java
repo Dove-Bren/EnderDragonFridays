@@ -129,33 +129,6 @@ public abstract class Dragon implements Listener, Boss {
 		win(5);
 	}
 	
-	public void spawnRewards(Map<UUID, Inventory> map) {
-		//spawn the loot chest, and create inventories for every player
-		
-		//first make sure map isn't empty. If it is... something went wrong, but we're just 
-		//going to ignore it for now
-		if (map.isEmpty()) {
-			EnderDragonFridaysPlugin.plugin.getLogger().info("Map of contributions was empty!\nSpawning no rewards...");
-			return;
-		}
-		
-		//do fancy stuff
-		chestAreaBL.getWorld().spawnEntity(chestAreaBL, EntityType.LIGHTNING);
-
-		//Create our loot chest
-		chestAreaBL.getBlock().setType(Material.CHEST);
-		Chest chest = (Chest) chestAreaBL.getBlock().getState();
-		
-		//tell players it's there
-		for (Player p : chestAreaBL.getWorld().getPlayers()) {
-			p.sendMessage("The loot chest has been generated at (" 
-		+ chestAreaBL.getBlockX() + ", "
-		+ chestAreaBL.getBlockY() + ", "
-		+ chestAreaBL.getBlockZ() + ")");
-		}
-		
-	}
-	
 	/**
 	 * Print out custom message to player letting them know how they did
 	 * @param map
