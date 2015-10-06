@@ -120,6 +120,12 @@ public class DragonFight implements Listener {
 	}
 	
 	private void spawnRewards() {
+		
+		if (boss.getDamageList().isEmpty()) {
+			EnderDragonFridaysPlugin.plugin.getLogger().info("There were no recorded contributions to the dragon!");
+			return;
+		}
+		
 		//spawn the loot chest, and create inventories for every player
 		inventories = ChestContentGenerator.generate(difficultyBase + (difficulty / 5), boss.getDamageMap());
 		congratulatePlayers(boss.getDamageMap());
