@@ -269,8 +269,8 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	}
 	
 	private void commandInfo(CommandSender sender, String[] args) {
-		if (args.length != 2) {
-			sender.sendMessage("/edf info " + ChatColor.DARK_PURPLE + "[sessionName]" + ChatColor.RESET);
+		if (args.length < 2 || args.length > 3) {
+			sender.sendMessage("/edf info " + ChatColor.DARK_PURPLE + "[sessionName] {all}" + ChatColor.RESET);
 			return;
 		}
 		
@@ -280,7 +280,14 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 			return;
 		}
 		
-		sender.sendMessage(fight.getInfo());
+		boolean all = false;
+		if (args.length == 3) {
+			if (args[2].equalsIgnoreCase("all")) {
+				all = true;
+			}
+		}
+		
+		sender.sendMessage(fight.getInfo(all));
 	}
 	
 	/**

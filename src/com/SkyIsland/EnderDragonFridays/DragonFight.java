@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -275,13 +276,32 @@ public class DragonFight implements Listener {
 	/**
 	 * Returns a string containing information on this session, including:<br />
 	 * name, id, state, and chest location.
+	 * @param all Should this return extended information, including contribution information?
 	 * @return
 	 */
-	public String getInfo() {
-		return ChatColor.DARK_PURPLE + getName() + "\n" + ChatColor.YELLOW + getID() + "\n"
+	public String getInfo(boolean all) {
+		String ret =  ChatColor.DARK_PURPLE + getName() + "\n" + ChatColor.YELLOW + getID() + "\n"
 				+ ChatColor.BLUE + "State: " + getState().toString() + "\n"
 				+ ChatColor.DARK_GREEN + "Chest Location: (" + 
 					chestLocation.getBlockX() + ", " + chestLocation.getBlockY() + ", " + chestLocation.getBlockZ() + ")"
 				+ ChatColor.RESET;
+		
+		if (all) {
+			if (boss.getDamageList().isEmpty()) {
+				ret += ChatColor.YELLOW + "\nContribution list is empty!";
+			} else {
+				OfflinePlayer p;
+				Map<UUID, Double> map = boss.getDamageMap();
+				for (UUID id : map.keySet()) {
+					p = Bukkit.getOfflinePlayer(id);
+					ret += ChatColor.DARK_BLUE + "\n" + p.getName();
+					ret += " - " + ChatColor.DARK_GREEN + map.get(id);
+					ret += " (" + map.get(id)/boss.getDamageTaken() + ")";
+				}
+				ret += ChatColor.RESET;
+			}
+		}
+		
+		return ret;
 	}
 }
