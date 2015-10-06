@@ -1,5 +1,7 @@
 package com.SkyIsland.EnderDragonFridays;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,6 +19,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -104,9 +107,12 @@ public class DragonFight implements Listener {
 			return false;
 		}
 		
+		HandlerList.unregisterAll(this);
+		
 		if (win) {
 			
 			boss.win();
+			spawnRewards();
 			return true;
 		} else {
 			boss.kill();
@@ -153,6 +159,22 @@ public class DragonFight implements Listener {
 				index++;
 			}
 		}
+		File saveFile = new File(EnderDragonFridaysPlugin.plugin.getDataFolder(), "Save" + getName());
+		if (!saveFile.exists()) {
+			try {
+				saveFile.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		try {
+			backupConfig.save(saveFile);
+		} catch (IOException e) {
+			System.out.println("Failed to save file!");
+			e.printStackTrace();
+		}
 		
 		//tell players it's there
 		for (Player p : chestLocation.getWorld().getPlayers()) {
@@ -194,6 +216,11 @@ public class DragonFight implements Listener {
 	
 	@EventHandler
 	public void onLoot(PlayerInteractEvent e) {
+		
+		if (state != State.FINISHED) {
+			return;
+		}
+
 		if (e.isCancelled()) {
 			return;
 		}
@@ -206,11 +233,7 @@ public class DragonFight implements Listener {
 			return;
 		}
 		
-		if (state != State.FINISHED) {
-			return;
-		}
-		
-		if (e.getClickedBlock().getLocation().equals(chestLocation))
+		if (e.getClickedBlock().getLocation().equals(chestLocation.getBlock().getLocation()))
 		if (inventories.containsKey(e.getPlayer().getUniqueId())) {
 			//player clicked it and has a chest
 			e.setCancelled(true);
@@ -250,7 +273,7 @@ public class DragonFight implements Listener {
 	 * @return
 	 */
 	public String getInfo() {
-		return ChatColor.DARK_PURPLE + getName() + "-" + getID() + "\n"
+		return ChatColor.DARK_PURPLE + getName() + "\n" + ChatColor.YELLOW + getID() + "\n"
 				+ ChatColor.BLUE + "State: " + getState().toString() + "\n"
 				+ ChatColor.DARK_GREEN + "Chest Location: (" + 
 					chestLocation.getBlockX() + ", " + chestLocation.getBlockY() + ", " + chestLocation.getBlockZ() + ")"

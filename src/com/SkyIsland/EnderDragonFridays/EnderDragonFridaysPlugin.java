@@ -12,6 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.SkyIsland.EnderDragonFridays.Boss.Boss;
@@ -93,6 +94,16 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 			
 			if (args[0].equalsIgnoreCase("create")) {
 				commandCreate(sender, args);
+				return true;
+			}
+			
+			if (args[0].equalsIgnoreCase("stop")) {
+				commandStop(sender, args);
+				return true;
+			}
+			
+			if (args[0].equalsIgnoreCase("remove")) {
+				commandRemove(sender, args);
 				return true;
 			}
 			
@@ -181,13 +192,70 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		}
 		
 		if (fight.isStarted()) {
-			sender.sendMessage(ChatColor.DARK_RED + "The fight " + ChatColor.DARK_PURPLE + fight.getID() 
+			sender.sendMessage(ChatColor.DARK_RED + "The fight " + ChatColor.DARK_PURPLE + fight.getName() 
 				+ ChatColor.DARK_RED + " is already started!" + ChatColor.RESET);
 			return;
 		}
 		
 		fight.start();
 		sender.sendMessage(ChatColor.DARK_GREEN + "Fight successfully started!" + ChatColor.RESET);
+	}
+	
+	private void commandStop(CommandSender sender, String[] args) {
+		if (args.length < 2 || args.length > 3) {
+			sender.sendMessage("/edf stop " + ChatColor.DARK_PURPLE + "[sessionName]" + ChatColor.RESET + "{win}");
+			return;
+		}
+		
+		DragonFight fight = getFight(args[1]);
+		
+		if (fight == null) {
+			sender.sendMessage(ChatColor.DARK_RED + "Unable to find fight " + ChatColor.DARK_PURPLE + args[1] + ChatColor.RESET);
+			return;
+		}
+		
+		if (!fight.isStarted()) {
+			sender.sendMessage(ChatColor.DARK_RED + "The fight " + ChatColor.DARK_PURPLE + fight.getName() 
+				+ ChatColor.DARK_RED + " has not been started!" + ChatColor.RESET);
+			return;
+		}
+		
+		boolean win = false;
+		if (args.length == 3) {
+			if (args[2].equalsIgnoreCase("true")) {
+				win = true;
+			}
+		}
+		
+		if (!fight.stop(win)) {
+			sender.sendMessage(ChatColor.DARK_RED + "Failed to stop fight!" + ChatColor.RESET);
+		} else {
+			sender.sendMessage(ChatColor.DARK_GREEN + "Fight successfully stopped!" + ChatColor.RESET);
+		}
+	}
+	
+	private void commandRemove(CommandSender sender, String[] args) {
+		if (args.length != 2) {
+			sender.sendMessage("/edf remove " + ChatColor.DARK_PURPLE + "[sessionName]" + ChatColor.RESET);
+			return;
+		}
+		
+		DragonFight fight = getFight(args[1]);
+		
+		if (fight == null) {
+			sender.sendMessage(ChatColor.DARK_RED + "Unable to find fight " + ChatColor.DARK_PURPLE + args[1] + ChatColor.RESET);
+			return;
+		}
+		
+		if (fight.getState() != DragonFight.State.FINISHED) {
+			sender.sendMessage(ChatColor.DARK_RED + "The fight " + ChatColor.DARK_PURPLE + fight.getName() 
+			+ ChatColor.DARK_RED + " must be finished!" + ChatColor.RESET);
+			return;
+		}
+		
+		HandlerList.unregisterAll(fight);
+		fights.remove(fight);
+		
 	}
 	
 	private void commandReload(CommandSender sender, String[] args) {
