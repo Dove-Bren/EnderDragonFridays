@@ -85,6 +85,8 @@ public class DragonFight implements Listener {
 			return false;
 		}
 		
+		Bukkit.getPluginManager().registerEvents(this, EnderDragonFridaysPlugin.plugin);
+		
 		state = State.DURING;
 		boss.start(world.getSpawnLocation().add(0, 50.0, 0));
 		
