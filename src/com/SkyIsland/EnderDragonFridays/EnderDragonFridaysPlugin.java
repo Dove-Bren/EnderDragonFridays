@@ -314,8 +314,8 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		
 		sender.sendMessage("There are currently " + ChatColor.GREEN + fights.size() + ChatColor.RESET + " fights:");
 		for (DragonFight fight : fights) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + fight.getName() + ChatColor.YELLOW + " [" + fight.getID() + "]" 
-					+ ChatColor.DARK_BLUE + fight.getState().toString() + ChatColor.RESET);
+			sender.sendMessage(ChatColor.DARK_PURPLE + fight.getName() + ChatColor.YELLOW + " [" + fight.getID() + "] " 
+					+ ChatColor.BLUE + fight.getState().toString() + ChatColor.RESET);
 		}
 		
 	}

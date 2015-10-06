@@ -158,7 +158,7 @@ public class DragonFight implements Listener {
 			}
 			
 			playSex = backupConfig.createSection(name);
-			playSex.set("uuid", id);
+			playSex.set("uuid", id.toString());
 			invSex = playSex.createSection("inventory");
 			Iterator<ItemStack> it = inventories.get(id).iterator();
 			int index = 0;

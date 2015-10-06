@@ -202,7 +202,7 @@ public class JackTheSkeleton implements Listener, Boss {
 	public void win() {
 		kill();
 		Random rand = new Random();
-		for (int i = 0; i < 3000; i++) {
+		for (int i = 0; i < 300; i++) {
 			dragon.getLocation().getWorld()
 			.spawnEntity(dragon.getLocation().add(rand.nextFloat() * 10, 0, rand.nextFloat()), EntityType.EXPERIENCE_ORB);
 		}
