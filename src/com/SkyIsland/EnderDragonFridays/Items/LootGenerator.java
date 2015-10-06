@@ -167,20 +167,22 @@ public class LootGenerator {
 		double quality = itemQuality(rarity, weight * 30); //added * 30 because of the ago. It takes a weight from
 														   //0 to 30 instead of 0 to 1s?
 		System.out.println("Quality: " + quality);
-		switch (rand.nextInt(4)) {
+		switch (rand.nextInt(6)) {
 		case 0: 
 			item = generateBow(); 
 			enchant(bowEnchantments, item, quality);
 		break;
-		case 1: 
+		case 1:
 			item = generateSword(quality); 
 			enchant(swordEnchantments, item, quality);
 		break;
-		case 2: 
+		case 2:
+		case 3:
 			item = generateArmor(quality); 
 			enchant(armorEnchantments, item, quality);
 		break;
-		case 3: 
+		case 4:
+		case 5:
 			item = generateTool(quality); 
 			enchant(toolEnchantments, item, quality);
 		break;
