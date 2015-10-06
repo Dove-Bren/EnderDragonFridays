@@ -23,8 +23,10 @@ import org.bukkit.material.SpawnEgg;
 
 import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Name.ArmorNameGenerator;
+import com.SkyIsland.EnderDragonFridays.Name.BowNameGenerator;
 import com.SkyIsland.EnderDragonFridays.Name.ItemNameGenerator;
 import com.SkyIsland.EnderDragonFridays.Name.NameGenerator;
+import com.SkyIsland.EnderDragonFridays.Name.SwordNameGenerator;
 
 /**
  * Generates a chest-ful of equipment for players!<br />
@@ -52,10 +54,12 @@ public class ChestContentGenerator {
 		
 		//First, create our generator
 		//get some name generators
-		NameGenerator tools, armor;
+		NameGenerator tools, armor, sword, bow;
 		tools = new ItemNameGenerator();
 		armor = new ArmorNameGenerator(); 
-		gen = new LootGenerator(rarity, null, armor, tools);
+		sword = new SwordNameGenerator();
+		bow = new BowNameGenerator();
+		gen = new LootGenerator(rarity, sword, bow, armor, tools);
 		
 		//Next, we set up our new map that will connect players to their chests
 		Map<UUID, Inventory> output = new HashMap<UUID, Inventory>();

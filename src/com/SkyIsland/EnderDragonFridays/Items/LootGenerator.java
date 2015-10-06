@@ -1,21 +1,15 @@
 package com.SkyIsland.EnderDragonFridays.Items;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.SkyIsland.EnderDragonFridays.EnderDragonFridaysPlugin;
 import com.SkyIsland.EnderDragonFridays.Name.DefaultNames;
 import com.SkyIsland.EnderDragonFridays.Name.NameGenerator;
 
@@ -31,7 +25,9 @@ public class LootGenerator {
 	
 	private List<String> names;
 	
-	private NameGenerator weaponNameGen;
+	private NameGenerator swordNameGen;
+	
+	private NameGenerator bowNameGen;
 	
 	private NameGenerator armorNameGen;
 	
@@ -47,15 +43,12 @@ public class LootGenerator {
 	
 	private List<LootEnchantment> toolEnchantments;
 	
-	private int index;
-	
 	/**
 	 * Creates a loot generator with the passed rarity.<br />
 	 * The loot generator will use a list of names defined in {@link com.SkyIsland.EnderDragonFridays.Name.DefaultNames DefaultNames}
 	 * @param rarity The relative rarity of items produced through this generator. A good range of values are from 1 to 10, but any number is theoritically supported.
 	 */
 	public LootGenerator(double rarity) {
-		index = 0;
 		this.rarity = rarity;
 		this.names = DefaultNames.generate();
 		this.rand = new Random();
@@ -63,21 +56,20 @@ public class LootGenerator {
 	}
 	
 	public LootGenerator(double rarity, List<String> names) {
-		index = 0;
 		this.rarity = rarity;
 		this.names = names;
 		this.rand = new Random();
 		loadEnchantments();
 	}
 	
-	public LootGenerator(double rarity, NameGenerator WeaponNameGenerator, NameGenerator ArmorNameGenerator, NameGenerator ToolNameGenerator) {
+	public LootGenerator(double rarity, NameGenerator SwordNameGenerator, NameGenerator BowNameGenerator, NameGenerator ArmorNameGenerator, NameGenerator ToolNameGenerator) {
 		this.rarity = rarity;
-		index = 0;
-		this.weaponNameGen = WeaponNameGenerator;
+		this.swordNameGen = SwordNameGenerator;
+		this.bowNameGen = BowNameGenerator;
 		this.toolNameGen = ToolNameGenerator;
 		this.armorNameGen = ArmorNameGenerator;
 		
-		if (this.weaponNameGen == null || this.toolNameGen == null || this.armorNameGen == null) {
+		if (this.swordNameGen == null || this.bowNameGen == null || this.toolNameGen == null || this.armorNameGen == null) {
 			names = DefaultNames.generate();
 		}
 		this.rand = new Random();
@@ -304,7 +296,7 @@ public class LootGenerator {
 	private ItemStack generateSword(double quality) {
 		String name;
 		ItemStack sword;
-		name = getWeaponName();
+		name = getSwordName();
 		if (quality < 2)
 			sword =  new ItemStack(Material.STONE_SWORD);
 		else if (quality < 3)
@@ -327,7 +319,7 @@ public class LootGenerator {
 	private ItemStack generateBow() {
 		ItemStack bow = new ItemStack(Material.BOW);
 		String name;
-		name = getWeaponName();
+		name = getBowName();
 
 		ItemMeta meta = bow.getItemMeta();
 		meta.setDisplayName(name);
@@ -335,13 +327,25 @@ public class LootGenerator {
 		return bow;
 	}
 	
-	private String getWeaponName() {
+	private String getSwordName() {
 		String name;
-		if (this.weaponNameGen == null) {
+		if (this.swordNameGen == null) {
 			name = names.get(rand.nextInt(names.size()));
 		}
 		else {
-			name = weaponNameGen.getName();
+			name = swordNameGen.getName();
+		}
+		
+		return name;
+	}
+	
+	private String getBowName() {
+		String name;
+		if (this.bowNameGen == null) {
+			name = names.get(rand.nextInt(names.size()));
+		}
+		else {
+			name = bowNameGen.getName();
 		}
 		
 		return name;
