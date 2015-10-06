@@ -2,6 +2,7 @@ package com.SkyIsland.EnderDragonFridays;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -10,12 +11,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import com.SkyIsland.EnderDragonFridays.Boss.Boss;
 import com.SkyIsland.EnderDragonFridays.Boss.BossDeathEvent;
@@ -120,7 +124,29 @@ public class DragonFight implements Listener {
 		chestLocation.getWorld().spawnEntity(chestLocation, EntityType.LIGHTNING);
 
 		//Create our loot chest
-		chestLocation.getBlock().setType(Material.CHEST);
+		chestLocation.getBlock().setType(Material.ENDER_CHEST);
+		
+		//save our inventories! #backups
+		
+		YamlConfiguration backupConfig = new YamlConfiguration();
+		ConfigurationSection playSex, invSex;
+		String name;
+		for (UUID id : inventories.keySet()) {
+			name = Bukkit.getOfflinePlayer(id).getName();
+			if (name == null || name.trim().isEmpty()) {
+				name = id.toString();
+			}
+			
+			playSex = backupConfig.createSection(name);
+			playSex.set("uuid", id);
+			invSex = playSex.createSection("inventory");
+			Iterator<ItemStack> it = inventories.get(id).iterator();
+			int index = 0;
+			while (it.hasNext()) {
+				invSex.set(index + "", it.next());
+				index++;
+			}
+		}
 		
 		//tell players it's there
 		for (Player p : chestLocation.getWorld().getPlayers()) {
