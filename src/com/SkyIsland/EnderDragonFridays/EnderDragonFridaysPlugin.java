@@ -84,33 +84,6 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 			if (args[0].equalsIgnoreCase("start")) {
 				commandStart(sender, args);
 				return true;
-//				if (Bukkit.getWorld(worldName) == null){
-//					sender.sendMessage("World does not exist!");
-//					return false;
-//				}
-//				
-//				if (boss != null && boss.isAlive()) {
-//					sender.sendMessage("Fight already in progress!");
-//				}
-//				else {
-//					//start a boss fight. If they put mega after, it will be a mega boss
-//					if (args.length >= 2 && args[1].equalsIgnoreCase("mega")) {
-//						boss = new MegaDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Mega Boss");
-//						
-//						return true;
-//					}
-//					if (args.length >= 2 && args[1].equalsIgnoreCase("halloween") && Bukkit.getWorld(worldName).getDifficulty() != Difficulty.PEACEFUL) {
-//						boss = new JackTheSkeleton(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), (new WitherNameGenerator()).getName());
-//						return true;
-//					}
-//					if (args.length >= 2 && args[1].equalsIgnoreCase("thanksgiving") && Bukkit.getWorld(worldName).getDifficulty() != Difficulty.PEACEFUL) {
-//						boss = new Turkey(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), (new TurkeyNameGenerator()).getName());
-//						return true;
-//					}
-//					//else they didn't sepcify or it is something else
-//					boss = new EnderDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), bossName.getName());
-//					return true;
-//				}
 			}
 			
 			if (args[0].equalsIgnoreCase("reload")) {
@@ -120,6 +93,11 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 			
 			if (args[0].equalsIgnoreCase("create")) {
 				commandCreate(sender, args);
+				return true;
+			}
+			
+			if (args[0].equalsIgnoreCase("info")) {
+				commandInfo(sender, args);
 				return true;
 			}
 		}
@@ -214,6 +192,21 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	
 	private void commandReload(CommandSender sender, String[] args) {
 		; //not implemented
+	}
+	
+	private void commandInfo(CommandSender sender, String[] args) {
+		if (args.length != 2) {
+			sender.sendMessage("/edf info " + ChatColor.DARK_PURPLE + "[sessionName]" + ChatColor.RESET);
+			return;
+		}
+		
+		DragonFight fight = getFight(args[1]);
+		if (fight == null) {
+			sender.sendMessage(ChatColor.DARK_RED + "Unable to find fight " + ChatColor.DARK_PURPLE + args[1] + ChatColor.RESET);
+			return;
+		}
+		
+		sender.sendMessage(fight.getInfo());
 	}
 	
 	/**

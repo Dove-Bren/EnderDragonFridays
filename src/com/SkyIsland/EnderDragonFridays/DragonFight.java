@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -235,5 +236,22 @@ public class DragonFight implements Listener {
 	
 	public boolean isStarted() {
 		return (!(state == State.PREFIGHT));
+	}
+	
+	public State getState() {
+		return state;
+	}
+	
+	/**
+	 * Returns a string containing information on this session, including:<br />
+	 * name, id, state, and chest location.
+	 * @return
+	 */
+	public String getInfo() {
+		return ChatColor.DARK_PURPLE + getName() + "-" + getID() + "\n"
+				+ ChatColor.BLUE + "State: " + getState().toString() + "\n"
+				+ ChatColor.DARK_GREEN + "Chest Location: (" + 
+					chestLocation.getBlockX() + ", " + chestLocation.getBlockY() + ", " + chestLocation.getBlockZ() + ")"
+				+ ChatColor.RESET;
 	}
 }
