@@ -71,7 +71,8 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 			for (Entity e : ((Player) sender).getWorld().getEntities()) {
 				if (e.getType() == EntityType.ENDER_DRAGON) {
 					LivingEntity dragon = (LivingEntity) e;
-					dragon.damage(dragon.getMaxHealth());
+					//dragon.damage(dragon.getMaxHealth());
+					dragon.remove();
 				}
 			}
 			return true;
