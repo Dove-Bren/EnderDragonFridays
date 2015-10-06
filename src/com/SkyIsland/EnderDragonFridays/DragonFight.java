@@ -75,7 +75,9 @@ public class DragonFight implements Listener {
 		
 		inventories = new HashMap<UUID, Inventory>();
 		
-		ID = (new Date()).toString().replace(" ", "_");
+//		ID = (new Date()).toString().replace(" ", "_");
+//		ID = ID.replace(":", "_");
+		ID = "" + (new Date()).getTime();
 	}
 	
 	/**
@@ -165,7 +167,8 @@ public class DragonFight implements Listener {
 				index++;
 			}
 		}
-		File saveFile = new File(EnderDragonFridaysPlugin.plugin.getDataFolder(), "Save" + getName());
+		File saveFile = new File(EnderDragonFridaysPlugin.plugin.getDataFolder(), 
+				"Save" + getName() + "_" + getID() + ".yml");
 		if (!saveFile.exists()) {
 			try {
 				saveFile.createNewFile();
@@ -296,7 +299,7 @@ public class DragonFight implements Listener {
 					p = Bukkit.getOfflinePlayer(id);
 					ret += ChatColor.DARK_BLUE + "\n" + p.getName();
 					ret += " - " + ChatColor.DARK_GREEN + map.get(id);
-					ret += " (" + map.get(id)/boss.getDamageTaken() + ")";
+					ret += " (" + map.get(id)/boss.getDamageTaken() * 100 + "%)";
 				}
 				ret += ChatColor.RESET;
 			}

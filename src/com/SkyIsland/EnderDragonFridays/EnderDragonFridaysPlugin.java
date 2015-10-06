@@ -257,9 +257,9 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 			return;
 		}
 		
-		if (fight.getState() != DragonFight.State.FINISHED) {
+		if (fight.getState() == DragonFight.State.DURING) {
 			sender.sendMessage(ChatColor.DARK_RED + "The fight " + ChatColor.DARK_PURPLE + fight.getName() 
-			+ ChatColor.DARK_RED + " must be finished!" + ChatColor.RESET);
+			+ ChatColor.DARK_RED + " must be stopped first!" + ChatColor.RESET);
 			return;
 		}
 		
@@ -314,7 +314,8 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		
 		sender.sendMessage("There are currently " + ChatColor.GREEN + fights.size() + ChatColor.RESET + " fights:");
 		for (DragonFight fight : fights) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "\n" + fight.getName() + ChatColor.YELLOW + " [" + fight.getID() + "]" + ChatColor.RESET);
+			sender.sendMessage(ChatColor.DARK_PURPLE + fight.getName() + ChatColor.YELLOW + " [" + fight.getID() + "]" 
+					+ ChatColor.DARK_BLUE + fight.getState().toString() + ChatColor.RESET);
 		}
 		
 	}
