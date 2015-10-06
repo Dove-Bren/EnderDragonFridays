@@ -55,9 +55,12 @@ public class DragonFight implements Listener {
 	
 	private String ID;
 	
+	private String sessionName;
+	
 	public final static String IDPrefix = "DragonFight#";
 	
-	public DragonFight(World world, Boss boss, double difficulty, double difficultyBase, Location chestLocation) {
+	public DragonFight(String sessionName, World world, Boss boss, double difficulty, double difficultyBase, Location chestLocation) {
+		this.sessionName = sessionName;
 		this.boss = boss;
 		this.chestLocation = chestLocation;
 		this.difficulty = difficulty;
@@ -224,6 +227,10 @@ public class DragonFight implements Listener {
 	
 	public String getID() {
 		return ID;
+	}
+	
+	public String getName() {
+		return sessionName;
 	}
 	
 	public boolean isStarted() {

@@ -129,12 +129,19 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	
 	private void commandCreate(CommandSender sender, String[] args) {
 		if (args.length < 3 || args.length > 4) {
-			sender.sendMessage("/edf create [sessionName] [type] {basedifficulty}");
+			sender.sendMessage("/edf create " + ChatColor.DARK_PURPLE + "[sessionName]" + ChatColor.RESET + " [type] {basedifficulty}");
 			return;
 		}
 		
 		if (!(sender instanceof Player)) {
 			sender.sendMessage("Only players can use this command!");
+			return;
+		}
+		
+		//make sure there aren't any with that name already
+		if (getFight(args[1]) != null) {
+			sender.sendMessage(ChatColor.DARK_RED + "A session named " + ChatColor.DARK_PURPLE + args[1] 
+					+ ChatColor.DARK_RED + " already exists!" + ChatColor.RESET);
 			return;
 		}
 		
@@ -169,7 +176,8 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 			base = 5;
 		}
 		
-		DragonFight fight = new DragonFight(player.getWorld(),
+		DragonFight fight = new DragonFight(args[1],
+				player.getWorld(),
 				boss, 
 				playerCount,
 				base,
@@ -177,7 +185,7 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 
 		fights.add(fight);
 		
-		sender.sendMessage("Successfully created session: " + ChatColor.DARK_PURPLE + fight.getID() + ChatColor.RESET);
+		sender.sendMessage("Successfully created session: " + ChatColor.DARK_PURPLE + fight.getName() + ChatColor.RESET);
 		sender.sendMessage("Chest location set to your position!");
 	}
 	
@@ -188,6 +196,12 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		}
 		
 		DragonFight fight = getFight(args[1]);
+		
+		if (fight == null) {
+			sender.sendMessage(ChatColor.DARK_RED + "Unable to find fight " + ChatColor.DARK_PURPLE + args[1] + ChatColor.RESET);
+			return;
+		}
+		
 		if (fight.isStarted()) {
 			sender.sendMessage(ChatColor.DARK_RED + "The fight " + ChatColor.DARK_PURPLE + fight.getID() 
 				+ ChatColor.DARK_RED + " is already started!" + ChatColor.RESET);
@@ -203,13 +217,13 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	}
 	
 	/**
-	 * Tries to look up a fight by it's ID code.
-	 * @param ID
+	 * Tries to look up a fight by it's sessionName
+	 * @param sessionNAme
 	 * @return The fight, if we have record of it. Null otherwise
 	 */
-	private DragonFight getFight(String ID) {
+	private DragonFight getFight(String sessionName) {
 		for (DragonFight fight : fights) {
-			if (fight.getID().equals(ID)) {
+			if (fight.getName().equals(sessionName)) {
 				return fight;
 			}
 		}
