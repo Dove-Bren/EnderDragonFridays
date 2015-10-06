@@ -290,6 +290,29 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		sender.sendMessage(fight.getInfo(all));
 	}
 	
+	private void commandList(CommandSender sender, String[] args) {
+		if (args.length > 1) {
+			sender.sendMessage("/edf list");
+			return;
+		}
+		
+		if (fights == null) {
+			sender.sendMessage(ChatColor.DARK_RED + "List is null!" + ChatColor.RESET);
+			return;
+		}
+		
+		if (fights.isEmpty()) {
+			sender.sendMessage(ChatColor.YELLOW + "There are currently no sessions!" + ChatColor.RESET);
+			return;
+		}
+		
+		sender.sendMessage("There are currently " + ChatColor.GREEN + fights.size() + ChatColor.RESET + " fights:");
+		for (DragonFight fight : fights) {
+			sender.sendMessage(ChatColor.DARK_PURPLE + "\n" + fight.getName() + ChatColor.YELLOW + " [" + fight.getID() + "]" + ChatColor.RESET);
+		}
+		
+	}
+	
 	/**
 	 * Tries to look up a fight by it's sessionName
 	 * @param sessionNAme

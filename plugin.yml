@@ -31,7 +31,7 @@ commands:
         permission: enderdragonfridays.killalldragons
     enderdragonfridays:
         permission: enderdragonfridays.*
-        usage: /edf [create|reload|start|stop|remove|info]
+        usage: /edf [create|reload|start|stop|remove|info|list]
         description: Executes a command for ender dragon fridays plugin
         aliases: edf
     setcontribution:
