@@ -1,17 +1,16 @@
 package com.SkyIsland.EnderDragonFridays;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Difficulty;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,8 +20,6 @@ import com.SkyIsland.EnderDragonFridays.Boss.JackTheSkeleton;
 import com.SkyIsland.EnderDragonFridays.Boss.MegaDragon;
 import com.SkyIsland.EnderDragonFridays.Boss.Turkey;
 import com.SkyIsland.EnderDragonFridays.Name.BossNameGenerator;
-import com.SkyIsland.EnderDragonFridays.Name.TurkeyNameGenerator;
-import com.SkyIsland.EnderDragonFridays.Name.WitherNameGenerator;
 
 /**
  * The EnderDragonFridaysPlugin makes an Ender Boss appear once a week in the end.
@@ -31,37 +28,35 @@ import com.SkyIsland.EnderDragonFridays.Name.WitherNameGenerator;
  */
 public class EnderDragonFridaysPlugin extends JavaPlugin {
 	
-	private Boss boss;
 	private BossNameGenerator bossName;
 	
 	public static EnderDragonFridaysPlugin plugin;
+	
 	public static Random rand;
 	
-	private static final String configFilename = "config.yml";
-	private File configFile;
-	private YamlConfiguration config;
+	public static final String savePrefix = "FightSave_";
 	
-	private String worldName;
+	private Set<DragonFight> fights;
 	
 	public void onLoad() {
 		EnderDragonFridaysPlugin.plugin = this;
 	}
 	
 	public void onEnable() {
-		boss = null;
+		fights = new HashSet<DragonFight>();
 		bossName = new BossNameGenerator();
 		
 		rand = new Random();
-		
-		load();
 	}
 	
 	public void onDisable() {
-		if (boss != null && boss.isAlive()){
-			boss.kill();
+		if (!fights.isEmpty()) {
+			Iterator<DragonFight> it = fights.iterator();
+			while (it.hasNext()) {
+				it.next().stop(false);
+				it.remove();
+			}
 		}
-		boss = null;
-		save();
 	}
 	
 	public void reload() {
@@ -70,41 +65,6 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-		
-		/**
-		 * Temp command that creates the boss
-		 */
-		if (cmd.getName().equalsIgnoreCase("startdragonfight")) {
-			
-			//!!!!If you change something here, change it in EnderDragonFriday command as well!!!!!//
-			
-			
-			
-			
-			if (Bukkit.getWorld(worldName) == null){
-				sender.sendMessage("World does not exist!");
-				return false;
-			}
-			
-			if (boss != null && boss.isAlive()) {
-				sender.sendMessage("Fight already in progress!");
-			}
-			else {
-				//boss = new MegaDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Mega Boss");
-				boss = new EnderDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), bossName.getName());
-			}
-			return true;
-		}
-		
-		if (cmd.getName().equalsIgnoreCase("killdragon")) {
-			if (boss == null || !boss.isAlive()) {
-				sender.sendMessage("No fight currently engaged");
-				return true;
-			}
-			boss.kill();
-			boss = null;
-			return true;
-		}
 		
 		if (cmd.getName().equalsIgnoreCase("killalldragons")) {
 			for (Entity e : ((Player) sender).getWorld().getEntities()) {
@@ -116,86 +76,144 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 			return true;
 		}
 		
-		if (cmd.getName().equalsIgnoreCase("enderdragonfridays") || cmd.getName().equalsIgnoreCase("edf")) {
+		if (cmd.getName().equalsIgnoreCase("enderdragonfridays")) {
 			if (args.length == 0) {
 				return false;
 			}
 			
 			if (args[0].equalsIgnoreCase("start")) {
-				if (Bukkit.getWorld(worldName) == null){
-					sender.sendMessage("World does not exist!");
-					return false;
-				}
-				
-				if (boss != null && boss.isAlive()) {
-					sender.sendMessage("Fight already in progress!");
-				}
-				else {
-					//start a boss fight. If they put mega after, it will be a mega boss
-					if (args.length >= 2 && args[1].equalsIgnoreCase("mega")) {
-						boss = new MegaDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Mega Boss");
-						
-						return true;
-					}
-					if (args.length >= 2 && args[1].equalsIgnoreCase("halloween") && Bukkit.getWorld(worldName).getDifficulty() != Difficulty.PEACEFUL) {
-						boss = new JackTheSkeleton(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), (new WitherNameGenerator()).getName());
-						return true;
-					}
-					if (args.length >= 2 && args[1].equalsIgnoreCase("thanksgiving") && Bukkit.getWorld(worldName).getDifficulty() != Difficulty.PEACEFUL) {
-						boss = new Turkey(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), (new TurkeyNameGenerator()).getName());
-						return true;
-					}
-					//else they didn't sepcify or it is something else
-					boss = new EnderDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), bossName.getName());
-					return true;
-				}
+				commandStart(sender, args);
+				return true;
+//				if (Bukkit.getWorld(worldName) == null){
+//					sender.sendMessage("World does not exist!");
+//					return false;
+//				}
+//				
+//				if (boss != null && boss.isAlive()) {
+//					sender.sendMessage("Fight already in progress!");
+//				}
+//				else {
+//					//start a boss fight. If they put mega after, it will be a mega boss
+//					if (args.length >= 2 && args[1].equalsIgnoreCase("mega")) {
+//						boss = new MegaDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), "Mega Boss");
+//						
+//						return true;
+//					}
+//					if (args.length >= 2 && args[1].equalsIgnoreCase("halloween") && Bukkit.getWorld(worldName).getDifficulty() != Difficulty.PEACEFUL) {
+//						boss = new JackTheSkeleton(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), (new WitherNameGenerator()).getName());
+//						return true;
+//					}
+//					if (args.length >= 2 && args[1].equalsIgnoreCase("thanksgiving") && Bukkit.getWorld(worldName).getDifficulty() != Difficulty.PEACEFUL) {
+//						boss = new Turkey(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), (new TurkeyNameGenerator()).getName());
+//						return true;
+//					}
+//					//else they didn't sepcify or it is something else
+//					boss = new EnderDragon(Bukkit.getWorld(worldName), Bukkit.getWorld(worldName).getPlayers().size(), bossName.getName());
+//					return true;
+//				}
 			}
 			
 			if (args[0].equalsIgnoreCase("reload")) {
-				sender.sendMessage("Cannot reload because it's not properly implemented loooooser");
+				commandReload(sender, args);
 				return true;
 			}
 			
-			if (args[0].equalsIgnoreCase("win")) {
-				boss.kill();
+			if (args[0].equalsIgnoreCase("create")) {
+				commandCreate(sender, args);
 				return true;
 			}
-		}
-		
-		if (cmd.getName().equalsIgnoreCase("windragonwars")) {
-			boss.kill();
-			
-			return true;
 		}
 		
 		return false;
 	}
-			
-	public void load(){
-		if (!this.getDataFolder().exists()){
-			this.getDataFolder().mkdir();
+	
+	private void commandCreate(CommandSender sender, String[] args) {
+		if (args.length < 3 || args.length > 4) {
+			sender.sendMessage("/edf create [sessionName] [type] {basedifficulty}");
+			return;
 		}
-		configFile = new File(this.getDataFolder(), configFilename);
-		if (!configFile.exists()){
+		
+		if (!(sender instanceof Player)) {
+			sender.sendMessage("Only players can use this command!");
+			return;
+		}
+		
+		//go ahead with it.
+		Player player = (Player) sender;
+		
+		//count players
+		int playerCount = player.getWorld().getPlayers().size();
+		
+		Boss boss;
+		if (args[2].equals("mega")) {
+			boss = new MegaDragon(playerCount, bossName.getName());
+		} else if (args[2].equals("halloween")) {
+			boss = new JackTheSkeleton(playerCount, bossName.getName());
+		} else if (args[2].equals("thanksgiving")) {
+			boss = new Turkey(playerCount, bossName.getName());
+		} else {
+			//just do default dragon
+			boss = new EnderDragon(playerCount, bossName.getName());
+		}
+		
+		int base;
+		if (args.length == 4) {
 			try {
-				configFile.createNewFile();
-				config = YamlConfiguration.loadConfiguration(configFile);
-				config.set("world", "world_the_end");
-				config.save(configFile);
-			} catch (IOException e) {
-				e.printStackTrace();
+				base = Integer.parseInt(args[3]);
+			} catch (NumberFormatException e) {
+				sender.sendMessage("Unable to parse number: " + args[3]);
+				boss = null;
+				return;
 			}
+		} else {
+			base = 5;
 		}
-		config = YamlConfiguration.loadConfiguration(configFile);
-		worldName = config.contains("world") ? config.getString("world") : "world_the_end";
+		
+		DragonFight fight = new DragonFight(player.getWorld(),
+				boss, 
+				playerCount,
+				base,
+				player.getLocation());
+
+		fights.add(fight);
+		
+		sender.sendMessage("Successfully created session: " + ChatColor.DARK_PURPLE + fight.getID() + ChatColor.RESET);
+		sender.sendMessage("Chest location set to your position!");
 	}
 	
-	public void save(){
-		try {
-			config.set("world", worldName);
-			config.save(configFile);
-		} catch (IOException e) {
-			e.printStackTrace();
+	private void commandStart(CommandSender sender, String[] args) {
+		if (args.length != 2) {
+			sender.sendMessage("/edf start " + ChatColor.DARK_PURPLE + "[sessionName]" + ChatColor.RESET);
+			return;
 		}
+		
+		DragonFight fight = getFight(args[1]);
+		if (fight.isStarted()) {
+			sender.sendMessage(ChatColor.DARK_RED + "The fight " + ChatColor.DARK_PURPLE + fight.getID() 
+				+ ChatColor.DARK_RED + " is already started!" + ChatColor.RESET);
+			return;
+		}
+		
+		fight.start();
+		sender.sendMessage(ChatColor.DARK_GREEN + "Fight successfully started!" + ChatColor.RESET);
+	}
+	
+	private void commandReload(CommandSender sender, String[] args) {
+		; //not implemented
+	}
+	
+	/**
+	 * Tries to look up a fight by it's ID code.
+	 * @param ID
+	 * @return The fight, if we have record of it. Null otherwise
+	 */
+	private DragonFight getFight(String ID) {
+		for (DragonFight fight : fights) {
+			if (fight.getID().equals(ID)) {
+				return fight;
+			}
+		}
+		
+		return null;
 	}
 }

@@ -51,6 +51,8 @@ public class DragonFight implements Listener {
 	
 	private String ID;
 	
+	public final static String IDPrefix = "DragonFight#";
+	
 	public DragonFight(World world, Boss boss, double difficulty, double difficultyBase, Location chestLocation) {
 		this.boss = boss;
 		this.chestLocation = chestLocation;
@@ -191,6 +193,14 @@ public class DragonFight implements Listener {
 	
 	@Override
 	public String toString() {
-		return "DragonFight#" + ID;
+		return IDPrefix + ID;
+	}
+	
+	public String getID() {
+		return ID;
+	}
+	
+	public boolean isStarted() {
+		return (!(state == State.PREFIGHT));
 	}
 }
