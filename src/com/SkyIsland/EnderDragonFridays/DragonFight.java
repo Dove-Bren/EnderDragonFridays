@@ -1,5 +1,6 @@
 package com.SkyIsland.EnderDragonFridays;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -48,6 +49,8 @@ public class DragonFight implements Listener {
 	
 	private World world;
 	
+	private String ID;
+	
 	public DragonFight(World world, Boss boss, double difficulty, double difficultyBase, Location chestLocation) {
 		this.boss = boss;
 		this.chestLocation = chestLocation;
@@ -58,6 +61,8 @@ public class DragonFight implements Listener {
 		this.state = State.PREFIGHT;
 		
 		inventories = new HashMap<UUID, Inventory>();
+		
+		ID = (new Date()).toString().replace(" ", "_");
 	}
 	
 	/**
@@ -177,5 +182,15 @@ public class DragonFight implements Listener {
 			e.setCancelled(true);
 			e.getPlayer().openInventory(inventories.get(e.getPlayer().getUniqueId()));
 		}
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		return (o.toString().equals(toString()));
+	}
+	
+	@Override
+	public String toString() {
+		return "DragonFight#" + ID;
 	}
 }
