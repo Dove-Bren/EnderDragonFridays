@@ -227,6 +227,10 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 			}
 		}
 		
+		if (fight.getState() != DragonFight.State.FINISHED) {
+			sender.sendMessage(ChatColor.DARK_RED + "The session's already stopped!" + ChatColor.RESET);
+		}
+		
 		if (!fight.stop(win)) {
 			sender.sendMessage(ChatColor.DARK_RED + "Failed to stop fight!" + ChatColor.RESET);
 		} else {
@@ -255,6 +259,8 @@ public class EnderDragonFridaysPlugin extends JavaPlugin {
 		
 		HandlerList.unregisterAll(fight);
 		fights.remove(fight);
+
+		sender.sendMessage(ChatColor.DARK_GREEN + "Fight successfully removed!" + ChatColor.RESET);
 		
 	}
 	

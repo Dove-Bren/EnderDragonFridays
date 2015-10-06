@@ -131,8 +131,10 @@ public abstract class Dragon implements Listener, Boss {
 
 	@Override
 	public void kill() {
-		if (!dragon.isDead())
-		dragon.damage(dragon.getMaxHealth());
+		if (!dragon.isDead()) {
+			System.out.println("killing dragon");
+			dragon.remove();
+		}
 	}
 
 	@Override

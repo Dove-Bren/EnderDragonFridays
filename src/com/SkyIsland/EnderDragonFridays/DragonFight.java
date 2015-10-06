@@ -19,7 +19,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -107,7 +106,7 @@ public class DragonFight implements Listener {
 			return false;
 		}
 		
-		HandlerList.unregisterAll(this);
+		state = State.FINISHED;
 		
 		if (win) {
 			
